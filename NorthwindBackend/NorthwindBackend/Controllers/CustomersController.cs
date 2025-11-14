@@ -72,5 +72,24 @@ namespace NorthwindBackend.Controllers
             }
             
         }
+
+        //DELETE: api/customers/id
+        [HttpDelete ("{id}")]
+        public async Task<ActionResult> DeleteCustomer(string id)
+        {
+            try
+            {
+                 var customer = await _context.Customers.FindAsync(id);
+                if (customer == null) return NotFound();
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
+        }
     }
 }
