@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +18,14 @@ namespace NorthwindBackend.Controllers
         public async Task<ActionResult<IEnumerable<Models.Customer>>> GetCustomers()
         {
             return await _context.Customers.ToListAsync<Models.Customer>();
+        }
+
+        [HttpGet ("{id}")]
+        public async Task<ActionResult<Models.Customer>> GetCustomer(string id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null) return NotFound();
+            return Ok(customer);
         }
 
         [HttpPost]
