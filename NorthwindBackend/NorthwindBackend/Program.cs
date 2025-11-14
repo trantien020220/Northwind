@@ -9,8 +9,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy  =>
                       {
-                          policy.WithOrigins("http://example.com",
-                                              "http://www.contoso.com");
+                          policy.WithOrigins("http://localhost:5173")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
                       });
 });
 
@@ -21,7 +22,10 @@ builder.Services.AddDbContext<NorthwindContext>(options =>
 
 var app = builder.Build();
 
+app.UseCors(MyAllowSpecificOrigins);
+
 //middleware
 app.MapControllers();
+
 
 app.Run();
