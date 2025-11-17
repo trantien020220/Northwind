@@ -9,4 +9,5 @@ public class NorthwindContext : DbContext
     }
 
     public DbSet<Customer> Customers { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
 }

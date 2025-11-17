@@ -8,6 +8,8 @@ namespace NorthwindBackend.Mapping{
         {
             CreateMap<Models.Customer, DTOs.CustomerDto>().ReverseMap();
             CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
+            CreateMap<Models.Customer, DTOs.OrdersDto>().ReverseMap();
+            CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
         }
     }
 }
