@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddDbContext<NorthwindContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindConnection")));
-
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 app.UseCors(MyAllowSpecificOrigins);
