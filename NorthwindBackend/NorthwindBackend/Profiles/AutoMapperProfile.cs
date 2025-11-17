@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace NorthwindBackend.Mapping{
+namespace NorthwindBackend.Profiles{
 
     public class AutoMapper : Profile
     {

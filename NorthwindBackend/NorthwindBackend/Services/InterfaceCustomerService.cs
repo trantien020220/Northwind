@@ -9,7 +9,6 @@ namespace NorthwindBackend.Services
         Task<CustomerDto> PostCustomer(CreateCustomerDto dto);
         Task<bool> PutCustomer(string id, CreateCustomerDto dto);
         Task<bool> DeleteCustomer(string id);
-        Task FindAsync(string id);
     }
 }
 

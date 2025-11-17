@@ -36,7 +36,7 @@ public class CustomerService : InterfaceCustomerService
         return _mapper.Map<CustomerDto>(customer);
     }
 
-    public async Task<bool> UpdateCustomer(string id, CreateCustomerDto dto)
+    public async Task<bool> PutCustomer(string id, CreateCustomerDto dto)
     {
         var customer = await _context.Customers.FindAsync(id);
         if (customer == null) return false;
@@ -57,17 +57,7 @@ public class CustomerService : InterfaceCustomerService
         return true;
     }
 
-    public Task<CustomerDto?> GetCustomers(string id)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task FindAsync(string id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> PutCustomer(string id, CreateCustomerDto dto)
     {
         throw new NotImplementedException();
     }
