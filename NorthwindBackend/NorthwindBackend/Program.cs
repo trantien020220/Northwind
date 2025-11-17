@@ -18,8 +18,7 @@ builder.Services.AddCors(options =>
 
 //services
 builder.Services.AddControllers();
-builder.Services.AddDbContext<NorthwindContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindConnection")));
+builder.Services.AddDbContext<NorthwindContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindConnection")));
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 var app = builder.Build();
