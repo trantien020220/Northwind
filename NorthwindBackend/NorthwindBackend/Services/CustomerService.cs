@@ -56,9 +56,4 @@ public class CustomerService : ICustomerService
         await _context.SaveChangesAsync();
         return true;
     }
-
-    public Task FindAsync(string id)
-    {
-        throw new NotImplementedException();
-    }
 }
