@@ -21,7 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<NorthwindContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindConnection")));
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddScoped<InterfaceCustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 var app = builder.Build();
 
 app.UseCors(MyAllowSpecificOrigins);

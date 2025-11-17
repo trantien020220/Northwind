@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace NorthwindBackend.Services;
 
-public class CustomerService : InterfaceCustomerService
+public class CustomerService : ICustomerService
 {
     private readonly IMapper _mapper;        
     private readonly NorthwindContext _context;

@@ -11,9 +11,9 @@ namespace NorthwindBackend.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly InterfaceCustomerService _service;
+        private readonly ICustomerService _service;
 
-        public CustomersController(InterfaceCustomerService service)
+        public CustomersController(ICustomerService service)
         {
             _service = service;
         }

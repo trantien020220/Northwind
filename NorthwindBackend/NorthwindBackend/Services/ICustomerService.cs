@@ -2,7 +2,7 @@ using NorthwindBackend.DTOs;
 
 namespace NorthwindBackend.Services
 {
-    public interface InterfaceCustomerService
+    public interface ICustomerService
     {
         Task<IEnumerable<CustomerDto>> GetCustomers();
         Task<CustomerDto?> GetCustomerbyId(string id);
