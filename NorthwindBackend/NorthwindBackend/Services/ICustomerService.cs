@@ -1,14 +1,11 @@
 using NorthwindBackend.DTOs;
 
-namespace NorthwindBackend.Services
+namespace NorthwindBackend.Services;
+public interface ICustomerService
 {
-    public interface ICustomerService
-    {
-        Task<IEnumerable<CustomerDto>> GetCustomers();
-        Task<CustomerDto?> GetCustomerbyId(string id);
-        Task<CustomerDto> PostCustomer(CreateCustomerDto dto);
-        Task<bool> PutCustomer(string id, CreateCustomerDto dto);
-        Task<bool> DeleteCustomer(string id);
-    }
+    Task<IEnumerable<CustomerDto>> GetCustomers();
+    Task<CustomerDto?> GetCustomerbyId(string id);
+    Task<CustomerDto> PostCustomer(CreateCustomerDto dto);
+    Task<bool> PutCustomer(string id, CreateCustomerDto dto);
+    Task<bool> DeleteCustomer(string id);
 }
-

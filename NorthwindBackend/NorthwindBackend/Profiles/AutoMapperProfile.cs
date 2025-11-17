@@ -1,15 +1,14 @@
 using AutoMapper;
 
-namespace NorthwindBackend.Profiles{
+namespace NorthwindBackend.Profiles;
 
-    public class AutoMapper : Profile
+public class AutoMapper : Profile
+{
+    public AutoMapper()
     {
-        public AutoMapper()
-        {
-            CreateMap<Models.Customer, DTOs.CustomerDto>().ReverseMap();
-            CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
-            CreateMap<Models.Customer, DTOs.OrdersDto>().ReverseMap();
-            CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
-        }
+        CreateMap<Models.Customer, DTOs.CustomerDto>().ReverseMap();
+        CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
+        CreateMap<Models.Customer, DTOs.OrdersDto>().ReverseMap();
+        CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
     }
 }

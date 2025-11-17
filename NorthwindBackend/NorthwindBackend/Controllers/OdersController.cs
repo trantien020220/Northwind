@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NorthwindBackend.Controllers
+namespace NorthwindBackend.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class OdersController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OdersController : ControllerBase
-    {
-    }
 }
