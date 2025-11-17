@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 using NorthwindBackend.DTOs;
+using NorthwindBackend.Services;
 
 namespace NorthwindBackend.Controllers
 {
@@ -10,87 +11,53 @@ namespace NorthwindBackend.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly IMapper _mapper;        
-        private readonly NorthwindContext _context;
+        private readonly InterfaceCustomerService _service;
 
-        public CustomersController(NorthwindContext context, IMapper mapper)
+        public CustomersController(InterfaceCustomerService service)
         {
-            _context = context;
-            _mapper = mapper;
+            _service = service;
         }
 
         //GET: api/customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
+        public async Task<ActionResult> FindCustomers()
         {
-            var customers = await _context.Customers.ToListAsync();
-            return Ok(_mapper.Map<IEnumerable<CustomerDto>>(customers));
+            return Ok(await _service.GetCustomers());
         }
 
         //GET: api/customers/id
         [HttpGet ("{id}")]
-        public async Task<ActionResult> GetCustomer(string id)
+        public async Task<ActionResult> FindCustomerbyId(string id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _service.GetCustomerbyId(id);
             if (customer == null) return NotFound();
-            return Ok(_mapper.Map<CustomerDto>(customer));
+            return Ok(customer);
         }
 
         //POST: api/customers
         [HttpPost]
-        public async Task<ActionResult> PostCustomer(CreateCustomerDto dto)
+        public async Task<ActionResult> CreateCustomer(CreateCustomerDto dto)
         {
-            var customer = _mapper.Map<Customer>(dto);  
-            try
-            {
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
-                var result = _mapper.Map<CustomerDto>(customer);
-                return CreatedAtAction(nameof(GetCustomer), new { id = customer.CustomerId }, result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            
+            var customer =  await _service.PostCustomer(dto);
+            return CreatedAtAction(nameof(FindCustomerbyId), new { id = customer.CompanyName }, customer);
         }
 
         //PUT: api/customers/id
         [HttpPut ("{id}")]
         public async Task<ActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
         {
-            try
-            {
-                var existingCustomer = await _context.Customers.FindAsync(id);
-                if (existingCustomer == null) return NotFound();
-
-                _mapper.Map(dto, existingCustomer);
-
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var customer = await _service.PutCustomer(id, dto);
+            if (!customer) return NotFound();
+            return NoContent();
         }
-
         //DELETE: api/customers/id
         [HttpDelete ("{id}")]
         public async Task<ActionResult> DeleteCustomer(string id)
         {
-            try
-            {
-                var customer = await _context.Customers.FindAsync(id);
-                if (customer == null) return NotFound();
-                _context.Customers.Remove(customer);
-                await _context.SaveChangesAsync();
+                var customer = await _service.DeleteCustomer(id);
+                if (!customer) return NotFound();
+                if (!customer) return NotFound();
                 return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }  
         }
     }
 }

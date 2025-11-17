@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
+using NorthwindBackend.Services;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<NorthwindContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindConnection")));
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<InterfaceCustomerService, CustomerService>();
 var app = builder.Build();
 
 app.UseCors(MyAllowSpecificOrigins);
