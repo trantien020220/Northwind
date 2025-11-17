@@ -56,7 +56,6 @@ public class CustomersController : ControllerBase
     {
             var customer = await _service.DeleteCustomer(id);
             if (!customer) return NotFound();
-            if (!customer) return NotFound();
             return NoContent();
     }
 }
