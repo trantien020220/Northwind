@@ -2,13 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 using NorthwindBackend.Services;
 using NorthwindBackend.Repositories;
+using NorthwindBackend.UnitOfWork;
 
-var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: myAllowSpecificOrigins,
                       policy  =>
                       {
                           policy.WithOrigins("http://localhost:5173")
@@ -21,11 +22,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddDbContext<NorthwindContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("NorthwindConnection")));
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 var app = builder.Build();
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(myAllowSpecificOrigins);
 
 //middleware
 app.MapControllers();
