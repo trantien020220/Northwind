@@ -3,7 +3,7 @@ using NorthwindBackend.Repositories;
 
 namespace NorthwindBackend.UnitOfWork;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
     ICustomerRepository Customers { get; }
     Task<int> SaveAsync();
