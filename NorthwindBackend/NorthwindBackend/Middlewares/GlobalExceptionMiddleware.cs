@@ -16,7 +16,7 @@ public class GlobalExceptionMiddleware
     {
         try
         {
-            await _next(context);  // chạy tiếp pipeline
+            await _next(context);
         }
         catch (Exception ex)
         {
