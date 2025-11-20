@@ -22,6 +22,7 @@ public class CreateCustomerDtoValidator : AbstractValidator<CreateCustomerDto>
             .MaximumLength(15);
 
         RuleFor(x => x.Phone)
-            .NotEmpty().WithMessage("Phone is required");
+            .NotEmpty().WithMessage("Phone number is required")
+            .Matches(@"^\d{9,11}$").WithMessage("Phone must be from 9 to 11 digits");
     }
 }
