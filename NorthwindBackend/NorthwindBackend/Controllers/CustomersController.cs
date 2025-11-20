@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
+using NorthwindBackend.Profiles;
 
 namespace NorthwindBackend.Controllers;
     
@@ -22,7 +23,9 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult> FindCustomers()
     {
-        return Ok(await _service.GetCustomers());
+        var customers = await _service.GetCustomers();
+
+        return Ok(ApiResponse<IEnumerable<CustomerDto>>.Ok(customers));
     }
 
     //GET: api/customers/id
@@ -30,32 +33,41 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult> FindCustomerbyId(string id)
     {
         var customer = await _service.GetCustomerbyId(id);
-        if (customer == null) return NotFound();
-        return Ok(customer);
+        if (customer == null)
+            return NotFound(ApiResponse<CustomerDto>.Fail("Customer not found"));
+
+        return Ok(ApiResponse<CustomerDto>.Ok(customer));
     }
 
     //POST: api/customers
     [HttpPost]
     public async Task<ActionResult> CreateCustomer(CreateCustomerDto dto)
     {
-        var customer =  await _service.PostCustomer(dto);
-        return CreatedAtAction(nameof(FindCustomerbyId), new { id = customer.CompanyName }, customer);
+        var created = await _service.PostCustomer(dto);
+
+        return Ok(ApiResponse<CustomerDto>.Ok(created, "Customer created successfully"));
     }
 
     //PUT: api/customers/id
     [HttpPut ("{id}")]
     public async Task<ActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
     {
-        var customer = await _service.PutCustomer(id, dto);
-        if (!customer) return NotFound();
-        return NoContent();
+        var updated = await _service.PutCustomer(id, dto);
+
+        if (!updated)
+            return NotFound(ApiResponse<string>.Fail("Customer not found"));
+
+        return Ok(ApiResponse<string>.Ok("Customer updated successfully"));
     }
     //DELETE: api/customers/id
     [HttpDelete ("{id}")]
     public async Task<ActionResult> DeleteCustomer(string id)
     {
-            var customer = await _service.DeleteCustomer(id);
-            if (!customer) return NotFound();
-            return NoContent();
+        var deleted = await _service.DeleteCustomer(id);
+
+        if (!deleted)
+            return NotFound(ApiResponse<string>.Fail("Customer not found"));
+
+        return Ok(ApiResponse<string>.Ok("Customer deleted successfully"));
     }
 }
