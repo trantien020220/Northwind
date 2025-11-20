@@ -35,6 +35,8 @@ var app = builder.Build();
 app.UseCors(myAllowSpecificOrigins);
 
 //middleware
+app.UseGlobalErrorHandler();
+
 app.MapControllers();
 
 
