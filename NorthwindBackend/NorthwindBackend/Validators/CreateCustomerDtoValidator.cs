@@ -20,5 +20,8 @@ public class CreateCustomerDtoValidator : AbstractValidator<CreateCustomerDto>
         RuleFor(x => x.Country)
             .NotEmpty().WithMessage("Country is required")
             .MaximumLength(15);
+
+        RuleFor(x => x.Phone)
+            .NotEmpty().WithMessage("Phone is required");
     }
 }
