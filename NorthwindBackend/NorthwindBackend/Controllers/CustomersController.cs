@@ -5,6 +5,8 @@ using NorthwindBackend.Models;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
+using NorthwindBackend.Repositories;
+
 
 namespace NorthwindBackend.Controllers;
     
@@ -13,10 +15,12 @@ namespace NorthwindBackend.Controllers;
 public class CustomersController : ControllerBase
 {
     private readonly ICustomerService _service;
+    private readonly ICustomerRepository _customerRepository;
 
-    public CustomersController(ICustomerService service)
+    public CustomersController(ICustomerService service, ICustomerRepository customerRepository)
     {
         _service = service;
+        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
     //GET: api/customers
@@ -38,26 +42,15 @@ public class CustomersController : ControllerBase
 
         return Ok(ApiResponse<CustomerDto>.Ok(customer));
     }
-    
-    [HttpGet("search")]
-    public async Task<ActionResult> SearchCustomers(
-        [FromQuery] string? search,
-        [FromQuery] string? country,
-        [FromQuery] string? sortBy,
-        [FromQuery] bool ascending = true)
-    {
-        var customers = await _service.GetCustomersFilteredAsync(search, country, sortBy, ascending);
-        return Ok(ApiResponse<IEnumerable<CustomerDto>>.Ok(customers));
-    }
 
     //POST: api/customers
     [HttpPost]
     public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto dto)
     {
-        var created = await _service.PostCustomer(dto);
+        var customer = await _service.CreateCustomer(dto);
         return CreatedAtAction(nameof(FindCustomerbyId),
-            new { id = created.CustomerId },
-            created
+            new { id = customer.CustomerId },
+            customer
         );
     }
 
@@ -65,9 +58,9 @@ public class CustomersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
     {
-        var updated = await _service.PutCustomer(id, dto);
+        var customer = await _service.UpdateCustomer(id, dto);
 
-        if (!updated)
+        if (!customer)
             return NotFound();
 
         return NoContent();
@@ -77,12 +70,24 @@ public class CustomersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCustomer(string id)
     {
-        var deleted = await _service.DeleteCustomer(id);
+        var customer = await _service.DeleteCustomer(id);
 
-        if (!deleted)
+        if (!customer)
             return NotFound();
 
         return NoContent();
     }
+    
+    //GET: api/customers/search
+    [HttpGet("search")]
+    public async Task<ActionResult> SearchCustomers(
+        string? search, string? country, string? sortBy, bool ascending = true)
+    {
+        var customers = await _customerRepository.GetCustomersFilteredAsync(search, country, sortBy, ascending);
 
+        if (!customers.Any())
+            return NotFound(ApiResponse<IEnumerable<Customer>>.Fail("No customers found"));
+
+        return Ok(ApiResponse<IEnumerable<Customer>>.Ok(customers));
+    }
 }

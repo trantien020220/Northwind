@@ -4,6 +4,9 @@ namespace NorthwindBackend.Repositories;
 
 public interface ICustomerRepository : IGenericRepository<Customer>
 {
-    Task<IEnumerable<Customer>> GetCustomerByCompanyNameAsync(string companyName);
-    Task<IEnumerable<Customer>> GetCustomerByCountryAsync(string country);
+    new IQueryable<Customer> GetAllQueryable();
+    
+    Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
+    string? search, string? country, string? sortBy, bool ascending = true);
+
 }
