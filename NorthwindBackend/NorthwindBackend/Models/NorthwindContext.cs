@@ -16,6 +16,10 @@ public class NorthwindContext : DbContext
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.Entity<Order>()
+            .Property(o => o.OrderId)
+            .UseIdentityColumn();
+        
+        modelBuilder.Entity<Order>()
             .HasKey(o => o.OrderId);
 
         modelBuilder.Entity<Order>()
