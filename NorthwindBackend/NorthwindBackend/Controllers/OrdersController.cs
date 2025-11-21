@@ -11,12 +11,10 @@ namespace NorthwindBackend.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _service;
-    private readonly IOrderRepository _orderRepository;
 
-    public OrdersController(IOrderService service, IOrderRepository orderRepository)
+    public OrdersController(IOrderService service)
     {
         _service = service;
-        _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
     
     //GET : api/orders/
@@ -75,7 +73,7 @@ public class OrdersController : ControllerBase
         string? sortBy,
         bool ascending = true)
     {
-        var orders = await _orderRepository.GetOrdersFilteredAsync(
+        var orders = await _service.GetOrdersFilteredAsync(
             orderId, customerId, shipCountry, dateFrom, dateTo, sortBy, ascending);
 
         return Ok(new

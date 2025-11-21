@@ -15,12 +15,10 @@ namespace NorthwindBackend.Controllers;
 public class CustomersController : ControllerBase
 {
     private readonly ICustomerService _service;
-    private readonly ICustomerRepository _customerRepository;
 
-    public CustomersController(ICustomerService service, ICustomerRepository customerRepository)
+    public CustomersController(ICustomerService service)
     {
         _service = service;
-        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
     //GET: api/customers
@@ -34,7 +32,7 @@ public class CustomersController : ControllerBase
 
     //GET: api/customers/id
     [HttpGet ("{id}")]
-    public async Task<ActionResult> FindCustomerbyId(string id)
+    public async Task<ActionResult> GetCustomerbyId(string id)
     {
         var customer = await _service.GetCustomerbyId(id);
         if (customer == null)
@@ -48,7 +46,7 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto dto)
     {
         var customer = await _service.CreateCustomer(dto);
-        return CreatedAtAction(nameof(FindCustomerbyId),
+        return CreatedAtAction(nameof(GetCustomerbyId),
             new { id = customer.CustomerId },
             customer
         );
@@ -83,11 +81,10 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult> SearchCustomers(
         string? search, string? country, string? sortBy, bool ascending = true)
     {
-        var customers = await _customerRepository.GetCustomersFilteredAsync(search, country, sortBy, ascending);
-
+        var customers = await _service.GetCustomersFilteredAsync(search, country, sortBy, ascending);
         if (!customers.Any())
-            return NotFound(ApiResponse<IEnumerable<Customer>>.Fail("No customers found"));
+            return NotFound(ApiResponse<IEnumerable<CustomerDto>>.Fail("No customers found"));
 
-        return Ok(ApiResponse<IEnumerable<Customer>>.Ok(customers));
+        return Ok(ApiResponse<IEnumerable<CustomerDto>>.Ok(customers));
     }
 }

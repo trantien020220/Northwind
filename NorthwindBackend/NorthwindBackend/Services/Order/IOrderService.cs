@@ -8,4 +8,12 @@ public interface IOrderService
     Task<OrderDto> CreateOrder(CreateOrderDto dto);
     Task<bool> UpdateOrder(int id, CreateOrderDto dto);
     Task<bool> DeleteOrder(int id);
+    Task<IEnumerable<OrderDto>> GetOrdersFilteredAsync(
+        int? orderId,
+        string? customerId,
+        string? shipCountry,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        string? sortBy,
+        bool ascending = true);
 }

@@ -1,29 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
-using NorthwindBackend.DTOs;
-using NorthwindBackend.Profiles;
-using NorthwindBackend.UnitOfWork;
-using AutoMapper;
-
 
 namespace NorthwindBackend.Repositories;
 
 public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 {
     private readonly NorthwindContext _context;
-    private readonly IMapper _mapper;
 
-    public CustomerRepository(NorthwindContext context, IMapper mapper) : base(context)
+    public CustomerRepository(NorthwindContext context) : base(context)
     {
         _context = context;
-        _mapper = mapper;
     }
-    
+
     public new IQueryable<Customer> GetAllQueryable()
     {
         return _context.Customers.AsQueryable();
     }
-    
+
     public async Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
         string? search, string? country, string? sortBy, bool ascending = true)
     {
@@ -31,8 +24,8 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
 
         if (!string.IsNullOrEmpty(search))
         {
-            query = query.Where(c => c.CustomerId.Contains(search)
-                                     || c.CompanyName.Contains(search));
+            query = query.Where(c =>
+                c.CustomerId.Contains(search) || c.CompanyName.Contains(search));
         }
 
         if (!string.IsNullOrEmpty(country))

@@ -7,6 +7,9 @@ public interface ICustomerRepository : IGenericRepository<Customer>
     new IQueryable<Customer> GetAllQueryable();
     
     Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
-    string? search, string? country, string? sortBy, bool ascending = true);
+        string? search, 
+        string? country, 
+        string? sortBy, 
+        bool ascending = true);
 
 }

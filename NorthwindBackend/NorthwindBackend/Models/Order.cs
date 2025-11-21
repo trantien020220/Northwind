@@ -11,5 +11,6 @@
         public string? ShipName { get; set; }
         public string? ShipCity { get; set; }
         public string? ShipCountry { get; set; }
+        public Customer? Customer { get; set; }
     }
 }

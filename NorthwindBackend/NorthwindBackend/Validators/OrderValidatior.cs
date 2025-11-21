@@ -5,7 +5,7 @@ public class OrderValidatior : AbstractValidator<CreateOrderDto>
 {
     public  OrderValidatior()
     {
-        RuleFor(x => x.CustomerId)
+        RuleFor(order => order.CustomerId)
                 .NotEmpty().WithMessage("CustomerID is required")
                 .MaximumLength(5).WithMessage("ID must have 5 characters")
                 .MinimumLength(5).WithMessage("ID must have 5 characters");

@@ -3,7 +3,7 @@ using NorthwindBackend.Repositories;
 
 public interface IOrderRepository : IGenericRepository<Order>
 {
-    IQueryable<Order> GetAllQueryable();
+    new IQueryable<Order> GetAllQueryable();
 
     Task<IEnumerable<Order>> GetOrdersFilteredAsync(
         int? orderId,

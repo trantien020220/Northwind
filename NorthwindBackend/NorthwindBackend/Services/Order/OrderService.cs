@@ -3,6 +3,7 @@ using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 using AutoMapper;
 using NorthwindBackend.UnitOfWork;
+using NorthwindBackend.Repositories;
 
 namespace NorthwindBackend.Services;
 
@@ -57,5 +58,18 @@ public class OrderService : IOrderService
         _unitOfWork.Orders.Delete(order);
         await _unitOfWork.Orders.SaveAsync();
         return true;
+    }
+    
+    public async Task<IEnumerable<OrderDto>> GetOrdersFilteredAsync(
+        int? orderId,
+        string? customerId,
+        string? shipCountry,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        string? sortBy,
+        bool ascending = true)
+    {
+        var orders = await _unitOfWork.Orders.GetOrdersFilteredAsync(orderId, customerId, shipCountry, dateFrom, dateTo, sortBy, ascending);
+        return _mapper.Map<IEnumerable<OrderDto>>(orders);
     }
 }

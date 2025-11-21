@@ -8,12 +8,14 @@ public class UnitOfWork : IUnitOfWork
     private readonly NorthwindContext _context;
     public ICustomerRepository Customers { get; private set; }
     public IOrderRepository Orders { get; private set; }
+    public IProductRepository Products { get; private set; }
     
-    public UnitOfWork(NorthwindContext context, ICustomerRepository customerRepository, IOrderRepository orderRepository)
+    public UnitOfWork(NorthwindContext context, ICustomerRepository customerRepository, IOrderRepository orderRepository, IProductRepository productRepository)
     {
         _context = context;
         Customers = customerRepository;
         Orders = orderRepository;
+        Products = productRepository;
     }
     
     public async Task<int> SaveAsync()

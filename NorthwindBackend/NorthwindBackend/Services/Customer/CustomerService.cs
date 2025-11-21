@@ -58,4 +58,10 @@ public class CustomerService : ICustomerService
         await _unitOfWork.Customers.SaveAsync();
         return true;
     }
+    public async Task<IEnumerable<CustomerDto>> GetCustomersFilteredAsync(
+        string? search, string? country, string? sortBy, bool ascending = true)
+    {
+        var customers = await _unitOfWork.Customers.GetCustomersFilteredAsync(search, country, sortBy, ascending);
+        return _mapper.Map<IEnumerable<CustomerDto>>(customers);
+    }
 }
