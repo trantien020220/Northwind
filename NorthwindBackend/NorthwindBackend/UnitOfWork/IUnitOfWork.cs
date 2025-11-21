@@ -6,5 +6,6 @@ namespace NorthwindBackend.UnitOfWork;
 public interface IUnitOfWork : IDisposable
 {
     ICustomerRepository Customers { get; }
+    IOrderRepository Orders { get; }
     Task<int> SaveAsync();
 }
