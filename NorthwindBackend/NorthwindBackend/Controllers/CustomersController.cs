@@ -41,33 +41,37 @@ public class CustomersController : ControllerBase
 
     //POST: api/customers
     [HttpPost]
-    public async Task<ActionResult> CreateCustomer(CreateCustomerDto dto)
+    public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto dto)
     {
         var created = await _service.PostCustomer(dto);
-
-        return Ok(ApiResponse<CustomerDto>.Ok(created, "Customer created successfully"));
+        return CreatedAtAction(nameof(FindCustomerbyId),
+            new { id = created.CustomerId },
+            created
+        );
     }
 
     //PUT: api/customers/id
-    [HttpPut ("{id}")]
-    public async Task<ActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
     {
         var updated = await _service.PutCustomer(id, dto);
 
         if (!updated)
-            return NotFound(ApiResponse<string>.Fail("Customer not found"));
+            return NotFound();
 
-        return Ok(ApiResponse<string>.Ok("Customer updated successfully"));
+        return NoContent();
     }
+    
     //DELETE: api/customers/id
-    [HttpDelete ("{id}")]
-    public async Task<ActionResult> DeleteCustomer(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCustomer(string id)
     {
         var deleted = await _service.DeleteCustomer(id);
 
         if (!deleted)
-            return NotFound(ApiResponse<string>.Fail("Customer not found"));
+            return NotFound();
 
-        return Ok(ApiResponse<string>.Ok("Customer deleted successfully"));
+        return NoContent();
     }
+
 }
