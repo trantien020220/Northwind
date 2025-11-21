@@ -38,6 +38,17 @@ public class CustomersController : ControllerBase
 
         return Ok(ApiResponse<CustomerDto>.Ok(customer));
     }
+    
+    [HttpGet("search")]
+    public async Task<ActionResult> SearchCustomers(
+        [FromQuery] string? search,
+        [FromQuery] string? country,
+        [FromQuery] string? sortBy,
+        [FromQuery] bool ascending = true)
+    {
+        var customers = await _service.GetCustomersFilteredAsync(search, country, sortBy, ascending);
+        return Ok(ApiResponse<IEnumerable<CustomerDto>>.Ok(customers));
+    }
 
     //POST: api/customers
     [HttpPost]

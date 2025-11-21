@@ -58,4 +58,33 @@ public class CustomerService : ICustomerService
         await _unitOfWork.Customers.SaveAsync();
         return true;
     }
+    
+    public async Task<IEnumerable<CustomerDto>> GetCustomersFilteredAsync(
+        string? search, string? country, string? sortBy, bool ascending = true)
+    {
+        var query = _unitOfWork.Customers.GetAllQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            // Tìm theo CustomerId hoặc CompanyName
+            query = query.Where(c => c.CustomerId.Contains(search) || c.CompanyName.Contains(search));
+        }
+
+        if (!string.IsNullOrEmpty(country))
+            query = query.Where(c => c.Country == country);
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortBy.ToLower() switch
+            {
+                "customerid" => ascending ? query.OrderBy(c => c.CustomerId) : query.OrderByDescending(c => c.CustomerId),
+                "companyname" => ascending ? query.OrderBy(c => c.CompanyName) : query.OrderByDescending(c => c.CompanyName),
+                "city" => ascending ? query.OrderBy(c => c.City) : query.OrderByDescending(c => c.City),
+                _ => query
+            };
+        }
+
+        var customers = await query.ToListAsync();
+        return _mapper.Map<IEnumerable<CustomerDto>>(customers);
+    }
 }

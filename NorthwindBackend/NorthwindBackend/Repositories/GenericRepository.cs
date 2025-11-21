@@ -18,6 +18,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return await _dbSet.ToListAsync();
     }
+    
+    public IQueryable<T> GetAllQueryable()
+    {
+        return _dbSet.AsQueryable();
+    }
+    
     public async Task<T?> GetByIdAsync(object id)
     {
         return await _dbSet.FindAsync(id);
