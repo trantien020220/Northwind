@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using NorthwindBackend.DTOs;
 
-public class CreateCustomerDtoValidator : AbstractValidator<CreateCustomerDto>
+public class CustomerValidator : AbstractValidator<CreateCustomerDto>
 {
-    public CreateCustomerDtoValidator()
+    public CustomerValidator()
     {
         RuleFor(x => x.CustomerId)
             .NotEmpty().WithMessage("ID is required")
