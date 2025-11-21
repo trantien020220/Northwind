@@ -16,9 +16,9 @@ public class NorthwindContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // --- Customer ---
+
         modelBuilder.Entity<Customer>()
-            .HasKey(c => c.CustomerId); // Khóa chính
+            .HasKey(c => c.CustomerId);
 
         modelBuilder.Entity<Customer>()
             .Property(c => c.CustomerId)
@@ -31,7 +31,7 @@ public class NorthwindContext : DbContext
             .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // --- Order ---
+
         modelBuilder.Entity<Order>()
             .HasKey(o => o.OrderId);
 
@@ -40,7 +40,7 @@ public class NorthwindContext : DbContext
             .UseIdentityColumn();
         
 
-        // --- Product ---
+
         modelBuilder.Entity<Product>()
             .HasKey(p => p.ProductId);
 

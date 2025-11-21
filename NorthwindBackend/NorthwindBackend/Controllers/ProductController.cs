@@ -15,14 +15,16 @@ public class ProductsController : ControllerBase
     {
         _service = service;
     }
-
+    
+    //GET: api/products
     [HttpGet]
     public async Task<IActionResult> GetAllProducts()
     {
         var products = await _service.GetProducts();
         return Ok(ApiResponse<IEnumerable<ProductDto>>.Ok(products));
     }
-
+    
+    //GET: api/product/id
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById(int id)
     {
@@ -30,14 +32,16 @@ public class ProductsController : ControllerBase
         if (product == null) return NotFound(ApiResponse<string>.Fail("Product not found"));
         return Ok(ApiResponse<ProductDto>.Ok(product));
     }
-
+    
+    //POST: api/product
     [HttpPost]
     public async Task<IActionResult> CreateProduct(CreateProductDto dto)
     {
         var product = await _service.CreateProduct(dto);
         return CreatedAtAction(nameof(GetProductById), new { id = product.ProductId }, product);
     }
-
+    
+    //PUT: api/product/id
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, CreateProductDto dto)
     {
@@ -47,6 +51,7 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
+    //DELETE: api/product/id
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -55,7 +60,8 @@ public class ProductsController : ControllerBase
             return NotFound();
         return NoContent();
     }
-
+    
+    //GET: api/product/search
     [HttpGet("search")]
     public async Task<IActionResult> Search(
         int? productId,
