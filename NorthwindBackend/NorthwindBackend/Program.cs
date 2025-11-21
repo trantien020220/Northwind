@@ -27,7 +27,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 var app = builder.Build();
