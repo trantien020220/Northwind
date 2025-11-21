@@ -1,9 +1,16 @@
 ﻿using NorthwindBackend.Models;
-
-namespace NorthwindBackend.Repositories;
+using NorthwindBackend.Repositories;
 
 public interface IOrderRepository : IGenericRepository<Order>
 {
-    Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(string customerId);
-    // Task<IEnumerable<Order>> GetOrdersByEmployeeIdAsync(int employeeId);
+    IQueryable<Order> GetAllQueryable();
+
+    Task<IEnumerable<Order>> GetOrdersFilteredAsync(
+        int? orderId,
+        string? customerId,
+        string? shipCountry,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        string? sortBy,
+        bool ascending = true);
 }

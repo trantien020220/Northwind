@@ -2,6 +2,7 @@
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
+using NorthwindBackend.Repositories;
 
 namespace NorthwindBackend.Controllers;
 
@@ -10,47 +11,77 @@ namespace NorthwindBackend.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _service;
+    private readonly IOrderRepository _orderRepository;
 
-    public OrdersController(IOrderService service)
+    public OrdersController(IOrderService service, IOrderRepository orderRepository)
     {
         _service = service;
+        _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
-
+    
+    //GET : api/orders/
     [HttpGet]
     public async Task<ActionResult> GetOrders()
     {
         var orders = await _service.GetOrders();
         return Ok(ApiResponse<IEnumerable<OrderDto>>.Ok(orders));
     }
-
+    
+    //GET : api/order/id
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetOrder(int id)
+    public async Task<ActionResult> GetOrderById(int id)
     {
         var order = await _service.GetOrderById(id);
         if (order == null) return NotFound(ApiResponse<OrderDto>.Fail("Order not found"));
         return Ok(ApiResponse<OrderDto>.Ok(order));
     }
-
+    
+    //POST : api/order/post
     [HttpPost]
     public async Task<ActionResult> CreateOrder(CreateOrderDto dto)
     {
-        var created = await _service.CreateOrder(dto);
-        return CreatedAtAction(nameof(GetOrder), new { id = created.OrderId }, ApiResponse<OrderDto>.Ok(created, "Order created successfully"));
+        var order = await _service.CreateOrder(dto);
+        return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderId }, order);
     }
-
+    
+    //PUT : api/order/put
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateOrder(int id, CreateOrderDto dto)
     {
-        var updated = await _service.UpdateOrder(id, dto);
-        if (!updated) return NotFound(ApiResponse<string>.Fail("Order not found"));
-        return Ok(ApiResponse<string>.Ok("Order updated successfully"));
+        var order = await _service.UpdateOrder(id, dto);
+        if (!order) return 
+            NotFound();
+        return NoContent();
     }
-
+    
+    //DELETE : api/order/delete
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteOrder(int id)
     {
-        var deleted = await _service.DeleteOrder(id);
-        if (!deleted) return NotFound(ApiResponse<string>.Fail("Order not found"));
-        return Ok(ApiResponse<string>.Ok("Order deleted successfully"));
+        var order = await _service.DeleteOrder(id);
+        if (!order) 
+            return NotFound();
+        return NoContent();
+    }
+    
+    // GET: api/order/search
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(
+        int? orderId,
+        string? customerId,
+        string? shipCountry,
+        DateTime? dateFrom,
+        DateTime? dateTo,
+        string? sortBy,
+        bool ascending = true)
+    {
+        var orders = await _orderRepository.GetOrdersFilteredAsync(
+            orderId, customerId, shipCountry, dateFrom, dateTo, sortBy, ascending);
+
+        return Ok(new
+        {
+            success = true,
+            data = orders
+        });
     }
 }
