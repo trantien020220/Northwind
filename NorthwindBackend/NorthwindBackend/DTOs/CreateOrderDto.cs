@@ -2,7 +2,6 @@
 
 public class CreateOrderDto
 {
-    public string OrderId { get; set; } = null!;
     public string CustomerId { get; set; } = null!;    
     public int? EmployeeId { get; set; }
     public DateTime? OrderDate { get; set; }
