@@ -72,15 +72,13 @@ public class SuppliersController : ControllerBase
         return NoContent();
     }
     
-    // //GET: api/supplier/search
-    // [HttpGet("search")]
-    // public async Task<ActionResult> SearchSuppliers(
-    //     string? search, string? country, string? sortBy, bool ascending = true)
-    // {
-    //     var suppliers = await _service.GetSupplierFilteredAsync(search, country, sortBy, ascending);
-    //     if (!suppliers.Any())
-    //         return NotFound(ApiResponse<IEnumerable<CustomerDto>>.Fail("No customers found"));
-    //
-    //     return Ok(ApiResponse<IEnumerable<CustomerDto>>.Ok(suppliers));
-    // }
+    //GET: api/supplier/search
+    [HttpGet("search")]
+    public async Task<ActionResult> SearchSuppliers(
+        string? search, string? country, string? sortBy, bool ascending = true)
+    {
+        var suppliers = await _service.GetSuppliersFilteredAsync(search, country, sortBy, ascending);
+    
+        return Ok(ApiResponse<IEnumerable<SupplierDto>>.Ok(suppliers));
+    }
 }

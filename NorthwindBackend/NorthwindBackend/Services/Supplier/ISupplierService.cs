@@ -9,6 +9,6 @@ public interface ISupplierService
     Task<SupplierDto> CreateSupplier(CreateSupplierDto dto);
     Task<bool> UpdateSupplier(int id, CreateSupplierDto dto);
     Task<bool> DeleteSupplier(int id);
-    // Task<IEnumerable<SupplierDto>> GetSuppliersFilteredAsync(
-    //     string? search, string? country, string? sortBy, bool ascending = true);
+    Task<IEnumerable<SupplierDto>> GetSuppliersFilteredAsync(
+        string? search, string? country, string? sortBy, bool ascending = true);
 }
