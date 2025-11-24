@@ -11,6 +11,7 @@ public class NorthwindContext : DbContext
     public DbSet<Customer> Customers { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<Supplier> Suppliers { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,14 +40,15 @@ public class NorthwindContext : DbContext
             .Property(o => o.OrderId)
             .UseIdentityColumn();
         
-
-
         modelBuilder.Entity<Product>()
             .HasKey(p => p.ProductId);
 
         modelBuilder.Entity<Product>()
             .Property(p => p.ProductId)
             .UseIdentityColumn();
+        
+        modelBuilder.Entity<Product>()
+            .HasKey(p => p.ProductId);
     }
 
 }
