@@ -51,7 +51,6 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         {
             query = sortBy.ToLower() switch
             {
-                "productid" => ascending ? query.OrderBy(p => p.ProductId) : query.OrderByDescending(p => p.ProductId),
                 "productname" => ascending ? query.OrderBy(p => p.ProductName) : query.OrderByDescending(p => p.ProductName),
                 "unitprice" => ascending ? query.OrderBy(p => p.UnitPrice) : query.OrderByDescending(p => p.UnitPrice),
                 _ => query

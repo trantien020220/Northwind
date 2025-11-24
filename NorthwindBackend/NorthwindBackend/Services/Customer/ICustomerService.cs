@@ -1,6 +1,7 @@
 using NorthwindBackend.DTOs;
 
 namespace NorthwindBackend.Services;
+
 public interface ICustomerService
 {
     Task<IEnumerable<CustomerDto>> GetCustomers();

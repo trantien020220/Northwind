@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NorthwindBackend.DTOs;
+﻿using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 using AutoMapper;
 using NorthwindBackend.UnitOfWork;
-using NorthwindBackend.Repositories;
+
 
 namespace NorthwindBackend.Services;
 

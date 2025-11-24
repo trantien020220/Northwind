@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
-using NorthwindBackend.Repositories;
 using NorthwindBackend.UnitOfWork;
 
 
 namespace NorthwindBackend.Services;
+
 
 public class ProductService : IProductService
 {

@@ -2,7 +2,6 @@
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
-using NorthwindBackend.Repositories;
 
 namespace NorthwindBackend.Controllers;
 
@@ -19,7 +18,7 @@ public class OrdersController : ControllerBase
     
     //GET : api/orders/
     [HttpGet]
-    public async Task<ActionResult> GetOrders()
+    public async Task<ActionResult> GetAllOrders()
     {
         var orders = await _service.GetOrders();
         return Ok(ApiResponse<IEnumerable<OrderDto>>.Ok(orders));

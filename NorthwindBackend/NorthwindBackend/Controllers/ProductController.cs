@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs;
-using NorthwindBackend.Profiles;
 using NorthwindBackend.Services;
+using NorthwindBackend.Profiles;
 
 namespace NorthwindBackend.Controllers;
 

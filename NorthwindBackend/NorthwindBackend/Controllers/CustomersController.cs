@@ -1,11 +1,7 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NorthwindBackend.Models;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
-using NorthwindBackend.Repositories;
 
 
 namespace NorthwindBackend.Controllers;
@@ -23,14 +19,14 @@ public class CustomersController : ControllerBase
 
     //GET: api/customers
     [HttpGet]
-    public async Task<ActionResult> FindCustomers()
+    public async Task<ActionResult> GetAllCustomers()
     {
         var customers = await _service.GetCustomers();
 
         return Ok(ApiResponse<IEnumerable<CustomerDto>>.Ok(customers));
     }
 
-    //GET: api/customers/id
+    //GET: api/customer/id
     [HttpGet ("{id}")]
     public async Task<ActionResult> GetCustomerbyId(string id)
     {
@@ -41,7 +37,7 @@ public class CustomersController : ControllerBase
         return Ok(ApiResponse<CustomerDto>.Ok(customer));
     }
 
-    //POST: api/customers
+    //POST: api/customer
     [HttpPost]
     public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto dto)
     {
@@ -52,7 +48,7 @@ public class CustomersController : ControllerBase
         );
     }
 
-    //PUT: api/customers/id
+    //PUT: api/customer/id
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
     {
@@ -64,7 +60,7 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
     
-    //DELETE: api/customers/id
+    //DELETE: api/customer/id
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCustomer(string id)
     {
@@ -76,7 +72,7 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
     
-    //GET: api/customers/search
+    //GET: api/customer/search
     [HttpGet("search")]
     public async Task<ActionResult> SearchCustomers(
         string? search, string? country, string? sortBy, bool ascending = true)
