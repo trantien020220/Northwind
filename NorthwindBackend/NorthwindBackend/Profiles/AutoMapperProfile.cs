@@ -16,5 +16,7 @@ public class AutoMapper : Profile
         CreateMap<Models.Supplier, DTOs.CreateSupplierDto>().ReverseMap();
         CreateMap<Models.OrderDetail, DTOs.OrderDetailDto>().ReverseMap();
         CreateMap<Models.OrderDetail, DTOs.CreateOrderDetailDto>().ReverseMap();
+        CreateMap<Models.Category, DTOs.CategoryDto>().ReverseMap();
+        CreateMap<Models.Category, DTOs.CreateCategoryDto>().ReverseMap();
     }
 }
