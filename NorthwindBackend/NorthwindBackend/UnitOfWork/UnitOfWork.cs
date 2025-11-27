@@ -10,14 +10,23 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Orders { get; private set; }
     public IProductRepository Products { get; private set; }
     public ISupplierRepository Suppliers { get; private set; }
+    public IOrderDetailRepository OrderDetail { get; private set; }
+    public ICategoryRepository Category { get; private set; }
     
-    public UnitOfWork(NorthwindContext context, ICustomerRepository customerRepository, IOrderRepository orderRepository, IProductRepository productRepository, ISupplierRepository  supplierRepository)
+    public UnitOfWork(NorthwindContext context, ICustomerRepository customerRepository, 
+                    IOrderRepository orderRepository, 
+                    IProductRepository productRepository, 
+                    ISupplierRepository  supplierRepository,
+                    IOrderDetailRepository  orderDetailRepository,
+                    ICategoryRepository categoryRepository)
     {
         _context = context;
         Customers = customerRepository;
         Orders = orderRepository;
         Products = productRepository;
         Suppliers = supplierRepository;
+        OrderDetail = orderDetailRepository;
+        Category = categoryRepository;
     }
     
     public async Task<int> SaveAsync()

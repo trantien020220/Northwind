@@ -9,5 +9,7 @@ public interface IUnitOfWork : IDisposable
     IOrderRepository Orders { get; }
     IProductRepository Products { get; }
     ISupplierRepository Suppliers { get; }
+    IOrderDetailRepository OrderDetail { get; }
+    ICategoryRepository Category { get; }
     Task<int> SaveAsync();
 }
