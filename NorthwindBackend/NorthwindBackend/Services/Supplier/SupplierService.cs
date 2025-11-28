@@ -34,7 +34,7 @@ public class SupplierService : ISupplierService
     {
         var supplier = _mapper.Map<Supplier>(dto);
         await _unitOfWork.Suppliers.AddAsync(supplier);
-        await _unitOfWork.Suppliers.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return _mapper.Map<SupplierDto>(supplier);
     }
 
@@ -45,7 +45,7 @@ public class SupplierService : ISupplierService
 
         _mapper.Map(dto, supplier);
         _unitOfWork.Suppliers.Update(supplier);
-        await _unitOfWork.Suppliers.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return true;
     }
 
@@ -55,7 +55,7 @@ public class SupplierService : ISupplierService
         if (supplier == null) return false;
 
         _unitOfWork.Suppliers.Delete(supplier);
-        await _unitOfWork.Suppliers.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return true;
     }
     

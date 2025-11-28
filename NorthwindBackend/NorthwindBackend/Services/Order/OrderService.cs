@@ -34,7 +34,7 @@ public class OrderService : IOrderService
     {
         var order = _mapper.Map<Order>(dto);
         await _unitOfWork.Orders.AddAsync(order);
-        await _unitOfWork.Orders.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return _mapper.Map<OrderDto>(order);
     }
 
@@ -45,7 +45,7 @@ public class OrderService : IOrderService
 
         _mapper.Map(dto, order);
         _unitOfWork.Orders.Update(order);
-        await _unitOfWork.Orders.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return true;
     }
 
@@ -55,7 +55,7 @@ public class OrderService : IOrderService
         if (order == null) return false;
 
         _unitOfWork.Orders.Delete(order);
-        await _unitOfWork.Orders.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return true;
     }
     
