@@ -27,10 +27,10 @@ public class SupplierRepository : GenericRepository<Supplier>, ISupplierReposito
 
             query = query.Where(s =>
                 s.CompanyName.ToLower().Contains(search) ||
-                s.ContactName.ToLower().Contains(search) ||
-                s.City.ToLower().Contains(search) ||
-                s.Country.ToLower().Contains(search) ||
-                s.Phone.ToLower().Contains(search)
+                s.ContactName!.ToLower().Contains(search) ||
+                s.City!.ToLower().Contains(search) ||
+                s.Country!.ToLower().Contains(search) ||
+                s.Phone!.ToLower().Contains(search)
             );
         }
 
