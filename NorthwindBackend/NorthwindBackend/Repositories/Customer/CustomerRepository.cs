@@ -18,14 +18,24 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     }
 
     public async Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
-        string? search, string? country, string? sortBy, bool ascending = true)
+        string? customerId,
+        string? companyName,
+        string? country,
+        string? sortBy,
+        bool ascending = true)
     {
         var query = _context.Customers.AsQueryable();
 
-        if (!string.IsNullOrEmpty(search))
+        if (!string.IsNullOrEmpty(customerId))
         {
             query = query.Where(c =>
-                c.CustomerId.Contains(search) || c.CompanyName.Contains(search));
+                c.CustomerId.Contains(customerId) || c.CustomerId.Contains(customerId));
+        }
+        
+        if (!string.IsNullOrEmpty(companyName))
+        {
+            query = query.Where(c =>
+                c.CustomerId.Contains(companyName) || c.CompanyName.Contains(companyName));
         }
 
         if (!string.IsNullOrEmpty(country))
