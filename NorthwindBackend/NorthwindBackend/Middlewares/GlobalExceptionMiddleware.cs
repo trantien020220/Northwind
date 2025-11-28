@@ -21,26 +21,42 @@ public class GlobalExceptionMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unhandled exception occurred");
-
             await HandleExceptionAsync(context, ex);
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception ex)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        HttpStatusCode status;
+        string message;
+
+        switch (exception)
+        {
+            case UnauthorizedAccessException _:
+                status = HttpStatusCode.Unauthorized;
+                message = "Unauthorized";
+                break;
+            case KeyNotFoundException _:
+            case ArgumentException _:
+                status = HttpStatusCode.BadRequest;
+                message = exception.Message;
+                break;
+            default:
+                status = HttpStatusCode.InternalServerError;
+                message = "Internal Server Error";
+                break;
+        }
+
         var response = new
         {
             success = false,
-            message = ex.Message,
-            error = ex.GetType().Name,
-            statusCode = (int)HttpStatusCode.InternalServerError
+            message,
+            error = exception.GetType().Name
         };
 
-        var payload = JsonSerializer.Serialize(response);
-
+        context.Response.StatusCode = (int)status;
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        return context.Response.WriteAsync(payload);
+        return context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 }
