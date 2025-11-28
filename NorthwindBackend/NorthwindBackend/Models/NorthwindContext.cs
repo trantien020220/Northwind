@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NorthwindBackend.Models.Identity;
 
 namespace NorthwindBackend.Models;
 
-public class NorthwindContext : DbContext
+public class NorthwindContext : IdentityDbContext<ApplicationUser>
 {
     public NorthwindContext(DbContextOptions<NorthwindContext> options) : base(options)
     {
@@ -34,7 +36,8 @@ public class NorthwindContext : DbContext
         .HasForeignKey(o => o.CustomerId)
         .OnDelete(DeleteBehavior.Cascade);
     
-
+    
+    //
     modelBuilder.Entity<Supplier>()
         .HasKey(s => s.SupplierId);
 
@@ -49,6 +52,7 @@ public class NorthwindContext : DbContext
         .OnDelete(DeleteBehavior.Restrict);
 
     
+    //
     modelBuilder.Entity<Product>()
         .HasKey(p => p.ProductId);
 
@@ -73,9 +77,13 @@ public class NorthwindContext : DbContext
         .WithOne(od => od.Product)
         .HasForeignKey(od => od.ProductId)
         .OnDelete(DeleteBehavior.Cascade);
+    
+    modelBuilder.Entity<Product>()
+        .Property(p => p.UnitPrice)
+        .HasPrecision(18, 2);
 
 
-
+    //
     modelBuilder.Entity<Order>()
         .HasKey(o => o.OrderId);
 
@@ -95,8 +103,12 @@ public class NorthwindContext : DbContext
         .HasForeignKey(od => od.OrderId)
         .OnDelete(DeleteBehavior.Cascade);
     
+    modelBuilder.Entity<Order>()
+        .Property(o => o.Freight)
+        .HasPrecision(18, 2);
     
     
+    //
     modelBuilder.Entity<OrderDetail>()
         .ToTable("Order Details");
 
@@ -122,6 +134,8 @@ public class NorthwindContext : DbContext
         .WithMany(p => p.OrderDetails)
         .HasForeignKey(od => od.ProductId);
     
+    
+    //
     modelBuilder.Entity<Category>()
         .ToTable("Categories");
 
