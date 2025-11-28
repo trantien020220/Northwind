@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
 
 namespace NorthwindBackend.Controllers;
 
+[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase
@@ -43,27 +45,27 @@ public class ProductsController : ControllerBase
     
     //PUT: api/product/id
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, CreateProductDto dto)
+    public async Task<IActionResult> UpdateProduct(int id, CreateProductDto dto)
     {
-        var updated = await _service.UpdateProduct(id, dto);
-        if (!updated) 
+        var product = await _service.UpdateProduct(id, dto);
+        if (!product) 
             return NotFound();
         return NoContent();
     }
 
     //DELETE: api/product/id
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteProduct(int id)
     {
-        var deleted = await _service.DeleteProduct(id);
-        if (!deleted) 
+        var product = await _service.DeleteProduct(id);
+        if (!product) 
             return NotFound();
         return NoContent();
     }
     
     //GET: api/product/search
     [HttpGet("search")]
-    public async Task<IActionResult> Search(
+    public async Task<IActionResult> SearchProducts(
         int? productId,
         string? productName,
         int? supplierId,

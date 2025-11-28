@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
@@ -5,7 +6,9 @@ using NorthwindBackend.Profiles;
 
 
 namespace NorthwindBackend.Controllers;
-    
+
+
+[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class CustomersController : ControllerBase
@@ -75,9 +78,13 @@ public class CustomersController : ControllerBase
     //GET: api/customer/search
     [HttpGet("search")]
     public async Task<ActionResult> SearchCustomers(
-        string? search, string? country, string? sortBy, bool ascending = true)
+        string? customerId,
+        string? companyName,
+        string? country,
+        string? sortBy,
+        bool ascending = true)
     {
-        var customers = await _service.GetCustomersFilteredAsync(search, country, sortBy, ascending);
+        var customers = await _service.GetCustomersFilteredAsync(customerId, companyName, country, sortBy, ascending);
         if (!customers.Any())
             return NotFound(ApiResponse<IEnumerable<CustomerDto>>.Fail("No customers found"));
 

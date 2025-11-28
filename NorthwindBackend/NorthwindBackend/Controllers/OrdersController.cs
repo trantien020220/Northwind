@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
 
 namespace NorthwindBackend.Controllers;
 
+[Authorize(Policy = "UserAndAdmin")]
 [Route("api/[controller]")]
 [ApiController]
 public class OrdersController : ControllerBase
@@ -63,7 +65,7 @@ public class OrdersController : ControllerBase
     
     // GET: api/order/search
     [HttpGet("search")]
-    public async Task<IActionResult> Search(
+    public async Task<IActionResult> SearchOrders(
         int? orderId,
         string? customerId,
         string? shipCountry,
