@@ -10,5 +10,9 @@ public interface ICustomerService
     Task<bool> UpdateCustomer(string id, CreateCustomerDto dto);
     Task<bool> DeleteCustomer(string id);
     Task<IEnumerable<CustomerDto>> GetCustomersFilteredAsync(
-        string? search, string? country, string? sortBy, bool ascending = true);
+        string? customerId,
+        string? companyName,
+        string? country,
+        string? sortBy,
+        bool ascending = true);
 }

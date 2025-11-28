@@ -32,7 +32,7 @@ public class CustomerService : ICustomerService
     {
         var customer = _mapper.Map<Customer>(dto);  
         await _unitOfWork.Customers.AddAsync(customer);
-        await _unitOfWork.Customers.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return _mapper.Map<CustomerDto>(customer);
     }
 
@@ -44,7 +44,7 @@ public class CustomerService : ICustomerService
         _mapper.Map(dto, customer);
         
         _unitOfWork.Customers.Update(customer);
-        await _unitOfWork.Customers.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return true;
     }
 
@@ -54,13 +54,17 @@ public class CustomerService : ICustomerService
         if (customer == null) return false;
 
         _unitOfWork.Customers.Delete(customer);
-        await _unitOfWork.Customers.SaveAsync();
+        await _unitOfWork.SaveAsync();
         return true;
     }
     public async Task<IEnumerable<CustomerDto>> GetCustomersFilteredAsync(
-        string? search, string? country, string? sortBy, bool ascending = true)
+        string? customerId,
+        string? companyName,
+        string? country,
+        string? sortBy,
+        bool ascending = true)
     {
-        var customers = await _unitOfWork.Customers.GetCustomersFilteredAsync(search, country, sortBy, ascending);
+        var customers = await _unitOfWork.Customers.GetCustomersFilteredAsync(customerId, companyName, country, sortBy, ascending);
         return _mapper.Map<IEnumerable<CustomerDto>>(customers);
     }
 }
