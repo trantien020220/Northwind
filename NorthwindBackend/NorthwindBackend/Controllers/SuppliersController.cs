@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
@@ -6,6 +7,8 @@ using NorthwindBackend.Profiles;
 
 namespace NorthwindBackend.Controllers;
 
+
+[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class SuppliersController : ControllerBase
