@@ -1,4 +1,5 @@
 ﻿using NorthwindBackend.DTOs;
+using NorthwindBackend.Models;
 
 namespace NorthwindBackend.Services;
 public interface IOrderService
@@ -6,7 +7,7 @@ public interface IOrderService
     Task<IEnumerable<OrderDto>> GetOrders();
     Task<OrderDto?> GetOrderById(int id);
     Task<OrderDto> CreateOrder(CreateOrderDto dto);
-    Task<bool> UpdateOrder(int id, CreateOrderDto dto);
+    Task<bool> UpdateOrder(int id, UpdateOrderDto dto);
     Task<bool> DeleteOrder(int id);
     Task<IEnumerable<OrderDto>> GetOrdersFilteredAsync(
         int? orderId,

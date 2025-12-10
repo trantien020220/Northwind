@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
-using NorthwindBackend.Repositories;
+
+namespace NorthwindBackend.Repositories;
 
 public class OrderDetailRepository : GenericRepository<OrderDetail>, IOrderDetailRepository
 {
@@ -14,13 +15,17 @@ public class OrderDetailRepository : GenericRepository<OrderDetail>, IOrderDetai
     public async Task<OrderDetail?> GetByIdAsync(int orderId, int productId)
     {
         return await _context.OrderDetail
+            .Include(od => od.Product)
             .FirstOrDefaultAsync(od => od.OrderId == orderId && od.ProductId == productId);
+
     }
 
     public async Task<IEnumerable<OrderDetail>> GetOrderDetailsByOrderIdAsync(int orderId)
     {
         return await _context.OrderDetail
+            .Include(od => od.Product)
             .Where(od => od.OrderId == orderId)
             .ToListAsync();
+
     }
 }

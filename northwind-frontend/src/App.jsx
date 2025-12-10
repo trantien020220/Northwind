@@ -4,6 +4,10 @@ import Layout from './components/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
+import Customers from './pages/Customer/Customers'
+import CustomerDetail from "./pages/Customer/CustomerDetail";
+import Orders from './pages/Order/Orders'
+import OrderDetail from "./pages/Order/OrderDetail.jsx";
 
 
 function Protected({ children }) {
@@ -15,10 +19,14 @@ function Protected({ children }) {
 export default function App() {
     return (
         <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/customers" element={<Protected><Customers /></Protected>} />
+            <Route path="/orders" element={<Protected><Orders /></Protected>} />
+            <Route path="/customers/:id" element={<Protected><CustomerDetail /></Protected>} />
+            <Route path="/orders/:id" element={<Protected><OrderDetail /></Protected>} />
         </Routes>
     )
 }

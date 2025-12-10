@@ -20,6 +20,7 @@ export default function Dashboard() {
         totalSuppliers: 0,
         totalCategories: 0
     })
+    const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
@@ -37,7 +38,7 @@ export default function Dashboard() {
                     api.get('/customers'),
                     api.get('/products'),
                     api.get('/suppliers'),
-                    api.get('/categories')
+                    api.get('/category')
                 ])
 
                 const orders = ordersRes.data?.data || ordersRes.data || []
@@ -58,12 +59,12 @@ export default function Dashboard() {
                 })
                 setError('')
             } catch (err) {
-                // console.error('Dashboard data error:', err)
-                // setError('Failed to load some data. Using fallback values.')
-                // Fallback nếu backend chưa có API nào
+                console.error('Dashboard data error:', err)
+                setError('Failed to load some data. Using fallback values.')
+
                 setStats({
                     totalOrders: 1428,
-                    totalCustomers: 91,
+                    totalCustomers: 95,
                     totalProducts: 77,
                     shippedOrders: 1319,
                     totalSuppliers: 29,
@@ -94,40 +95,39 @@ export default function Dashboard() {
         )
     }
 
-    // return (
-    //     <div className="space-y-8">
-    //         <div>
-    //             <h1 className="text-4xl font-bold text-gray-900">Dashboard Overview</h1>
-    //             <p className="text-gray-600 mt-2">Real-time statistics from Northwind database</p>
-    //         </div>
-    //
-    //         {error && (
-    //             <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-xl flex items-center gap-3">
-    //                 <AlertCircle className="w-5 h-5" />
-    //                 <span className="text-sm">{error}</span>
-    //             </div>
-    //         )}
-    //
-    //         {/*<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">*/}
-    //         {/*    {statCards.map((card, i) => (*/}
-    //         {/*        <div key={i} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">*/}
-    //         {/*            <div className="flex items-center justify-between mb-4">*/}
-    //         {/*                <div className={`${card.color} p-3 rounded-xl`}>*/}
-    //         {/*                    <card.icon className="w-8 h-8 text-white" />*/}
-    //         {/*                </div>*/}
-    //         {/*            </div>*/}
-    //         {/*            <p className="text-3xl font-bold text-gray-900">{card.value}</p>*/}
-    //         {/*            <p className="text-sm text-gray-600 mt-1">{card.label}</p>*/}
-    //         {/*        </div>*/}
-    //         {/*    ))}*/}
-    //         {/*</div>*/}
-    //
-    //         {/*<div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-10 text-white">*/}
-    //         {/*    <h2 className="text-3xl font-bold">######</h2>*/}
-    //         {/*    <p className="mt-3 text-lg opacity-90">*/}
-    //         {/*        #######*/}
-    //         {/*    </p>*/}
-    //         {/*</div>*/}
-    //     </div>
-    // )
+    return (
+        <div className="space-y-8">
+            <div>
+                <h1 className="text-4xl font-bold text-gray-900">Dashboard Overview</h1>
+            </div>
+
+            {error && (
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-xl flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5" />
+                    <span className="text-sm">{error}</span>
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+                {statCards.map((card, i) => (
+                    <div key={i} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className={`${card.color} p-3 rounded-xl`}>
+                                <card.icon className="w-8 h-8 text-white" />
+                            </div>
+                        </div>
+                        <p className="text-3xl font-bold text-gray-900">{card.value}</p>
+                        <p className="text-sm text-gray-600 mt-1">{card.label}</p>
+                    </div>
+                ))}
+            </div>
+
+            <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-10 text-white">
+                <h2 className="text-3xl font-bold">######</h2>
+                <p className="mt-3 text-lg opacity-90">
+                    #######
+                </p>
+            </div>
+        </div>
+    )
 }

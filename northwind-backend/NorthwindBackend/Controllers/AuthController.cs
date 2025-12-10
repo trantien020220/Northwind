@@ -60,6 +60,10 @@ public class AuthController : ControllerBase
         if (!result.Succeeded) return Unauthorized(new { success = false, message = "Invalid credentials" });
 
         var roles = await _userManager.GetRolesAsync(user);
+        
+        var tokenExpiration = roles.Contains("Admin")
+            ? DateTime.UtcNow.AddHours(24)
+            : DateTime.UtcNow.AddHours(1);
 
         var authClaims = new List<Claim>
         {
@@ -71,7 +75,7 @@ public class AuthController : ControllerBase
 
         authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var token = GenerateJwtToken(authClaims);
+        var token = GenerateJwtToken(authClaims, tokenExpiration);
         var refreshToken = GenerateRefreshToken();
         
         user.RefreshToken = refreshToken;
@@ -87,7 +91,6 @@ public class AuthController : ControllerBase
             roles
         });
     }
-    
     
     // POST: api/auth/promote
     [HttpPost("promote")]
@@ -128,7 +131,7 @@ public class AuthController : ControllerBase
         public string? UserName { get; set; }
     }
 
-    private JwtSecurityToken GenerateJwtToken(List<Claim> authClaims)
+    private JwtSecurityToken GenerateJwtToken(List<Claim> authClaims, DateTime expires)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -137,7 +140,7 @@ public class AuthController : ControllerBase
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: authClaims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: expires,
             signingCredentials: credentials
         );
     }

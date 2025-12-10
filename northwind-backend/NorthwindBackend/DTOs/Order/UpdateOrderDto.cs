@@ -1,11 +1,9 @@
 ﻿namespace NorthwindBackend.DTOs;
 
-public class OrderDto
+public class UpdateOrderDto
 {
-    public int OrderId { get; set; }
     public string CustomerId { get; set; } = null!;
     public int? EmployeeId { get; set; }
-    public string? EmployeeName { get; set; }
     public DateTime? OrderDate { get; set; }
     public DateTime? RequiredDate { get; set; }
     public DateTime? ShippedDate { get; set; }
@@ -18,5 +16,5 @@ public class OrderDto
     public string? ShipPostalCode { get; set; }
     public string? ShipCountry { get; set; }
     
-    public List<OrderDetailDto> OrderDetails { get; set; } = new();
+    public List<UpdateOrderDetailDto>? OrderDetails { get; set; }
 }

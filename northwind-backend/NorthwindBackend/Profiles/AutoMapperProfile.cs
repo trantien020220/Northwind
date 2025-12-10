@@ -1,22 +1,44 @@
 using AutoMapper;
+using NorthwindBackend.Models;
+using NorthwindBackend.DTOs;
 
-namespace NorthwindBackend.Profiles;
+namespace NorthwindBackendProfiles;
 
 public class AutoMapper : Profile
 {
     public AutoMapper()
     {
-        CreateMap<Models.Customer, DTOs.CustomerDto>().ReverseMap();
-        CreateMap<Models.Customer, DTOs.CreateCustomerDto>().ReverseMap();
-        CreateMap<Models.Order, DTOs.OrderDto>().ReverseMap();
-        CreateMap<Models.Order, DTOs.CreateOrderDto>().ReverseMap();
-        CreateMap<Models.Product, DTOs.ProductDto>().ReverseMap();
-        CreateMap<Models.Product, DTOs.CreateProductDto>().ReverseMap();
-        CreateMap<Models.Supplier, DTOs.SupplierDto>().ReverseMap();
-        CreateMap<Models.Supplier, DTOs.CreateSupplierDto>().ReverseMap();
-        CreateMap<Models.OrderDetail, DTOs.OrderDetailDto>().ReverseMap();
-        CreateMap<Models.OrderDetail, DTOs.CreateOrderDetailDto>().ReverseMap();
-        CreateMap<Models.Category, DTOs.CategoryDto>().ReverseMap();
-        CreateMap<Models.Category, DTOs.CreateCategoryDto>().ReverseMap();
+        CreateMap<Customer, CustomerDto>().ReverseMap();
+        CreateMap<Customer, CreateCustomerDto>().ReverseMap();
+        CreateMap<Customer, CustomerDetailDto>().ReverseMap();
+        CreateMap<Product, ProductDto>().ReverseMap();
+        CreateMap<Product, CreateProductDto>().ReverseMap();
+        CreateMap<Supplier, SupplierDto>().ReverseMap();
+        CreateMap<Supplier, CreateSupplierDto>().ReverseMap();
+
+        CreateMap<Order, OrderDto>();
+        CreateMap<OrderDetail, OrderDetailDto>();
+        
+        CreateMap<CreateOrderDto, Order>()
+            .ForMember(dest => dest.OrderId, opt => opt.Ignore())
+            .ForMember(dest => dest.Customer, opt => opt.Ignore())
+            .ForMember(dest => dest.OrderDetails, opt => opt.Ignore());
+
+        CreateMap<CreateOrderDetailDto, OrderDetail>()
+            .ForMember(dest => dest.Order, opt => opt.Ignore())
+            .ForMember(dest => dest.Product, opt => opt.Ignore());
+        
+        CreateMap<UpdateOrderDto, Order>()
+            .ForMember(dest => dest.OrderId, opt => opt.Ignore())
+            .ForMember(dest => dest.Customer, opt => opt.Ignore())
+            .ForMember(dest => dest.OrderDetails, opt => opt.Ignore());
+
+        CreateMap<UpdateOrderDetailDto, OrderDetail>()
+            .ForMember(dest => dest.Order, opt => opt.Ignore())
+            .ForMember(dest => dest.Product, opt => opt.Ignore())
+            .ForMember(dest => dest.OrderId, opt => opt.Ignore());
+        
+        CreateMap<Category, CategoryDto>().ReverseMap();
+        CreateMap<Category, CreateCategoryDto>().ReverseMap();
     }
 }

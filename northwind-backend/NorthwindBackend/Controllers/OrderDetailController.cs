@@ -39,7 +39,7 @@ public class OrderDetailsController : ControllerBase
     }
 
     [HttpPut("{orderId}/{productId}")]
-    public async Task<IActionResult> UpdateOrderDetail(int orderId, int productId, CreateOrderDetailDto dto)
+    public async Task<IActionResult> UpdateOrderDetail(int orderId, int productId, UpdateOrderDetailDto dto)
     {
         var updated = await _service.UpdateOrderDetail(orderId, productId, dto);
         if (!updated) return NotFound();

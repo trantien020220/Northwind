@@ -13,4 +13,6 @@ public interface ICustomerRepository : IGenericRepository<Customer>
         string? sortBy,
         bool ascending = true);
 
+    Task<Customer?> GetCustomerWithOrdersAsync(string id);
+
 }

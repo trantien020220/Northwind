@@ -1,10 +1,8 @@
-using NorthwindBackend.DTOs;
-using NorthwindBackend.Models;
 using AutoMapper;
+using NorthwindBackend.DTOs;
 using NorthwindBackend.UnitOfWork;
 
-
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Customer;
 
 public class CustomerService : ICustomerService
 {
@@ -16,21 +14,23 @@ public class CustomerService : ICustomerService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    
     public async Task<IEnumerable<CustomerDto>> GetCustomers()
     {
         var customers = await _unitOfWork.Customers.GetAllAsync();
         return _mapper.Map<IEnumerable<CustomerDto>>(customers);
     }
 
-    public async Task<CustomerDto?> GetCustomerbyId(string id)
+    public async Task<CustomerDetailDto> GetCustomerbyId(string id)
     {
-        var customer = await _unitOfWork.Customers.GetByIdAsync(id);
-        return _mapper.Map<CustomerDto>(customer);
+        var customer = await _unitOfWork.Customers.GetCustomerWithOrdersAsync(id);
+
+        return _mapper.Map<CustomerDetailDto>(customer);
     }
 
     public async Task<CustomerDto> CreateCustomer(CreateCustomerDto dto)
     {
-        var customer = _mapper.Map<Customer>(dto);  
+        var customer = _mapper.Map<Models.Customer>(dto);  
         await _unitOfWork.Customers.AddAsync(customer);
         await _unitOfWork.SaveAsync();
         return _mapper.Map<CustomerDto>(customer);
@@ -47,7 +47,7 @@ public class CustomerService : ICustomerService
         await _unitOfWork.SaveAsync();
         return true;
     }
-
+    
     public async Task<bool> DeleteCustomer(string id)
     {
         var customer = await _unitOfWork.Customers.GetByIdAsync(id);
@@ -57,6 +57,7 @@ public class CustomerService : ICustomerService
         await _unitOfWork.SaveAsync();
         return true;
     }
+    
     public async Task<IEnumerable<CustomerDto>> GetCustomersFilteredAsync(
         string? customerId,
         string? companyName,

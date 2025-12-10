@@ -355,7 +355,7 @@ namespace NorthwindBackend.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<float?>("Discount")
+                    b.Property<float>("Discount")
                         .HasColumnType("real");
 
                     b.Property<short?>("Quantity")

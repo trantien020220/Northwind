@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Services;
 using NorthwindBackend.Profiles;
+using NorthwindBackend.Services.Customer;
 
 
 namespace NorthwindBackend.Controllers;
@@ -30,15 +31,14 @@ public class CustomersController : ControllerBase
     }
 
     //GET: api/customer/id
-    [HttpGet ("{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult> GetCustomerbyId(string id)
     {
         var customer = await _service.GetCustomerbyId(id);
-        if (customer == null)
-            return NotFound(ApiResponse<CustomerDto>.Fail("Customer not found"));
 
-        return Ok(ApiResponse<CustomerDto>.Ok(customer));
+        return Ok(ApiResponse<CustomerDetailDto>.Ok(customer));
     }
+
 
     //POST: api/customer
     [HttpPost]

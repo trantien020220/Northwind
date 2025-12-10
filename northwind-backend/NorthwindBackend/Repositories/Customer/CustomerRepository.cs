@@ -16,7 +16,15 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     {
         return _context.Customers.AsQueryable();
     }
-
+    
+    public async Task<Customer?> GetCustomerWithOrdersAsync(string id)
+    {
+        return await _context.Customers
+            .Include(c => c.Orders)
+            .FirstOrDefaultAsync(c => c.CustomerId == id);
+    }
+    
+    
     public async Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
         string? customerId,
         string? companyName,

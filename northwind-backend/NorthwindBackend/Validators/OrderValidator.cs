@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using NorthwindBackend.DTOs;
 
+namespace NorthwindBackend.Validators;
+
 public class OrderValidator : AbstractValidator<CreateOrderDto>
 {
     public  OrderValidator()

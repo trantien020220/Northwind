@@ -1,4 +1,7 @@
-﻿namespace NorthwindBackend.DTOs;
+﻿using System.Collections;
+using NorthwindBackend.DTOs;
+
+namespace NorthwindBackend.DTOs;
 
 public class CreateOrderDto
 {
@@ -15,4 +18,6 @@ public class CreateOrderDto
     public string? ShipRegion { get; set; }
     public string? ShipPostalCode { get; set; }
     public string? ShipCountry { get; set; }
+    
+    public List<CreateOrderDetailDto> OrderDetails { get; set; } = new();
 }

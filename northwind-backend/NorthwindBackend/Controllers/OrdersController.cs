@@ -45,7 +45,7 @@ public class OrdersController : ControllerBase
     
     //PUT : api/order/put
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateOrder(int id, CreateOrderDto dto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateOrderDto dto)
     {
         var order = await _service.UpdateOrder(id, dto);
         if (!order) return 

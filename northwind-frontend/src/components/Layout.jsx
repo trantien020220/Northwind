@@ -73,7 +73,7 @@ export default function Layout({ children }) {
                         <Menu className="w-6 h-6 text-gray-600" />
                     </button>
                     <div className="ml-auto flex items-center gap-3">
-                        <span className="text-sm text-gray-600">Welcome back,</span>
+                        <span className="text-sm text-gray-600">Welcome</span>
                         <span className="font-semibold text-cyan-600">{user?.username}</span>
                     </div>
                 </header>

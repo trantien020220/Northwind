@@ -1,6 +1,7 @@
 ﻿using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.UnitOfWork;
 
 
@@ -26,28 +27,83 @@ public class OrderService : IOrderService
 
     public async Task<OrderDto?> GetOrderById(int id)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(id);
+        var order = await _unitOfWork.Orders.GetByIdWithDetailsAsync(id);
         return _mapper.Map<OrderDto>(order);
     }
-
+    
+    
     public async Task<OrderDto> CreateOrder(CreateOrderDto dto)
     {
         var order = _mapper.Map<Order>(dto);
+        
+        order.OrderDetails = dto.OrderDetails
+            .Select(d => new OrderDetail
+            {
+                ProductId = d.ProductId,
+                UnitPrice = d.UnitPrice,
+                Quantity = d.Quantity,
+                Discount = d.Discount
+            })
+            .ToList();
+
         await _unitOfWork.Orders.AddAsync(order);
         await _unitOfWork.SaveAsync();
-        return _mapper.Map<OrderDto>(order);
+
+        var created = await _unitOfWork.Orders
+            .GetAllQueryable()
+            .Include(o => o.OrderDetails)
+            .ThenInclude(d => d.Product)
+            .FirstOrDefaultAsync(o => o.OrderId == order.OrderId);
+
+        return _mapper.Map<OrderDto>(created);
     }
 
-    public async Task<bool> UpdateOrder(int id, CreateOrderDto dto)
+    
+    // public async Task<OrderDto> CreateOrder(CreateOrderDto dto)
+    // {
+    //     var order = _mapper.Map<Order>(dto);
+    //     await _unitOfWork.Orders.AddAsync(order);
+    //     await _unitOfWork.SaveAsync();
+    //     return _mapper.Map<OrderDto>(order);
+    // }
+    
+    public async Task<bool> UpdateOrder(int id, UpdateOrderDto dto)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(id);
+        var order = await _unitOfWork.Orders.GetByIdWithDetailsAsync(id);
         if (order == null) return false;
-
+        
         _mapper.Map(dto, order);
+        
+        order.OrderDetails.Clear();
+    
+        if (dto.OrderDetails != null)
+            foreach (var item in dto.OrderDetails)
+            {
+                order.OrderDetails.Add(new OrderDetail
+                {
+                    OrderId = id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    Discount = item.Discount
+                });
+            }
+    
         _unitOfWork.Orders.Update(order);
         await _unitOfWork.SaveAsync();
         return true;
     }
+    
+    // public async Task<bool> UpdateOrder(int id, CreateOrderDto dto)
+    // {
+    //     var order = await _unitOfWork.Orders.GetByIdAsync(id);
+    //     if (order == null) return false;
+    //
+    //     _mapper.Map(dto, order);
+    //     _unitOfWork.Orders.Update(order);
+    //     await _unitOfWork.SaveAsync();
+    //     return true;
+    // }
 
     public async Task<bool> DeleteOrder(int id)
     {

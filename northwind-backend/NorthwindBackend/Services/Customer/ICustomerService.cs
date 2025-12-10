@@ -1,11 +1,11 @@
 using NorthwindBackend.DTOs;
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Customer;
 
 public interface ICustomerService
 {
     Task<IEnumerable<CustomerDto>> GetCustomers();
-    Task<CustomerDto?> GetCustomerbyId(string id);
+    Task<CustomerDetailDto> GetCustomerbyId(string id);
     Task<CustomerDto> CreateCustomer(CreateCustomerDto dto);
     Task<bool> UpdateCustomer(string id, CreateCustomerDto dto);
     Task<bool> DeleteCustomer(string id);
@@ -15,4 +15,6 @@ public interface ICustomerService
         string? country,
         string? sortBy,
         bool ascending = true);
+
+    // Task<CustomerDetailDto?> GetCustomerDetail(string id);
 }

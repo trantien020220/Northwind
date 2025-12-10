@@ -38,7 +38,7 @@ public class OrderDetailService : IOrderDetailService
         return _mapper.Map<OrderDetailDto>(detail);
     }
 
-    public async Task<bool> UpdateOrderDetail(int orderId, int productId, CreateOrderDetailDto dto)
+    public async Task<bool> UpdateOrderDetail(int orderId, int productId, UpdateOrderDetailDto dto)
     {
         var detail = await _unitOfWork.OrderDetail.GetByIdAsync(orderId, productId);
         if (detail == null) return false;

@@ -9,11 +9,14 @@ using NorthwindBackend.Models;
 using NorthwindBackend.Models.Identity;
 using NorthwindBackend.Services;
 using NorthwindBackend.Repositories;
+using NorthwindBackend.Services.Customer;
 using NorthwindBackend.UnitOfWork;
 
 var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
+
+//cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins,
@@ -21,6 +24,7 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://localhost:5173")
                                 .AllowAnyHeader()
+                                .AllowAnyOrigin()
                                 .AllowAnyMethod();
                       });
 });
@@ -85,6 +89,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserAndAdmin", policy => policy.RequireRole("Admin", "User"));
 });
 var app = builder.Build();
+
 
 app.UseCors(myAllowSpecificOrigins);
 app.UseAuthentication();

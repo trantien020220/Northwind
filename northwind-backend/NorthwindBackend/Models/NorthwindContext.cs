@@ -17,7 +17,7 @@ public class NorthwindContext : IdentityDbContext<ApplicationUser>
     public DbSet<OrderDetail> OrderDetail { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
 
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -114,7 +114,7 @@ public class NorthwindContext : IdentityDbContext<ApplicationUser>
 
     modelBuilder.Entity<OrderDetail>()
         .HasKey(od => new { od.OrderId, od.ProductId });
-
+    
     modelBuilder.Entity<OrderDetail>()
         .Property(od => od.UnitPrice)
         .HasColumnType("money");

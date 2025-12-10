@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 
 
@@ -19,7 +20,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         return _context.Orders.AsQueryable();
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersFilteredAsync(
+    public async Task<IEnumerable<Order?>> GetOrdersFilteredAsync(
         int? orderId,
         string? customerId,
         string? shipCountry,
@@ -66,5 +67,13 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         }
 
         return await query.ToListAsync();
+    }
+    
+    public async Task<Order?> GetByIdWithDetailsAsync(int id)
+    {
+        return await _context.Orders
+            .Include(o => o.OrderDetails)
+            .ThenInclude(d => d.Product)
+            .FirstOrDefaultAsync(o => o.OrderId == id);
     }
 }
