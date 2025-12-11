@@ -11,8 +11,8 @@ public class AutoMapper : Profile
         CreateMap<Customer, CustomerDto>().ReverseMap();
         CreateMap<Customer, CreateCustomerDto>().ReverseMap();
         CreateMap<Customer, CustomerDetailDto>().ReverseMap();
-        CreateMap<Product, ProductDto>().ReverseMap();
-        CreateMap<Product, CreateProductDto>().ReverseMap();
+        // CreateMap<Product, ProductDto>().ReverseMap();
+        CreateMap<Product, CreateProductDto>();
         CreateMap<Supplier, SupplierDto>().ReverseMap();
         CreateMap<Supplier, CreateSupplierDto>().ReverseMap();
 
@@ -37,6 +37,12 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.Order, opt => opt.Ignore())
             .ForMember(dest => dest.Product, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
+        
+        CreateMap<Product, ProductDto>()
+            .ForMember(dest => dest.SupplierName, 
+                opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.CompanyName : null))
+            .ForMember(dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.Category != null ? src.Category.CategoryName : null));
         
         CreateMap<Category, CategoryDto>().ReverseMap();
         CreateMap<Category, CreateCategoryDto>().ReverseMap();

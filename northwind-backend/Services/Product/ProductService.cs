@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 using NorthwindBackend.UnitOfWork;
@@ -20,8 +21,11 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<ProductDto>> GetProducts()
     {
-        var products = await _unitOfWork.Products.GetAllAsync();
-        return _mapper.Map<IEnumerable<ProductDto>>(products);
+        // var products = await _unitOfWork.Products.GetAllAsync();
+        var list = await _unitOfWork.Products
+            .GetAllQueryable()
+            .ToListAsync();
+        return _mapper.Map<List<ProductDto>>(list);
     }
 
     public async Task<ProductDto?> GetProductById(int id)

@@ -15,6 +15,7 @@ import {
 import { format } from 'date-fns'
 import axios from "axios";
 import { createOrder } from "../../api/orderApi.js";
+import {getProducts} from "../../api/productApi.js";
 
 export default function Orders() {
     const { api } = useAuth()
@@ -57,7 +58,7 @@ export default function Orders() {
 
     const loadProducts = async () => {
         try {
-            const res = await api.get("/products")
+            const res = await getProducts()
             setProducts(res.data.data || res.data)
         } catch (err) {
             console.error("Error loading products:", err)
@@ -170,13 +171,6 @@ export default function Orders() {
     const removeDetail = (productId) => {
         setOrderDetails(prev => prev.filter(x => x.productId !== productId))
     }
-    
-
-    // const loadOrderDetails = async (orderId) => {
-    //     const res = await api.get(`/orderdetails/${orderId}`);
-    //     setOrderDetails(res.data);
-    // };
-
 
     const columns = useMemo(() => [
         {

@@ -12,9 +12,16 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         _context = context;
     }
 
-    public new IQueryable<Product> GetAllQueryable()
+    // public new IQueryable<Product> GetAllQueryable()
+    // {
+    //     return _context.Products.AsQueryable();
+    // }
+    
+    public override IQueryable<Product> GetAllQueryable()
     {
-        return _context.Products.AsQueryable();
+        return _context.Products
+            .Include(p => p.Supplier)
+            .Include(p => p.Category);
     }
 
     public async Task<IEnumerable<Product>> GetProductsFilteredAsync(

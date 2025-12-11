@@ -15,6 +15,4 @@ public interface ICustomerService
         string? country,
         string? sortBy,
         bool ascending = true);
-
-    // Task<CustomerDetailDto?> GetCustomerDetail(string id);
 }

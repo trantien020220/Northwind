@@ -92,44 +92,44 @@ public class AuthController : ControllerBase
         });
     }
     
-    // POST: api/auth/promote
-    [HttpPost("promote")]
-    [Authorize(Policy = "AdminOnly")]
-    public async Task<IActionResult> PromoteToAdmin([FromBody] PromoteRequest request)
-    {
-        if (string.IsNullOrEmpty(request.UserId) && string.IsNullOrEmpty(request.UserName))
-            return BadRequest(new { success = false, message = "Need userId or userName" });
-
-        ApplicationUser? user = null;
-
-        if (!string.IsNullOrEmpty(request.UserId))
-            user = await _userManager.FindByIdAsync(request.UserId);
-        else if (!string.IsNullOrEmpty(request.UserName))
-            user = await _userManager.FindByNameAsync(request.UserName);
-
-        if (user == null)
-            return NotFound(new { success = false, message = "Not found" });
-        
-        if (await _userManager.IsInRoleAsync(user, "Admin"))
-            return BadRequest(new { success = false, message = $"{user.UserName} already admin!" });
-        
-        var result = await _userManager.AddToRoleAsync(user, "Admin");
-
-        if (result.Succeeded)
-            return Ok(new 
-            { 
-                success = true, 
-                message = $"promoted {user.UserName} to Admin!" 
-            });
-
-        return BadRequest(new { success = false, errors = result.Errors });
-    }
-    
-    public class PromoteRequest
-    {
-        public string? UserId { get; set; }
-        public string? UserName { get; set; }
-    }
+    // // POST: api/auth/promote
+    // [HttpPost("promote")]
+    // [Authorize(Policy = "AdminOnly")]
+    // public async Task<IActionResult> PromoteToAdmin([FromBody] PromoteRequest request)
+    // {
+    //     if (string.IsNullOrEmpty(request.UserId) && string.IsNullOrEmpty(request.UserName))
+    //         return BadRequest(new { success = false, message = "Need userId or userName" });
+    //
+    //     ApplicationUser? user = null;
+    //
+    //     if (!string.IsNullOrEmpty(request.UserId))
+    //         user = await _userManager.FindByIdAsync(request.UserId);
+    //     else if (!string.IsNullOrEmpty(request.UserName))
+    //         user = await _userManager.FindByNameAsync(request.UserName);
+    //
+    //     if (user == null)
+    //         return NotFound(new { success = false, message = "Not found" });
+    //     
+    //     if (await _userManager.IsInRoleAsync(user, "Admin"))
+    //         return BadRequest(new { success = false, message = $"{user.UserName} already admin!" });
+    //     
+    //     var result = await _userManager.AddToRoleAsync(user, "Admin");
+    //
+    //     if (result.Succeeded)
+    //         return Ok(new 
+    //         { 
+    //             success = true, 
+    //             message = $"promoted {user.UserName} to Admin!" 
+    //         });
+    //
+    //     return BadRequest(new { success = false, errors = result.Errors });
+    // }
+    //
+    // public class PromoteRequest
+    // {
+    //     public string? UserId { get; set; }
+    //     public string? UserName { get; set; }
+    // }
 
     private JwtSecurityToken GenerateJwtToken(List<Claim> authClaims, DateTime expires)
     {

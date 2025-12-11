@@ -8,6 +8,7 @@ import Customers from './pages/Customer/Customers'
 import CustomerDetail from "./pages/Customer/CustomerDetail";
 import Orders from './pages/Order/Orders'
 import OrderDetail from "./pages/Order/OrderDetail.jsx";
+import Products from "./pages/Product/Products.jsx";
 
 
 function Protected({ children }) {
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/orders" element={<Protected><Orders /></Protected>} />
             <Route path="/customers/:id" element={<Protected><CustomerDetail /></Protected>} />
             <Route path="/orders/:id" element={<Protected><OrderDetail /></Protected>} />
+            <Route path="/products/" element={<Protected><Products /></Protected>} />
         </Routes>
     )
 }
