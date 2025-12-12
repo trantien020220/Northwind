@@ -15,6 +15,13 @@ public class SupplierRepository : GenericRepository<Supplier>, ISupplierReposito
     {
         return _context.Suppliers.AsQueryable();
     }
+    
+    public async Task<Supplier?> GetSupplierWithProductsAsync(int id)
+    {
+        return await _context.Suppliers
+            .Include(s => s.Products)
+            .FirstOrDefaultAsync(s => s.SupplierId == id);
+    }
 
     public async Task<IEnumerable<Supplier>> GetSuppliersFilteredAsync(
         string? search, string? country, string? sortBy, bool ascending = true)

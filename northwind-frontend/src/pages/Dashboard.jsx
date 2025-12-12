@@ -9,6 +9,10 @@ import {
     Tags,
     AlertCircle
 } from 'lucide-react'
+import {getOrders} from "../api/orderApi.js";
+import {getCustomer} from "../api/customerApi.js";
+import {getProducts} from "../api/productApi.js";
+import {getCategory} from "../api/categoryApi.js";
 
 export default function Dashboard() {
     const { api } = useAuth()
@@ -34,11 +38,11 @@ export default function Dashboard() {
                     suppliersRes,
                     categoriesRes
                 ] = await Promise.all([
-                    api.get('/orders'),
-                    api.get('/customers'),
-                    api.get('/products'),
+                    getOrders(),
+                    getCustomer(),
+                    getProducts(),
                     api.get('/suppliers'),
-                    api.get('/category')
+                    getCategory()
                 ])
 
                 const orders = ordersRes.data?.data || ordersRes.data || []
@@ -97,8 +101,15 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-8">
+            <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-10 text-white">
+                <h2 className="text-3xl font-bold">DASHBOARD</h2>
+                <p className="mt-3 text-lg opacity-90">
+                    Welcome
+                </p>
+            </div>
+            
             <div>
-                <h1 className="text-4xl font-bold text-gray-900">Dashboard Overview</h1>
+                <h1 className="text-4xl font-bold text-gray-900">Data</h1>
             </div>
 
             {error && (
@@ -122,12 +133,7 @@ export default function Dashboard() {
                 ))}
             </div>
 
-            <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-10 text-white">
-                <h2 className="text-3xl font-bold">######</h2>
-                <p className="mt-3 text-lg opacity-90">
-                    #######
-                </p>
-            </div>
+            
         </div>
     )
 }

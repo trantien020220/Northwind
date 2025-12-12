@@ -11,10 +11,10 @@ public class AutoMapper : Profile
         CreateMap<Customer, CustomerDto>().ReverseMap();
         CreateMap<Customer, CreateCustomerDto>().ReverseMap();
         CreateMap<Customer, CustomerDetailDto>().ReverseMap();
-        // CreateMap<Product, ProductDto>().ReverseMap();
-        CreateMap<Product, CreateProductDto>();
+        CreateMap<Product, CreateProductDto>().ReverseMap();
         CreateMap<Supplier, SupplierDto>().ReverseMap();
         CreateMap<Supplier, CreateSupplierDto>().ReverseMap();
+        CreateMap<Supplier, SupplierDetailDto>().ReverseMap();
 
         CreateMap<Order, OrderDto>();
         CreateMap<OrderDetail, OrderDetailDto>();
@@ -39,10 +39,18 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
         
         CreateMap<Product, ProductDto>()
-            .ForMember(dest => dest.SupplierName, 
+            .ForMember(dest => dest.CompanyName, 
                 opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.CompanyName : null))
             .ForMember(dest => dest.CategoryName,
                 opt => opt.MapFrom(src => src.Category != null ? src.Category.CategoryName : null));
+        
+        CreateMap<UpdateProductDto, Product>()
+            .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+            .ForMember(dest => dest.Category, opt => opt.Ignore())
+            .ForMember(dest => dest.SupplierId, opt =>
+                opt.Condition(src => src.SupplierId.HasValue))
+            .ForMember(dest => dest.CategoryId, opt =>
+                opt.Condition(src => src.CategoryId.HasValue));
         
         CreateMap<Category, CategoryDto>().ReverseMap();
         CreateMap<Category, CreateCategoryDto>().ReverseMap();

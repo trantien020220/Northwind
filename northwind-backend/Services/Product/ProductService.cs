@@ -22,9 +22,7 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductDto>> GetProducts()
     {
         // var products = await _unitOfWork.Products.GetAllAsync();
-        var list = await _unitOfWork.Products
-            .GetAllQueryable()
-            .ToListAsync();
+        var list = await _unitOfWork.Products.GetAllQueryable().ToListAsync();
         return _mapper.Map<List<ProductDto>>(list);
     }
 
@@ -42,16 +40,26 @@ public class ProductService : IProductService
         return _mapper.Map<ProductDto>(product);
     }
 
-    public async Task<bool> UpdateProduct(int id, CreateProductDto dto)
+    public async Task<bool> UpdateProduct(int id, UpdateProductDto dto)
     {
         var product = await _unitOfWork.Products.GetByIdAsync(id);
         if (product == null) return false;
-
+        
         _mapper.Map(dto, product);
+        
+        if (dto.SupplierId.HasValue)
+            product.SupplierId = dto.SupplierId.Value;
+
+
+        if (dto.CategoryId.HasValue)
+            product.CategoryId = dto.CategoryId.Value;
+
         _unitOfWork.Products.Update(product);
         await _unitOfWork.SaveAsync();
+
         return true;
     }
+
 
     public async Task<bool> DeleteProduct(int id)
     {

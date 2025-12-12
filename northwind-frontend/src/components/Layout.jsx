@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
-    LayoutDashboard, Package2, Truck, Building2, ShoppingCart, BarChart3, LogOut, Menu, X
+    LayoutDashboard, Package2, Truck, Building2, ShoppingCart, Tag, LogOut, Menu, X, TruckIcon
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -10,8 +10,8 @@ const menuItems = [
     { path: '/customers', icon: Building2,      label: 'Customers' },
     { path: '/orders',    icon: ShoppingCart,   label: 'Orders' },
     { path: '/products',  icon: Package2,       label: 'Products' },
-    { path: '/shippers', icon: Truck,          label: 'Shippers' },
-    { path: '/reports',   icon: BarChart3,      label: 'Reports' },
+    { path: '/categories', icon: Tag,          label: 'Categories' },
+    { path: '/suppliers', icon: TruckIcon,          label: 'Suppliers' },
 ]
 
 export default function Layout({ children }) {

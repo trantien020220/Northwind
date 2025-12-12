@@ -23,7 +23,15 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .Include(p => p.Supplier)
             .Include(p => p.Category);
     }
-
+    
+    public override async Task<Product?> GetByIdAsync(object id)
+    {
+        return await _context.Products
+            .Include(p => p.Supplier)
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.ProductId == (int)id);
+    }
+    
     public async Task<IEnumerable<Product>> GetProductsFilteredAsync(
         int? productId,
         string? productName,
@@ -34,7 +42,10 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         string? sortBy,
         bool ascending = true)
     {
-        var query = _context.Products.AsQueryable();
+        var query = _context.Products
+            .Include(p => p.Supplier)
+            .Include(p => p.Category)
+            .AsQueryable();
 
         if (productId.HasValue)
             query = query.Where(p => p.ProductId == productId.Value);
@@ -59,11 +70,12 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             query = sortBy.ToLower() switch
             {
                 "productname" => ascending ? query.OrderBy(p => p.ProductName) : query.OrderByDescending(p => p.ProductName),
-                "unitprice" => ascending ? query.OrderBy(p => p.UnitPrice) : query.OrderByDescending(p => p.UnitPrice),
+                "unitprice"   => ascending ? query.OrderBy(p => p.UnitPrice)   : query.OrderByDescending(p => p.UnitPrice),
                 _ => query
             };
         }
 
         return await query.ToListAsync();
     }
+
 }

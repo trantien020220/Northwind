@@ -1,73 +1,77 @@
 ﻿import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { getCustomerById, deleteCustomer, updateCustomer } from "../../api/customerApi";
-import {Pencil, Trash2} from "lucide-react";
+import {useParams, useNavigate, Link} from "react-router-dom";
+import {Edit3, Trash2, ArrowLeft, Pencil} from "lucide-react";
+import {getSupplierById, updateSupplier, deleteSupplier} from "../../api/supplierApi";
 
-export default function CustomerDetail() {
+export default function SupplierDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [customer, setCustomer] = useState(null);
-    const [showModal, setShowModal] = useState(false);
+    const [supplier, setSupplier] = useState(null);
+    const [products, setProducts] = useState([]);
     const [modalData, setModalData] = useState({});
+    const [showModal, setShowModal] = useState(false);
+    const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
     
-    async function loadCustomer() {
+    async function loadSupplier() {
         try {
-            const res = await getCustomerById(id);
-            setCustomer(res.data.data);
+            const res = await getSupplierById(id);
+            setSupplier(res.data.data);
         } catch (err) {
             console.error(err);
         }
     }
-    
+
     useEffect(() => {
-        loadCustomer();
-    }, [id]);
-    
+        loadSupplier();
+    }, []);
+
     const openEditModal = () => {
         setModalData({
-            customerId: customer.customerId || '',
-            companyName: customer.companyName || '',
-            contactName: customer.contactName || '',
-            contactTitle: customer.contactTitle || '',
-            address: customer.address || '',
-            city: customer.city || '',
-            region: customer.region || '',
-            postalCode: customer.postalCode || '',
-            country: customer.country || '',
-            phone: customer.phone || '',
-            fax: customer.fax || '',
-            _isEdit: !!customer.customerId
+            supplierId: supplier.supplierId || '',
+            companyName: supplier.companyName || '',
+            contactName: supplier.contactName || '',
+            contactTitle: supplier.contactTitle || '',
+            address: supplier.address || '',
+            city: supplier.city || '',
+            region: supplier.region || '',
+            postalCode: supplier.postalCode || '',
+            country: supplier.country || '',
+            phone: supplier.phone || '',
+            fax: supplier.fax || '',
+            homePage: supplier.homePage || '',
+            _isEdit: !!supplier.supplierId
         })
         setShowModal(true);
     };
-    
+
+
     const handleDelete = async () => {
-        if (!window.confirm("Delete this customer?")) return;
+        if (!window.confirm("Delete this supplier?")) return;
         try {
-            await deleteCustomer(id);
-            alert("Customer deleted successfully");
-            navigate("/customers");
+            await deleteSupplier(id);
+            alert("Supplier deleted successfully");
+            navigate("/suppliers");
         } catch (err) {
             console.error(err);
             alert("Failed to delete!");
         }
     };
-    
+
     const handleUpdate = async () => {
         if (!validateForm()) return;
 
         try {
-            await updateCustomer(id, modalData);
-            alert("Customer updated!");
+            await updateSupplier(id, modalData);
+            alert("Supplier updated!");
             setShowModal(false);
-            loadCustomer();
+            loadSupplier();
         } catch (err) {
             console.error(err.response?.data);
             alert("Update failed!");
         }
     };
-    
+
     const validateForm = () => {
         const newErrors = {};
 
@@ -83,23 +87,23 @@ export default function CustomerDetail() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
     
-    if (!customer) return <div className="p-6">Loading...</div>;
+
+    if (!supplier) return <div className="p-6">Loading...</div>;
 
     return (
         <div className="p-6">
             {/* BACK BUTTON */}
             <Link
-                to="/customers"
+                to="/suppliers"
                 className="text-blue-600 underline mb-4 inline-block"
             >
-                ← Back to Customers
+                ← Back to Suppliers
             </Link>
 
             {/* HEADER */}
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Customer {customer.companyName}</h1>
+                <h1 className="text-3xl font-bold">Supplier {supplier.companyName}</h1>
 
                 <div className="flex gap-3">
                     <button
@@ -118,20 +122,20 @@ export default function CustomerDetail() {
                 </div>
             </div>
 
-            {/* CUSTOMER INFO */}
+            {/* SUPPLIER INFO */}
             <div className="bg-white shadow rounded-lg p-4 border border-gray-200">
                 {[
-                    ["Customer ID", customer.customerId],
-                    ["Company Name", customer.companyName],
-                    ["Contact Name", customer.contactName],
-                    ["Contact Title", customer.contactTitle],
-                    ["Address", customer.address],
-                    ["City", customer.city],
-                    ["Region", customer.region],
-                    ["Postal Code", customer.postalCode],
-                    ["Country", customer.country],
-                    ["Phone", customer.phone],
-                    ["Fax", customer.fax],
+                    ["Company Name", supplier.companyName],
+                    ["Contact Name", supplier.contactName],
+                    ["Contact Title", supplier.contactTitle],
+                    ["Address", supplier.address],
+                    ["City", supplier.city],
+                    ["Region", supplier.region],
+                    ["Postal Code", supplier.postalCode],
+                    ["Country", supplier.country],
+                    ["Phone", supplier.phone],
+                    ["Fax", supplier.fax],
+                    ["Home Page", supplier.homePage],
                 ].map(([label, value]) => (
                     <p key={label}>
                         <span className="font-semibold">{label}:</span> {value || "-"}
@@ -139,16 +143,15 @@ export default function CustomerDetail() {
                 ))}
             </div>
 
-            {/* ORDER LIST */}
-            <h2 className="text-xl font-semibold mt-8 mb-4">Orders List</h2>
+            {/* PRODUCT LIST */}
+            <h2 className="text-xl font-semibold mt-8 mb-4">Product List</h2>
 
-            {customer.orders?.length ? (
+            {supplier.products?.length ? (
                 <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow text-sm">
                     <thead className="bg-gray-100">
                     <tr>
                         {[
-                            "Order ID", "Order Date", "Required Date", "Shipped Date", "Ship Via",
-                            "Freight", "Ship Name", "Address", "City", "Region", "Postal Code", "Country"
+                            "Product ID", "Name", "Price", "Stock"
                         ].map(h => (
                             <th key={h} className="px-3 py-2 border text-left">{h}</th>
                         ))}
@@ -156,41 +159,25 @@ export default function CustomerDetail() {
                     </thead>
 
                     <tbody>
-                    {customer.orders.map(order => (
-                        <tr key={order.orderId} className="hover:bg-gray-50">
-                            <td className="px-3 py-2 border">
-                                <Link
-                                    to={`/orders/${order.orderId}`}
-                                    className="text-blue-600 hover:underline"
-                                >
-                                    {order.orderId}
-                                </Link>
-                            </td>
-
-                            <td className="px-3 py-2 border">{order.orderDate?.split("T")[0]}</td>
-                            <td className="px-3 py-2 border">{order.requiredDate?.split("T")[0]}</td>
-                            <td className="px-3 py-2 border">{order.shippedDate?.split("T")[0]}</td>
-                            <td className="px-3 py-2 border">{order.shipVia}</td>
-                            <td className="px-3 py-2 border">{order.freight}</td>
-                            <td className="px-3 py-2 border">{order.shipName}</td>
-                            <td className="px-3 py-2 border">{order.shipAddress}</td>
-                            <td className="px-3 py-2 border">{order.shipCity}</td>
-                            <td className="px-3 py-2 border">{order.shipRegion}</td>
-                            <td className="px-3 py-2 border">{order.shipPostalCode}</td>
-                            <td className="px-3 py-2 border">{order.shipCountry}</td>
+                    {supplier.products.map(products => (
+                        <tr key={products.productId} className="hover:bg-gray-50">
+                            <td className="px-3 py-2 border">{products.productId}</td>
+                            <td className="px-3 py-2 border">{products.productName}</td>
+                            <td className="px-3 py-2 border">{products.unitPrice}</td>
+                            <td className="px-3 py-2 border">{products.unitsInStock}</td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             ) : (
-                <p className="text-gray-600">This customer has no orders.</p>
+                <p className="text-gray-600">This customer has no product.</p>
             )}
-            
+
             {/* EDIT MODAL */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center overflow-auto">
                     <div className="bg-white w-[600px] rounded-lg shadow p-5">
-                        <h2 className="text-xl font-bold mb-4">Edit Customer</h2>
+                        <h2 className="text-xl font-bold mb-4">Edit Supplier</h2>
                         
                         <div className="grid grid-cols-2 gap-4">
                             {[
@@ -203,7 +190,8 @@ export default function CustomerDetail() {
                                 ["postalCode", "Postal Code"],
                                 ["country", "Country"],
                                 ["phone", "Phone"],
-                                ["fax", "Fax"]
+                                ["fax", "Fax"],
+                                ["homePage", "Home Page"],
                             ].map(([key, label]) => (
                                 <div key={key}>
                                     <label className="font-medium">{label}</label>
@@ -222,7 +210,7 @@ export default function CustomerDetail() {
                                 </div>
                             ))}
                         </div>
-
+                        
                         {/* BUTTONS */}
                         <div className="flex justify-end gap-3 mt-5">
                             <button

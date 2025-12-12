@@ -11,4 +11,6 @@ public interface ISupplierRepository : IGenericRepository<Supplier>
         string? country, 
         string? sortBy, 
         bool ascending = true);
+
+    Task<Supplier?> GetSupplierWithProductsAsync(int id);
 }

@@ -17,13 +17,7 @@ export default function OrderDetail() {
     const [modalData, setModalData] = useState({});
     const [errors, setErrors] = useState({});
 
-    useEffect(() => {
-        loadOrder();
-        loadProducts();
-        loadOrderDetails();
-    }, [id]);
-
-    // GET /orders/{id}
+    
     async function loadOrder() {
         try {
             const res = await getOrderById(id);
@@ -33,8 +27,6 @@ export default function OrderDetail() {
         }
     }
     
-
-    // GET /products
     const loadProducts = async () => {
         try {
             const res = await api.get("/products");
@@ -43,8 +35,7 @@ export default function OrderDetail() {
             console.error(err);
         }
     };
-    
-    // GET /orderdetails/{orderId}
+
     const loadOrderDetails = async () => {
         setLoading(true);
         try {
@@ -57,6 +48,12 @@ export default function OrderDetail() {
         }
     };
 
+    useEffect(() => {
+        loadOrder();
+        loadProducts();
+        loadOrderDetails();
+    }, [id]);
+
     const openEditModal = () => {
         setModalData({ ...order });
         setShowModal(true);
@@ -66,7 +63,6 @@ export default function OrderDetail() {
         if (!dateString) return "-";
         return dateString.split("T")[0];
     };
-
 
     const handleDelete = async () => {
         if (!window.confirm("Delete this order?")) return;
@@ -80,7 +76,6 @@ export default function OrderDetail() {
         }
     };
 
-
     const handleUpdate = async () => {
         try {
             const payload = {
@@ -93,10 +88,6 @@ export default function OrderDetail() {
                     discount: d.discount
                 }))
             };
-
-            // console.log("Payload:", payload);
-            // console.log("Payload:", JSON.stringify(payload, null, 2));
-
 
             await updateOrder(id, payload);
 
@@ -112,9 +103,9 @@ export default function OrderDetail() {
     };
     
 
-    const validateForm = () => {
-        return true;
-    };
+    // const validateForm = () => {
+    //     return true;
+    // };
 
     const addProductToOrder = (productId) => {
         const prod = products.find(p => p.productId === Number(productId))
@@ -141,15 +132,15 @@ export default function OrderDetail() {
 
     return (
         <div className="p-6">
-            {/* Back Button */}
+            {/* BACK BUTTON */}
             <Link
                 to="/orders"
                 className="text-blue-600 underline mb-4 inline-block"
             >
                 ← Back to Orders
             </Link>
-            
-            {/* Header */}
+
+            {/* HEADER */}
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">Order #{order.orderId}</h1>
 
@@ -170,7 +161,7 @@ export default function OrderDetail() {
                 </div>
             </div>
 
-            {/* Order Info */}
+            {/* ORDER INFO */}
             <div className="bg-white shadow rounded-lg p-4 border border-gray-200">
                 {[
                     ["Customer ID", order.customerId],
@@ -197,7 +188,7 @@ export default function OrderDetail() {
                 ))}
             </div>
 
-            {/* Order Items */}
+            {/* CUSTOMER ITEMS */}
             <h2 className="text-xl font-semibold mt-8 mb-4">Order Detail</h2>
 
             {loading ? (
@@ -240,17 +231,13 @@ export default function OrderDetail() {
                     className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
                     onClick={() => setShowModal(false)}
                 >
-                    <div
-                        className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
-                        onClick={e => e.stopPropagation()}
-                    >
+                    <div className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                         <h2 className="text-2xl font-bold mb-6">
                             Edit Order #{order.orderId}
                         </h2>
 
                         <div className="grid grid-cols-2 gap-6">
-
-                            {/* LEFT - ORDER INFO */}
+                            
                             <div className="pr-4">
                                 <h3 className="text-lg font-semibold mb-3">Order Information</h3>
 
@@ -281,12 +268,10 @@ export default function OrderDetail() {
                                     </div>
                                 ))}
                             </div>
-
-                            {/* RIGHT - EDIT PRODUCTS */}
+                            
                             <div className="overflow-y-auto max-h-[70vh]">
                                 <h3 className="text-lg font-semibold mb-3">Edit Products</h3>
-
-                                {/* Add Product */}
+                                
                                 <div className="mb-4">
                                     <label className="font-medium">Add Product</label>
                                     <select
@@ -309,8 +294,7 @@ export default function OrderDetail() {
                                         ))}
                                     </select>
                                 </div>
-
-                                {/* Product Table */}
+                                
                                 <div className="overflow-x-auto border rounded-lg">
                                     <table className="w-full text-sm">
                                         <thead>
@@ -396,15 +380,23 @@ export default function OrderDetail() {
                                     </table>
                                 </div>
                             </div>
-
                         </div>
+                        {/* BUTTONS */}
+                        <div className="flex justify-end gap-3 mt-5">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                            >
+                                Cancel
+                            </button>
 
-                        <button
-                            type="button"
-                            onClick={handleUpdate}
-                            className="w-full mt-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
-                            Save Changes
-                        </button>
+                            <button
+                                type="button"
+                                onClick={handleUpdate}
+                                className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
+                                Save
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

@@ -5,10 +5,13 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Customers from './pages/Customer/Customers'
-import CustomerDetail from "./pages/Customer/CustomerDetail";
+import CustomerDetail from "./pages/Customer/CustomerDetail"
 import Orders from './pages/Order/Orders'
-import OrderDetail from "./pages/Order/OrderDetail.jsx";
-import Products from "./pages/Product/Products.jsx";
+import OrderDetail from "./pages/Order/OrderDetail.jsx"
+import Products from "./pages/Product/Products.jsx"
+import Category from './pages/Category/Category.jsx'
+import Suppliers from './pages/Supplier/Suppliers.jsx'
+import SupplierDetail from './pages/Supplier/SupplierDetail.jsx'
 
 
 function Protected({ children }) {
@@ -29,6 +32,9 @@ export default function App() {
             <Route path="/customers/:id" element={<Protected><CustomerDetail /></Protected>} />
             <Route path="/orders/:id" element={<Protected><OrderDetail /></Protected>} />
             <Route path="/products/" element={<Protected><Products /></Protected>} />
+            <Route path="/categories/" element={<Protected><Category /></Protected>} />
+            <Route path="/suppliers/" element={<Protected><Suppliers /></Protected>} />
+            <Route path="/suppliers/:id" element={<Protected><SupplierDetail /></Protected>} />
         </Routes>
     )
 }

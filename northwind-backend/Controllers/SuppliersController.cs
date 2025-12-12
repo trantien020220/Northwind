@@ -34,10 +34,8 @@ public class SuppliersController : ControllerBase
     public async Task<ActionResult> GetSupplierbyId(int id)
     {
         var supplier = await _service.GetSupplierbyId(id);
-        if (supplier == null)
-            return NotFound(ApiResponse<SupplierDto>.Fail("Supplier not found"));
 
-        return Ok(ApiResponse<SupplierDto>.Ok(supplier));
+        return Ok(ApiResponse<SupplierDetailDto>.Ok(supplier!));
     }
 
     //POST: api/supplier

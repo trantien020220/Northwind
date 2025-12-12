@@ -116,8 +116,6 @@ export default function Customers() {
     };
     
     
-    
-
     const columns = useMemo(
         () => [
             {
@@ -236,10 +234,10 @@ export default function Customers() {
 
             {/* Pagination */}
             <div className="flex justify-between items-center mt-6">
-            <span className="text-sm text-gray-700">
-                Showing {table.getState().pagination.pageIndex * 10 + 1} to{' '}
-                {Math.min((table.getState().pagination.pageIndex + 1) * 10, data.length)} of {data.length}
-            </span>
+                <span className="text-sm text-gray-700">
+                    Showing {table.getState().pagination.pageIndex * 10 + 1} to{' '}
+                    {Math.min((table.getState().pagination.pageIndex + 1) * 10, data.length)} of {data.length}
+                </span>
 
                 <div className="flex gap-2">
                     <button
@@ -264,7 +262,7 @@ export default function Customers() {
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-                    onClick={() => setShowModal(false)} // click ngoài để đóng
+                    onClick={() => setShowModal(false)}
                 >
                     <div
                         className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-y-auto"
@@ -391,7 +389,7 @@ export default function Customers() {
                                     onClick={handleCreate}
                                     className="px-6 py-3 bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 transition font-medium flex items-center gap-2">
                                     <Save className="w-4 h-4" />
-                                    {modalData._isEdit ? 'Update Customer' : 'Create Customer'}
+                                    {'Create Customer'}
                                 </button>
                             </div>
                         </form>

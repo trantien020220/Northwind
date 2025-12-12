@@ -45,7 +45,7 @@ public class ProductsController : ControllerBase
     
     //PUT: api/product/id
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProduct(int id, CreateProductDto dto)
+    public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto dto)
     {
         var product = await _service.UpdateProduct(id, dto);
         if (!product) 

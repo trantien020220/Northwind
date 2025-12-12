@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom';
+import { Plus, RefreshCw, Search, X, Save, AlertCircle, Square, CheckSquare } from "lucide-react";
+import api from "../../api/api.js";
 import {
     getProducts,
     getProductById,
@@ -15,9 +17,8 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table';
+import {getCategory} from "../../api/categoryApi.js";
 
-import { Plus, RefreshCw, Search, X, Save, AlertCircle, Square, CheckSquare } from "lucide-react";
-import api from "../../api/api.js";
 
 export default function ProductPage() {
     const [products, setProducts] = useState([]);
@@ -29,7 +30,7 @@ export default function ProductPage() {
 
     const [suppliers, setSuppliers] = useState([]);
     const [categories, setCategories] = useState([]);
-    const getCategories = () => api.get("/category");
+    const getCategories = () => getCategory();
     const getSuppliers = () => api.get("/suppliers");
 
     const [formData, setFormData] = useState({
@@ -44,6 +45,23 @@ export default function ProductPage() {
         reorderLevel: 0,
         discontinued: false
     });
+    
+    const loadProducts = async () => {
+        setLoading(true);
+        try {
+            const res = await getProducts();
+            setProducts(res.data.data);
+        } catch (err) {
+            console.error("Load failed:", err);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        loadProducts();
+        getSuppliers().then(res => setSuppliers(res.data.data));
+        getCategories().then(res => setCategories(res.data.data));
+    }, []);
 
     const columns = useMemo(
         () => [
@@ -57,7 +75,7 @@ export default function ProductPage() {
                 )
             },
             { accessorKey: 'productName', header: 'Product Name', size: 250 },
-            { accessorKey: 'supplierName', header: 'Supplier', size: 180 },
+            { accessorKey: 'companyName', header: 'Supplier', size: 180 },
             { accessorKey: 'categoryName', header: 'Category', size: 180 },
             { accessorKey: 'quantityPerUnit', header: 'Quantity / Unit', size: 180 },
             { accessorKey: 'unitPrice', header: 'Unit Price', size: 180 },
@@ -102,25 +120,6 @@ export default function ProductPage() {
         []
     );
     
-    // Load data
-    const loadProducts = async () => {
-        setLoading(true);
-        try {
-            const res = await getProducts();
-            setProducts(res.data.data);
-        } catch (err) {
-            console.error("Load failed:", err);
-        }
-        setLoading(false);
-    };
-
-    useEffect(() => {
-        loadProducts();
-        getSuppliers().then(res => setSuppliers(res.data.data));
-        getCategories().then(res => setCategories(res.data.data));
-    }, []);
-
-    // Table instance
     const table = useReactTable({
         data: products,
         columns,
@@ -130,8 +129,7 @@ export default function ProductPage() {
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel()
     });
-
-    // Create
+    
     const openCreate = (product = {}) => {
         setIsEdit(false);
         setFormData({
@@ -148,16 +146,14 @@ export default function ProductPage() {
         });
         setShowModal(true);
     };
-
-    // Edit
+    
     const openEdit = async (id) => {
         const res = await getProductById(id);
         setFormData(res.data.data);
         setIsEdit(true);
         setShowModal(true);
     };
-
-    // Save
+    
     const handleSave = async () => {
         if (!formData.productName) {
             alert("Product name is required");
@@ -179,8 +175,7 @@ export default function ProductPage() {
             alert("Save failed");
         }
     };
-
-    // Delete
+    
     const handleDelete = async (id) => {
         if (!confirm("Delete this product?")) return;
         try {
@@ -197,7 +192,7 @@ export default function ProductPage() {
     return (
         <div>
             {/* HEADER */}
-            <div className="flex justify-between mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Products</h1>
                     <p className="text-gray-600">
@@ -212,7 +207,7 @@ export default function ProductPage() {
                     >
                         <RefreshCw className="w-4 h-4" /> Refresh
                     </button>
-
+                    
                     <button
                         onClick={openCreate}
                         className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"

@@ -1,6 +1,7 @@
 ﻿using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 using AutoMapper;
+using NorthwindBackend.Profiles;
 using NorthwindBackend.UnitOfWork;
 
 
@@ -24,10 +25,10 @@ public class SupplierService : ISupplierService
         return _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
     }
 
-    public async Task<SupplierDto?> GetSupplierbyId(int id)
+    public async Task<SupplierDetailDto?> GetSupplierbyId(int id)
     {
-        var supplier = await _unitOfWork.Suppliers.GetByIdAsync(id);
-        return _mapper.Map<SupplierDto>(supplier);
+        var supplier = await _unitOfWork.Suppliers.GetSupplierWithProductsAsync(id);
+        return _mapper.Map<SupplierDetailDto>(supplier);
     }
 
     public async Task<SupplierDto> CreateSupplier(CreateSupplierDto dto)

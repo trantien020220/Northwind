@@ -1,6 +1,6 @@
 ﻿namespace NorthwindBackend.DTOs;
 
-public class CreateProductDto
+public class UpdateProductDto
 {
     public string ProductName { get; set; } = null!;
     public int? SupplierId { get; set; }

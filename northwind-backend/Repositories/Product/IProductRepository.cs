@@ -13,4 +13,7 @@ public interface IProductRepository : IGenericRepository<Product>
         decimal? priceTo,
         string? sortBy,
         bool ascending = true);
+
+    new Task<Product?> GetByIdAsync(object id);
+    new IQueryable<Product> GetAllQueryable();
 }

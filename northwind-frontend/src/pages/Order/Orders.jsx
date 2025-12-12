@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'
 import {
-    Plus, RefreshCw, Download, Search, Eye, Package,
-    Calendar, Truck, DollarSign, User, X
+    Plus, RefreshCw, Download, Search, Save
 } from 'lucide-react'
 import {
     useReactTable,
@@ -14,8 +13,9 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import axios from "axios";
-import { createOrder } from "../../api/orderApi.js";
+import {createOrder, getOrders} from "../../api/orderApi.js";
 import {getProducts} from "../../api/productApi.js";
+import {getCustomer} from "../../api/customerApi.js";
 
 export default function Orders() {
     const { api } = useAuth()
@@ -70,8 +70,8 @@ export default function Orders() {
             setLoading(true)
 
             const [ordersRes, customersRes] = await Promise.all([
-                api.get('/orders'),
-                api.get('/customers')
+                getOrders(),
+                getCustomer()
             ])
             const orders = ordersRes.data.data || ordersRes.data || []
             const customers = customersRes.data.data || customersRes.data || []
@@ -186,7 +186,19 @@ export default function Orders() {
             ),
             size: 90
         },
-        { accessorKey: 'customerName', header: 'Customer', size: 220 },
+        {
+            accessorKey: 'customerName',
+            header: 'Customer',
+            cell: ({ row }) => (
+                <span
+                    onClick={() => navigate(`/customers/${row.original.customerId}`)}
+                    className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold"
+                >
+            {row.original.customerName}
+        </span>
+            ),
+            size: 90
+        },
         { accessorKey: 'employeeName', header: 'Employee', size: 160 },
         {
             accessorKey: 'orderDate',
@@ -254,7 +266,9 @@ export default function Orders() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-                    <p className="text-gray-600 mt-1">Manage and track all customer orders</p>
+                    <p className="text-gray-600 mt-1">
+                        Total: <strong className="text-cyan-600">{orders.length}</strong> orders
+                    </p>
                 </div>
                 <div className="flex gap-3">
                     <button onClick={loadOrders} className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
@@ -490,12 +504,22 @@ export default function Orders() {
 
                         </div>
 
-                        <button
-                            onClick={handleCreate}
-                            className="w-full mt-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-                        >
-                            Create Order
-                        </button>
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="px-6 py-3 border rounded-lg hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={handleCreate}
+                                className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2"
+                            >
+                                <Save className="w-4 h-4" />
+                                {"Create"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
