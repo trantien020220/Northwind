@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json;
 
+namespace NorthwindBackend.Middlewares;
+
 public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;

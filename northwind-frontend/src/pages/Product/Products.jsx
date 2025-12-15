@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Link } from 'react-router-dom';
-import { Plus, RefreshCw, Search, X, Save, AlertCircle, Square, CheckSquare } from "lucide-react";
-import api from "../../api/api.js";
+import { Plus, RefreshCw, Search, X, Save, Square, CheckSquare } from "lucide-react";
+import {getCategory} from "../../api/categoryApi.js";
+import {getSuppliers} from "../../api/supplierApi.js";
 import {
     getProducts,
     getProductById,
@@ -9,7 +9,6 @@ import {
     updateProduct,
     deleteProduct
 } from "../../api/productApi.js";
-
 import {
     useReactTable,
     getCoreRowModel,
@@ -17,10 +16,9 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table';
-import {getCategory} from "../../api/categoryApi.js";
 
 
-export default function ProductPage() {
+export default function Product() {
     const [products, setProducts] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [loading, setLoading] = useState(false);
@@ -30,8 +28,8 @@ export default function ProductPage() {
 
     const [suppliers, setSuppliers] = useState([]);
     const [categories, setCategories] = useState([]);
-    const getCategories = () => getCategory();
-    const getSuppliers = () => api.get("/suppliers");
+    const loadCategories = () => getCategory();
+    const loadSuppliers = () => getSuppliers();
 
     const [formData, setFormData] = useState({
         productId: 0,
@@ -59,8 +57,8 @@ export default function ProductPage() {
 
     useEffect(() => {
         loadProducts();
-        getSuppliers().then(res => setSuppliers(res.data.data));
-        getCategories().then(res => setCategories(res.data.data));
+        loadSuppliers().then(res => setSuppliers(res.data.data));
+        loadCategories().then(res => setCategories(res.data.data));
     }, []);
 
     const columns = useMemo(

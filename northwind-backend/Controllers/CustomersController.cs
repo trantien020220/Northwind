@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs.Customer;
-using NorthwindBackend.Services;
 using NorthwindBackend.Models.Responses;
 using NorthwindBackend.Services.Customer;
 

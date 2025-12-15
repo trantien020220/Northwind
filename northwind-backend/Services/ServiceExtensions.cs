@@ -1,4 +1,6 @@
-﻿namespace NorthwindBackend.Services;
+﻿using NorthwindBackend.Middlewares;
+
+namespace NorthwindBackend.Services;
 
 public static class ServiceExtensions
 {

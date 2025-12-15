@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useMemo } from "react";
 import {Download, Plus, RefreshCw, Save, Search} from "lucide-react";
 import { Link } from "react-router-dom";
-import {getSupplier, createSupplier} from "../../api/supplierApi";
+import {getSuppliers, createSupplier} from "../../api/supplierApi";
 import {
     useReactTable,
     getCoreRowModel,
@@ -22,7 +22,7 @@ export default function Suppliers() {
     const loadSuppliers = async () => {
         try {
             setLoading(true);
-            const res = await getSupplier();
+            const res = await getSuppliers();
             setSuppliers(res.data.data || []);
         } catch (err) {
             console.error("Failed to load suppliers", err);

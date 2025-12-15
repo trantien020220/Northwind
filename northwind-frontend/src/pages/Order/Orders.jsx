@@ -4,7 +4,7 @@ import { Plus, RefreshCw, Download, Search, Save } from 'lucide-react'
 import { format } from 'date-fns'
 import {createOrder, getOrders} from "../../api/orderApi.js";
 import {getProducts} from "../../api/productApi.js";
-import {getCustomer} from "../../api/customerApi.js";
+import {getCustomers} from "../../api/customerApi.js";
 import {
     useReactTable,
     getCoreRowModel,
@@ -66,7 +66,7 @@ export default function Orders() {
 
             const [ordersRes, customersRes] = await Promise.all([
                 getOrders(),
-                getCustomer()
+                getCustomers()
             ])
             const orders = ordersRes.data.data || ordersRes.data || []
             const customers = customersRes.data.data || customersRes.data || []
@@ -163,10 +163,6 @@ export default function Orders() {
         ])
     }
 
-    // const removeDetail = (productId) => {
-    //     setOrderDetails(prev => prev.filter(x => x.productId !== productId))
-    // }
-
     const columns = useMemo(() => [
         {
             accessorKey: 'orderId',
@@ -225,11 +221,6 @@ export default function Orders() {
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel()
     })
-
-    // const safeToFixed = (num, digits = 2) => {
-    //     const n = Number(num);
-    //     return isNaN(n) ? "0.00" : n.toFixed(digits);
-    // };
 
     const exportCSV = () => {
         const headers = ['Order ID', 'Customer', 'Order Date', 'Required Date', 'Shipped Date', 'Freight', 'Status']

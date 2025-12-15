@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
-import {Edit3, Trash2, ArrowLeft, Pencil} from "lucide-react";
+import {Trash2, Pencil} from "lucide-react";
 import {getSupplierById, updateSupplier, deleteSupplier} from "../../api/supplierApi";
 
 export default function SupplierDetail() {
@@ -13,7 +13,7 @@ export default function SupplierDetail() {
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
     
-    async function loadSupplier() {
+    async function loadSupplierDetail() {
         try {
             const res = await getSupplierById(id);
             setSupplier(res.data.data);
@@ -23,7 +23,7 @@ export default function SupplierDetail() {
     }
 
     useEffect(() => {
-        loadSupplier();
+        loadSupplierDetail();
     }, []);
 
     const openEditModal = () => {
@@ -65,7 +65,7 @@ export default function SupplierDetail() {
             await updateSupplier(id, modalData);
             alert("Supplier updated!");
             setShowModal(false);
-            loadSupplier();
+            loadSupplierDetail();
         } catch (err) {
             console.error(err.response?.data);
             alert("Update failed!");

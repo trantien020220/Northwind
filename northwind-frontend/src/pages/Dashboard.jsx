@@ -10,9 +10,10 @@ import {
     AlertCircle
 } from 'lucide-react'
 import {getOrders} from "../api/orderApi.js";
-import {getCustomer} from "../api/customerApi.js";
+import {getCustomers} from "../api/customerApi.js";
 import {getProducts} from "../api/productApi.js";
 import {getCategory} from "../api/categoryApi.js";
+import {getSuppliers} from "../api/supplierApi.js";
 
 export default function Dashboard() {
     const { api } = useAuth()
@@ -39,9 +40,9 @@ export default function Dashboard() {
                     categoriesRes
                 ] = await Promise.all([
                     getOrders(),
-                    getCustomer(),
+                    getCustomers(),
                     getProducts(),
-                    api.get('/suppliers'),
+                    getSuppliers(),
                     getCategory()
                 ])
 

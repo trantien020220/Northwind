@@ -1,6 +1,6 @@
 ﻿import api from "./api";
 
-export const getCustomer = async (id) => {
+export const getCustomers = async () => {
     return api.get(`/customers/`);
 };
 

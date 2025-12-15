@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NorthwindBackend.DTOs.Category;
 using NorthwindBackend.Models.Responses;
-using NorthwindBackend.Services;
 using NorthwindBackend.Services.Category;
 
 namespace NorthwindBackend.Controllers;

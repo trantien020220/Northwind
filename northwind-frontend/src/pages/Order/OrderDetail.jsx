@@ -1,13 +1,12 @@
 ﻿import React, { useEffect, useState } from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { parseISO, format } from 'date-fns';
-import { ArrowLeft, Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import {deleteOrder, getOrderById, getOrderDetails, updateOrder} from "../../api/orderApi.js";
+import {getProducts} from "../../api/productApi.js";
 
 export default function OrderDetail() {
     const { id } = useParams();
-    const { api } = useAuth();
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [orderDetails, setOrderDetails] = useState([]);
@@ -15,7 +14,6 @@ export default function OrderDetail() {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [modalData, setModalData] = useState({});
-    const [errors, setErrors] = useState({});
 
     
     async function loadOrder() {
@@ -29,7 +27,7 @@ export default function OrderDetail() {
     
     const loadProducts = async () => {
         try {
-            const res = await api.get("/products");
+            const res = await getProducts();
             setProducts(res.data.data || res.data);
         } catch (err) {
             console.error(err);
@@ -172,7 +170,7 @@ export default function OrderDetail() {
                     ["Shipped Date", order.shippedDate],
                     ["Ship Via", order.shipVia],
                     ["Freight", order.freight],
-                    ["Ship Adress", order.shipAddress],
+                    ["Ship Address", order.shipAddress],
                     ["Ship Region", order.shipRegion],
                     ["Ship City", order.shipCity],
                     ["Postal Code", order.shipCity],
