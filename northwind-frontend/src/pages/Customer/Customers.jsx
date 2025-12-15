@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from "react-router-dom";
-import { Plus, RefreshCw, Search, Edit3, Trash2, X, Save, AlertCircle } from 'lucide-react'
+import { Plus, RefreshCw, Search, X, Save, AlertCircle } from 'lucide-react'
 import {
     useReactTable,
     getCoreRowModel,
@@ -13,13 +12,11 @@ import {
 import {createCustomer, getCustomer} from "../../api/customerApi.js";
 
 export default function Customers() {
-    const { api } = useAuth()
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     const [globalFilter, setGlobalFilter] = useState('')
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({})
-    const [errors, setErrors] = useState({})
 
 
     const loadCustomers = async () => {
@@ -55,7 +52,6 @@ export default function Customers() {
         })
         setShowModal(true)
     }
-    
 
     const handleCreate = async () => {
         const payload = { ...modalData };

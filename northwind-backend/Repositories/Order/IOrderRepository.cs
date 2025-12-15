@@ -1,14 +1,10 @@
-﻿using NorthwindBackend.DTOs;
-using NorthwindBackend.Models;
-using NorthwindBackend.Repositories;
+﻿namespace NorthwindBackend.Repositories.Order;
 
-namespace NorthwindBackend.Repositories;
-
-public interface IOrderRepository : IGenericRepository<Order>
+public interface IOrderRepository : IGenericRepository<Models.Order>
 {
-    new IQueryable<Order> GetAllQueryable();
+    new IQueryable<Models.Order> GetAllQueryable();
 
-    Task<IEnumerable<Order?>> GetOrdersFilteredAsync(
+    Task<IEnumerable<Models.Order?>> GetOrdersFilteredAsync(
         int? orderId,
         string? customerId,
         string? shipCountry,
@@ -17,6 +13,6 @@ public interface IOrderRepository : IGenericRepository<Order>
         string? sortBy,
         bool ascending = true);
 
-    Task<Order?> GetByIdWithDetailsAsync(int id);
+    Task<Models.Order?> GetByIdWithDetailsAsync(int id);
     
 }

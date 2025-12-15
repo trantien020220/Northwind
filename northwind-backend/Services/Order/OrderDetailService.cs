@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Order;
 using NorthwindBackend.Models;
 using NorthwindBackend.UnitOfWork;
 
-
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Order;
 
 
 public class OrderDetailService : IOrderDetailService

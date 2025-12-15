@@ -1,4 +1,4 @@
-﻿namespace NorthwindBackend.DTOs;
+﻿namespace NorthwindBackend.DTOs.Order;
 
 public class OrderDetailDto
 {

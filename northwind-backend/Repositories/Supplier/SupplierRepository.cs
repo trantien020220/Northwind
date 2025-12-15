@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 using NorthwindBackend.Repositories;
+using NorthwindBackend.Repositories.Supplier;
 
-public class SupplierRepository : GenericRepository<Supplier>, ISupplierRepository
+namespace NorthwindBackend.Repositories.Supplier;
+
+public class SupplierRepository : GenericRepository<Models.Supplier>, ISupplierRepository
 {
     private readonly NorthwindContext _context;
 
@@ -11,19 +14,19 @@ public class SupplierRepository : GenericRepository<Supplier>, ISupplierReposito
         _context = context;
     }
 
-    public new IQueryable<Supplier> GetAllQueryable()
+    public new IQueryable<Models.Supplier> GetAllQueryable()
     {
         return _context.Suppliers.AsQueryable();
     }
     
-    public async Task<Supplier?> GetSupplierWithProductsAsync(int id)
+    public async Task<Models.Supplier?> GetSupplierWithProductsAsync(int id)
     {
         return await _context.Suppliers
             .Include(s => s.Products)
             .FirstOrDefaultAsync(s => s.SupplierId == id);
     }
 
-    public async Task<IEnumerable<Supplier>> GetSuppliersFilteredAsync(
+    public async Task<IEnumerable<Models.Supplier>> GetSuppliersFilteredAsync(
         string? search, string? country, string? sortBy, bool ascending = true)
     {
         var query = _context.Suppliers.AsQueryable();

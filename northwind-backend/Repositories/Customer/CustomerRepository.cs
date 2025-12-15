@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 
-namespace NorthwindBackend.Repositories;
+namespace NorthwindBackend.Repositories.Customer;
 
-public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
+public class CustomerRepository : GenericRepository<Models.Customer>, ICustomerRepository
 {
     private readonly NorthwindContext _context;
 
@@ -12,12 +12,12 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         _context = context;
     }
 
-    public new IQueryable<Customer> GetAllQueryable()
+    public new IQueryable<Models.Customer> GetAllQueryable()
     {
         return _context.Customers.AsQueryable();
     }
     
-    public async Task<Customer?> GetCustomerWithOrdersAsync(string id)
+    public async Task<Models.Customer?> GetCustomerWithOrdersAsync(string id)
     {
         return await _context.Customers
             .Include(c => c.Orders)
@@ -25,7 +25,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     }
     
     
-    public async Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
+    public async Task<IEnumerable<Models.Customer>> GetCustomersFilteredAsync(
         string? customerId,
         string? companyName,
         string? country,

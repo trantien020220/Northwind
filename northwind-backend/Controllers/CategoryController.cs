@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NorthwindBackend.DTOs;
-using NorthwindBackend.Profiles;
+using NorthwindBackend.DTOs.Category;
+using NorthwindBackend.Models.Responses;
 using NorthwindBackend.Services;
+using NorthwindBackend.Services.Category;
 
 namespace NorthwindBackend.Controllers;
 

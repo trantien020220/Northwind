@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
+import api from "../api/api.js";
 
 const AuthContext = createContext()
 
-const api = axios.create({
-    baseURL: 'http://localhost:5000/api',
-    headers: { 'Content-Type': 'application/json' }
-})
+// const api = axios.create({
+//     baseURL: 'http://localhost:5000/api',
+//     headers: { 'Content-Type': 'application/json' }
+// })
 
 api.interceptors.request.use(config => {
     const token = localStorage.getItem('token')

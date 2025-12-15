@@ -1,4 +1,4 @@
-﻿namespace NorthwindBackend.DTOs;
+﻿namespace NorthwindBackend.DTOs.Supplier;
 
 public class SupplierDto
 {

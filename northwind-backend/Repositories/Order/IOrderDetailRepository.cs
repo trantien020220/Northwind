@@ -1,6 +1,6 @@
 ﻿using NorthwindBackend.Models;
 
-namespace NorthwindBackend.Repositories;
+namespace NorthwindBackend.Repositories.Order;
 
 public interface IOrderDetailRepository : IGenericRepository<OrderDetail>
 {

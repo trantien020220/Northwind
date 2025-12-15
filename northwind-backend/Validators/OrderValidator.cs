@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Order;
 
 namespace NorthwindBackend.Validators;
 

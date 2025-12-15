@@ -1,5 +1,10 @@
 ﻿using NorthwindBackend.Models;
 using NorthwindBackend.Repositories;
+using NorthwindBackend.Repositories.Category;
+using NorthwindBackend.Repositories.Customer;
+using NorthwindBackend.Repositories.Order;
+using NorthwindBackend.Repositories.Product;
+using NorthwindBackend.Repositories.Supplier;
 
 namespace NorthwindBackend.UnitOfWork;
 

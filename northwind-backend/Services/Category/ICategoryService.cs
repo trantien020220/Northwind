@@ -1,6 +1,6 @@
-﻿using NorthwindBackend.DTOs;
+﻿using NorthwindBackend.DTOs.Category;
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Category;
 
 public interface ICategoryService
 {

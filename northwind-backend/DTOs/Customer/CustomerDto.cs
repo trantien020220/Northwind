@@ -1,6 +1,6 @@
-using System;
+using NorthwindBackend.DTOs.Order;
 
-namespace NorthwindBackend.DTOs;
+namespace NorthwindBackend.DTOs.Customer;
 
 public class CustomerDto
 {

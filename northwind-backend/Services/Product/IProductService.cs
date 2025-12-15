@@ -1,4 +1,7 @@
 ﻿using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Product;
+
+namespace NorthwindBackend.Services.Product;
 
 public interface IProductService
 {

@@ -1,6 +1,5 @@
 ﻿import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { Plus, RefreshCw, Search, X, Save, AlertCircle, Square, CheckSquare } from "lucide-react";
+import { Plus, RefreshCw, Search, X, Save } from "lucide-react";
 import {
     getCategory,
     getCategoryById,
@@ -30,9 +29,73 @@ export default function Category() {
         categoryName: "",
         description: "",
     });
-    
 
-    // Columns
+    const loadCategories = async () => {
+        setLoading(true);
+        try {
+            const res = await getCategory();
+            setCategories(res.data.data);
+        } catch (err) {
+            console.error("Load failed:", err);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        loadCategories();
+    }, []);
+    
+    const openCreate = () => {
+        setIsEdit(false);
+        setFormData({
+            categoryId: categories.categoryId,
+            categoryName: categories.categoryName,
+            description: categories.description,
+        });
+        setShowModal(true);
+    };
+
+    const openEdit = async (id) => {
+        const res = await getCategoryById(id);
+        setFormData(res.data.data);
+        setIsEdit(true);
+        setShowModal(true);
+    };
+
+    const handleSave = async () => {
+        if (!formData.categoryName) {
+            alert("Category name is required");
+            return;
+        }
+
+        try {
+            if (isEdit) {
+                await updateCategory(formData.categoryId, formData);
+                alert("Updated!");
+            } else {
+                await createCategory(formData);
+                alert("Created!");
+            }
+            setShowModal(false);
+            loadCategories();
+        } catch (err) {
+            console.error("Save failed:", err);
+            alert("Save failed");
+        }
+    };
+    
+    const handleDelete = async (id) => {
+        if (!confirm("Delete this category?")) return;
+
+        try {
+            await deleteCategory(id);
+            loadCategories();
+        } catch (err) {
+            console.error("Delete failed:", err);
+            alert("Delete failed");
+        }
+    };
+
     const columns = useMemo(
         () => [
             {
@@ -69,23 +132,6 @@ export default function Category() {
         []
     );
 
-    // Load data
-    const loadCategories = async () => {
-        setLoading(true);
-        try {
-            const res = await getCategory();
-            setCategories(res.data.data);
-        } catch (err) {
-            console.error("Load failed:", err);
-        }
-        setLoading(false);
-    };
-
-    useEffect(() => {
-        loadCategories();
-    }, []);
-
-    // Table
     const table = useReactTable({
         data: categories,
         columns,
@@ -95,61 +141,6 @@ export default function Category() {
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
-
-    // Create
-    const openCreate = () => {
-        setIsEdit(false);
-        setFormData({
-            categoryId: categories.categoryId,
-            categoryName: categories.categoryName,
-            description: categories.description,
-        });
-        setShowModal(true);
-    };
-
-    // Edit
-    const openEdit = async (id) => {
-        const res = await getCategoryById(id);
-        setFormData(res.data.data);
-        setIsEdit(true);
-        setShowModal(true);
-    };
-
-    // Save
-    const handleSave = async () => {
-        if (!formData.categoryName) {
-            alert("Category name is required");
-            return;
-        }
-
-        try {
-            if (isEdit) {
-                await updateCategory(formData.categoryId, formData);
-                alert("Updated!");
-            } else {
-                await createCategory(formData);
-                alert("Created!");
-            }
-            setShowModal(false);
-            loadCategories();
-        } catch (err) {
-            console.error("Save failed:", err);
-            alert("Save failed");
-        }
-    };
-
-    // Delete
-    const handleDelete = async (id) => {
-        if (!confirm("Delete this category?")) return;
-
-        try {
-            await deleteCategory(id);
-            loadCategories();
-        } catch (err) {
-            console.error("Delete failed:", err);
-            alert("Delete failed");
-        }
-    };
 
     if (loading)
         return (

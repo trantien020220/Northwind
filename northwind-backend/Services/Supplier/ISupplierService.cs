@@ -1,6 +1,6 @@
-﻿using NorthwindBackend.DTOs;
+﻿using NorthwindBackend.DTOs.Supplier;
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Supplier;
 
 public interface ISupplierService
 {

@@ -1,12 +1,10 @@
-﻿using NorthwindBackend.Models;
+﻿namespace NorthwindBackend.Repositories.Category;
 
-namespace NorthwindBackend.Repositories;
-
-public interface ICategoryRepository : IGenericRepository<Category>
+public interface ICategoryRepository : IGenericRepository<Models.Category>
 {
-    new IQueryable<Category> GetAllQueryable();
+    new IQueryable<Models.Category> GetAllQueryable();
 
-    Task<IEnumerable<Category>> GetCategoryFilteredAsync(
+    Task<IEnumerable<Models.Category>> GetCategoryFilteredAsync(
         int? categoryId,
         string? categoryName,
         string? description,

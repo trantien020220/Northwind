@@ -1,4 +1,4 @@
-﻿namespace NorthwindBackend.Profiles;
+﻿namespace NorthwindBackend.Models.Responses;
 
 public class ApiResponse<T>
 {

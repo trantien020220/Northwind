@@ -1,7 +1,6 @@
-﻿using NorthwindBackend.DTOs;
-using NorthwindBackend.Models;
+﻿using NorthwindBackend.DTOs.Order;
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Order;
 public interface IOrderService
 {
     Task<IEnumerable<OrderDto>> GetOrders();

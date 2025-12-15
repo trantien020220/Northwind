@@ -1,4 +1,6 @@
-﻿public static class ServiceExtensions
+﻿namespace NorthwindBackend.Services;
+
+public static class ServiceExtensions
 {
     public static IApplicationBuilder UseGlobalErrorHandler(this IApplicationBuilder app)
     {

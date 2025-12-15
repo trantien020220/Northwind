@@ -1,4 +1,6 @@
-﻿namespace NorthwindBackend.DTOs;
+﻿using NorthwindBackend.DTOs.Product;
+
+namespace NorthwindBackend.DTOs.Supplier;
 
 public class SupplierDetailDto
 {

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using NorthwindBackend.DTOs;
-
-namespace NorthwindBackend.DTOs;
+﻿namespace NorthwindBackend.DTOs.Order;
 
 public class CreateOrderDto
 {

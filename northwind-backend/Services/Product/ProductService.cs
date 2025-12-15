@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Product;
 using NorthwindBackend.Models;
 using NorthwindBackend.UnitOfWork;
 
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Product;
 
 
 public class ProductService : IProductService
@@ -34,7 +34,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> CreateProduct(CreateProductDto dto)
     {
-        var product = _mapper.Map<Product>(dto);
+        var product = _mapper.Map<Models.Product>(dto);
         await _unitOfWork.Products.AddAsync(product);
         await _unitOfWork.SaveAsync();
         return _mapper.Map<ProductDto>(product);

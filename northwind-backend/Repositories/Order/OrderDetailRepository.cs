@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 
-namespace NorthwindBackend.Repositories;
+namespace NorthwindBackend.Repositories.Order;
 
 public class OrderDetailRepository : GenericRepository<OrderDetail>, IOrderDetailRepository
 {

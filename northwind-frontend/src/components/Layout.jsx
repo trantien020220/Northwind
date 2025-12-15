@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
-    LayoutDashboard, Package2, Truck, Building2, ShoppingCart, Tag, LogOut, Menu, X, TruckIcon
+    LayoutDashboard, Package2, Building2, ShoppingCart, Tag, LogOut, Menu, X, TruckIcon
 } from 'lucide-react'
 import { useState } from 'react'
 

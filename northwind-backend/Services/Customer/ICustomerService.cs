@@ -1,4 +1,4 @@
-using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Customer;
 
 namespace NorthwindBackend.Services.Customer;
 

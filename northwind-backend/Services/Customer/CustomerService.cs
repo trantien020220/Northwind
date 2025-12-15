@@ -1,5 +1,6 @@
 using AutoMapper;
 using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Customer;
 using NorthwindBackend.UnitOfWork;
 
 namespace NorthwindBackend.Services.Customer;

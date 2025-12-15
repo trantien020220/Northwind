@@ -1,4 +1,6 @@
-﻿namespace NorthwindBackend.DTOs;
+﻿using NorthwindBackend.DTOs.Order;
+
+namespace NorthwindBackend.DTOs.Customer;
 
 public class CustomerDetailDto
 {

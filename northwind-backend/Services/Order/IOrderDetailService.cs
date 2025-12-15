@@ -1,6 +1,6 @@
-﻿using NorthwindBackend.DTOs;
+﻿using NorthwindBackend.DTOs.Order;
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Order;
 
 public interface IOrderDetailService
 {

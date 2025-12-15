@@ -407,9 +407,8 @@ export default function ProductPage() {
                                 <label className="font-semibold">Discontinued</label>
                             </div>
                         </div>
-
-
-                        {/* FOOTER */}
+                        
+                        {/* BUTTON */}
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                             <button
                                 onClick={() => setShowModal(false)}

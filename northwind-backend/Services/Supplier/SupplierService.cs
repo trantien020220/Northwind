@@ -1,11 +1,8 @@
-﻿using NorthwindBackend.DTOs;
-using NorthwindBackend.Models;
-using AutoMapper;
-using NorthwindBackend.Profiles;
+﻿using AutoMapper;
+using NorthwindBackend.DTOs.Supplier;
 using NorthwindBackend.UnitOfWork;
 
-
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Supplier;
 
 
 public class SupplierService : ISupplierService
@@ -33,7 +30,7 @@ public class SupplierService : ISupplierService
 
     public async Task<SupplierDto> CreateSupplier(CreateSupplierDto dto)
     {
-        var supplier = _mapper.Map<Supplier>(dto);
+        var supplier = _mapper.Map<Models.Supplier>(dto);
         await _unitOfWork.Suppliers.AddAsync(supplier);
         await _unitOfWork.SaveAsync();
         return _mapper.Map<SupplierDto>(supplier);

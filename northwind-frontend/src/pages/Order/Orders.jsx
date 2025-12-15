@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'
-import {
-    Plus, RefreshCw, Download, Search, Save
-} from 'lucide-react'
+import { Plus, RefreshCw, Download, Search, Save } from 'lucide-react'
+import { format } from 'date-fns'
+import {createOrder, getOrders} from "../../api/orderApi.js";
+import {getProducts} from "../../api/productApi.js";
+import {getCustomer} from "../../api/customerApi.js";
 import {
     useReactTable,
     getCoreRowModel,
@@ -11,19 +12,13 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table'
-import { format } from 'date-fns'
-import axios from "axios";
-import {createOrder, getOrders} from "../../api/orderApi.js";
-import {getProducts} from "../../api/productApi.js";
-import {getCustomer} from "../../api/customerApi.js";
+
 
 export default function Orders() {
-    const { api } = useAuth()
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
     const [globalFilter, setGlobalFilter] = useState('')
     const [selectedOrder, setSelectedOrder] = useState(null)
-    const [showForm, setShowForm] = useState(false)
     const [products, setProducts] = useState([]);
     const [orderDetails, setOrderDetails] = useState([]);
     const [loadingDetails, setLoadingDetails] = useState(false);
@@ -168,9 +163,9 @@ export default function Orders() {
         ])
     }
 
-    const removeDetail = (productId) => {
-        setOrderDetails(prev => prev.filter(x => x.productId !== productId))
-    }
+    // const removeDetail = (productId) => {
+    //     setOrderDetails(prev => prev.filter(x => x.productId !== productId))
+    // }
 
     const columns = useMemo(() => [
         {
@@ -199,7 +194,6 @@ export default function Orders() {
             ),
             size: 90
         },
-        { accessorKey: 'employeeName', header: 'Employee', size: 160 },
         {
             accessorKey: 'orderDate',
             header: 'Order Date',
@@ -232,17 +226,16 @@ export default function Orders() {
         getFilteredRowModel: getFilteredRowModel()
     })
 
-    const safeToFixed = (num, digits = 2) => {
-        const n = Number(num);
-        return isNaN(n) ? "0.00" : n.toFixed(digits);
-    };
+    // const safeToFixed = (num, digits = 2) => {
+    //     const n = Number(num);
+    //     return isNaN(n) ? "0.00" : n.toFixed(digits);
+    // };
 
     const exportCSV = () => {
         const headers = ['Order ID', 'Customer', 'Order Date', 'Required Date', 'Shipped Date', 'Freight', 'Status']
         const rows = orders.map(o => [
             o.orderId,
             o.customerName,
-            // o.employeeName,
             o.orderDate ? format(new Date(o.orderDate), 'dd/MM/yyyy') : '',
             o.requiredDate ? format(new Date(o.requiredDate), 'dd/MM/yyyy') : '',
             o.shippedDate ? format(new Date(o.shippedDate), 'dd/MM/yyyy') : '',
@@ -262,7 +255,7 @@ export default function Orders() {
 
     return (
         <div>
-            {/* Header */}
+            {/* HEADER */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
@@ -288,7 +281,7 @@ export default function Orders() {
                 </div>
             </div>
 
-            {/* Search */}
+            {/* SEARCH */}
             <div className="mb-6">
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -301,7 +294,7 @@ export default function Orders() {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* TABLE */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <table className="w-full">
                     <thead className="bg-gray-50">
@@ -329,7 +322,7 @@ export default function Orders() {
                 </table>
             </div>
 
-            {/* Pagination */}
+            {/* PAGINATION */}
             <div className="flex justify-between items-center mt-6">
                 <span className="text-sm text-gray-700">
                   Showing {table.getState().pagination.pageIndex * 10 + 1} to{' '}
@@ -343,7 +336,7 @@ export default function Orders() {
                 </div>
             </div>
             
-            {/*{showForm && (*/}
+            {/* MODAL */}
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -501,7 +494,6 @@ export default function Orders() {
                                     </table>
                                 </div>
                             </div>
-
                         </div>
 
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
@@ -523,7 +515,6 @@ export default function Orders() {
                     </div>
                 </div>
             )}
-
         </div>
     )
 }

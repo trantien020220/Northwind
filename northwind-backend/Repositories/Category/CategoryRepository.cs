@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 
-namespace NorthwindBackend.Repositories;
+namespace NorthwindBackend.Repositories.Category;
 
-public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+public class CategoryRepository : GenericRepository<Models.Category>, ICategoryRepository
 {
     private readonly NorthwindContext _context;
 
@@ -12,12 +12,12 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
         _context = context;
     }
 
-    public new IQueryable<Category> GetAllQueryable()
+    public new IQueryable<Models.Category> GetAllQueryable()
     {
         return _context.Categories.AsQueryable();
     }
 
-    public async Task<IEnumerable<Category>> GetCategoryFilteredAsync(
+    public async Task<IEnumerable<Models.Category>> GetCategoryFilteredAsync(
         int? categoryId,
         string? categoryName,
         string? description,

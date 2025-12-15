@@ -1,10 +1,8 @@
-﻿using NorthwindBackend.Models;
+﻿namespace NorthwindBackend.Repositories.Product;
 
-namespace NorthwindBackend.Repositories;
-
-public interface IProductRepository : IGenericRepository<Product>
+public interface IProductRepository : IGenericRepository<Models.Product>
 {
-    Task<IEnumerable<Product>> GetProductsFilteredAsync(
+    Task<IEnumerable<Models.Product>> GetProductsFilteredAsync(
         int? productId,
         string? productName,
         int? supplierId,
@@ -14,6 +12,6 @@ public interface IProductRepository : IGenericRepository<Product>
         string? sortBy,
         bool ascending = true);
 
-    new Task<Product?> GetByIdAsync(object id);
-    new IQueryable<Product> GetAllQueryable();
+    new Task<Models.Product?> GetByIdAsync(object id);
+    new IQueryable<Models.Product> GetAllQueryable();
 }

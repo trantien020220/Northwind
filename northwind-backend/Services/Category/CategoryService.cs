@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using NorthwindBackend.DTOs;
-using NorthwindBackend.Models;
+using NorthwindBackend.DTOs.Category;
 using NorthwindBackend.UnitOfWork;
 
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Category;
 
 public class CategoryService : ICategoryService
 {
@@ -30,7 +29,7 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryDto> CreateCategory(CreateCategoryDto dto)
     {
-        var category = _mapper.Map<Category>(dto);
+        var category = _mapper.Map<Models.Category>(dto);
         await _unitOfWork.Category.AddAsync(category);
         await _unitOfWork.SaveAsync();
         return _mapper.Map<CategoryDto>(category);

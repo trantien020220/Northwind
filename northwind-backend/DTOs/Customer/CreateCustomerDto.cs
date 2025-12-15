@@ -1,6 +1,4 @@
-using System;
-
-namespace NorthwindBackend.DTOs;
+namespace NorthwindBackend.DTOs.Customer;
 
 public class CreateCustomerDto
 {

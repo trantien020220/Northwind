@@ -1,8 +1,13 @@
 using AutoMapper;
 using NorthwindBackend.Models;
 using NorthwindBackend.DTOs;
+using NorthwindBackend.DTOs.Category;
+using NorthwindBackend.DTOs.Customer;
+using NorthwindBackend.DTOs.Order;
+using NorthwindBackend.DTOs.Product;
+using NorthwindBackend.DTOs.Supplier;
 
-namespace NorthwindBackendProfiles;
+namespace NorthwindBackend.Profiles;
 
 public class AutoMapper : Profile
 {

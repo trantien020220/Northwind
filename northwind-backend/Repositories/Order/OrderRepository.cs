@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NorthwindBackend.DTOs;
 using NorthwindBackend.Models;
 
+namespace NorthwindBackend.Repositories.Order;
 
-namespace NorthwindBackend.Repositories;
 
-
-public class OrderRepository : GenericRepository<Order>, IOrderRepository
+public class OrderRepository : GenericRepository<Models.Order>, IOrderRepository
 {
     private readonly NorthwindContext _context;
 
@@ -15,12 +13,12 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         _context = context;
     }
 
-    public new IQueryable<Order> GetAllQueryable()
+    public new IQueryable<Models.Order> GetAllQueryable()
     {
         return _context.Orders.AsQueryable();
     }
 
-    public async Task<IEnumerable<Order?>> GetOrdersFilteredAsync(
+    public async Task<IEnumerable<Models.Order?>> GetOrdersFilteredAsync(
         int? orderId,
         string? customerId,
         string? shipCountry,
@@ -69,7 +67,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         return await query.ToListAsync();
     }
     
-    public async Task<Order?> GetByIdWithDetailsAsync(int id)
+    public async Task<Models.Order?> GetByIdWithDetailsAsync(int id)
     {
         return await _context.Orders
             .Include(o => o.OrderDetails)

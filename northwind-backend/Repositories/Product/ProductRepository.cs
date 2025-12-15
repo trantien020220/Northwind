@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NorthwindBackend.Models;
 
-namespace NorthwindBackend.Repositories;
+namespace NorthwindBackend.Repositories.Product;
 
-public class ProductRepository : GenericRepository<Product>, IProductRepository
+public class ProductRepository : GenericRepository<Models.Product>, IProductRepository
 {
     private readonly NorthwindContext _context;
 
@@ -11,20 +11,15 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         _context = context;
     }
-
-    // public new IQueryable<Product> GetAllQueryable()
-    // {
-    //     return _context.Products.AsQueryable();
-    // }
     
-    public override IQueryable<Product> GetAllQueryable()
+    public override IQueryable<Models.Product> GetAllQueryable()
     {
         return _context.Products
             .Include(p => p.Supplier)
             .Include(p => p.Category);
     }
     
-    public override async Task<Product?> GetByIdAsync(object id)
+    public override async Task<Models.Product?> GetByIdAsync(object id)
     {
         return await _context.Products
             .Include(p => p.Supplier)
@@ -32,7 +27,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .FirstOrDefaultAsync(p => p.ProductId == (int)id);
     }
     
-    public async Task<IEnumerable<Product>> GetProductsFilteredAsync(
+    public async Task<IEnumerable<Models.Product>> GetProductsFilteredAsync(
         int? productId,
         string? productName,
         int? supplierId,

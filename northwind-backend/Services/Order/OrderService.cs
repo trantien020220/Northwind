@@ -1,11 +1,10 @@
-﻿using NorthwindBackend.DTOs;
-using NorthwindBackend.Models;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NorthwindBackend.DTOs.Order;
+using NorthwindBackend.Models;
 using NorthwindBackend.UnitOfWork;
 
-
-namespace NorthwindBackend.Services;
+namespace NorthwindBackend.Services.Order;
 
 
 public class OrderService : IOrderService
@@ -34,7 +33,7 @@ public class OrderService : IOrderService
     
     public async Task<OrderDto> CreateOrder(CreateOrderDto dto)
     {
-        var order = _mapper.Map<Order>(dto);
+        var order = _mapper.Map<Models.Order>(dto);
         
         order.OrderDetails = dto.OrderDetails
             .Select(d => new OrderDetail
@@ -58,14 +57,6 @@ public class OrderService : IOrderService
         return _mapper.Map<OrderDto>(created);
     }
 
-    
-    // public async Task<OrderDto> CreateOrder(CreateOrderDto dto)
-    // {
-    //     var order = _mapper.Map<Order>(dto);
-    //     await _unitOfWork.Orders.AddAsync(order);
-    //     await _unitOfWork.SaveAsync();
-    //     return _mapper.Map<OrderDto>(order);
-    // }
     
     public async Task<bool> UpdateOrder(int id, UpdateOrderDto dto)
     {
@@ -93,17 +84,6 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveAsync();
         return true;
     }
-    
-    // public async Task<bool> UpdateOrder(int id, CreateOrderDto dto)
-    // {
-    //     var order = await _unitOfWork.Orders.GetByIdAsync(id);
-    //     if (order == null) return false;
-    //
-    //     _mapper.Map(dto, order);
-    //     _unitOfWork.Orders.Update(order);
-    //     await _unitOfWork.SaveAsync();
-    //     return true;
-    // }
 
     public async Task<bool> DeleteOrder(int id)
     {

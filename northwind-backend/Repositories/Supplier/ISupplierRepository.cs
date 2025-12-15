@@ -1,10 +1,8 @@
-﻿using NorthwindBackend.Models;
+﻿namespace NorthwindBackend.Repositories.Supplier;
 
-namespace NorthwindBackend.Repositories;
-
-public interface ISupplierRepository : IGenericRepository<Supplier>
+public interface ISupplierRepository : IGenericRepository<Models.Supplier>
 {
-    new IQueryable<Supplier> GetAllQueryable();
+    new IQueryable<Models.Supplier> GetAllQueryable();
     
     Task<IEnumerable<Models.Supplier>> GetSuppliersFilteredAsync(
         string? search, 
@@ -12,5 +10,5 @@ public interface ISupplierRepository : IGenericRepository<Supplier>
         string? sortBy, 
         bool ascending = true);
 
-    Task<Supplier?> GetSupplierWithProductsAsync(int id);
+    Task<Models.Supplier?> GetSupplierWithProductsAsync(int id);
 }

@@ -1,18 +1,15 @@
-﻿using NorthwindBackend.Models;
+﻿namespace NorthwindBackend.Repositories.Customer;
 
-namespace NorthwindBackend.Repositories;
-
-public interface ICustomerRepository : IGenericRepository<Customer>
+public interface ICustomerRepository : IGenericRepository<Models.Customer>
 {
-    new IQueryable<Customer> GetAllQueryable();
+    new IQueryable<Models.Customer> GetAllQueryable();
 
-    Task<IEnumerable<Customer>> GetCustomersFilteredAsync(
+    Task<IEnumerable<Models.Customer>> GetCustomersFilteredAsync(
         string? customerId,
         string? companyName,
         string? country,
         string? sortBy,
         bool ascending = true);
 
-    Task<Customer?> GetCustomerWithOrdersAsync(string id);
-
+    Task<Models.Customer?> GetCustomerWithOrdersAsync(string id);
 }
