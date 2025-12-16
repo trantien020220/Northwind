@@ -125,7 +125,7 @@ export default function OrderDetail() {
 
     if (!order) return <p className="p-6">Loading...</p>;
 
-    const fmt = (d) => d ? format(parseISO(d), "dd/MM/yyyy") : "-";
+    // const fmt = (d) => d ? format(parseISO(d), "dd/MM/yyyy") : "-";
     const safeToFixed = (n) => Number(n || 0).toFixed(2);
 
     return (
@@ -133,8 +133,7 @@ export default function OrderDetail() {
             {/* BACK BUTTON */}
             <Link
                 to="/orders"
-                className="text-blue-600 underline mb-4 inline-block"
-            >
+                className="text-blue-600 underline mb-4 inline-block">
                 ← Back to Orders
             </Link>
 
@@ -145,15 +144,12 @@ export default function OrderDetail() {
                 <div className="flex gap-3">
                     <button
                         onClick={openEditModal}
-                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg flex items-center gap-2"
-                    >
+                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg flex items-center gap-2">
                         <Pencil size={18} /> Edit
                     </button>
-
                     <button
                         onClick={handleDelete}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2"
-                    >
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2">
                         <Trash2 size={18} /> Delete
                     </button>
                 </div>
@@ -261,8 +257,7 @@ export default function OrderDetail() {
                                             onChange={(e) =>
                                                 setModalData(prev => ({ ...prev, [key]: e.target.value }))
                                             }
-                                            className="border w-full p-2 rounded-lg mt-1"
-                                        />
+                                            className="border w-full p-2 rounded-lg mt-1"/>
                                     </div>
                                 ))}
                             </div>
@@ -277,16 +272,14 @@ export default function OrderDetail() {
                                         onChange={e => {
                                             addProductToOrder(e.target.value);
                                             e.target.value = "";
-                                        }}
-                                    >
+                                        }}>
                                         <option value="">-- Select Product --</option>
 
                                         {products.map(p => (
                                             <option
                                                 key={p.productId}
                                                 value={p.productId}
-                                                disabled={orderDetails.some(d => d.productId === p.productId)}
-                                            >
+                                                disabled={orderDetails.some(d => d.productId === p.productId)}>
                                                 {p.productName} (${p.unitPrice})
                                             </option>
                                         ))}
@@ -310,8 +303,7 @@ export default function OrderDetail() {
                                             <tr>
                                                 <td
                                                     colSpan="5"
-                                                    className="text-center py-4 text-gray-500"
-                                                >
+                                                    className="text-center py-4 text-gray-500">
                                                     No products in this order
                                                 </td>
                                             </tr>
@@ -366,8 +358,7 @@ export default function OrderDetail() {
                                                                     )
                                                                 )
                                                             }
-                                                            className="px-3 py-1 bg-red-500 text-white rounded"
-                                                        >
+                                                            className="px-3 py-1 bg-red-500 text-white rounded">
                                                             X
                                                         </button>
                                                     </td>

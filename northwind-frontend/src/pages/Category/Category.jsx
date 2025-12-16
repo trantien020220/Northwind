@@ -115,14 +115,12 @@ export default function Category() {
                     <div className="flex gap-3">
                         <button
                             onClick={() => openEdit(row.original.categoryId)}
-                            className="text-blue-600 hover:text-blue-800"
-                        >
+                            className="text-blue-600 hover:text-blue-800">
                             Edit
                         </button>
                         <button
                             onClick={() => handleDelete(row.original.categoryId)}
-                            className="text-red-600 hover:text-red-800"
-                        >
+                            className="text-red-600 hover:text-red-800">
                             Delete
                         </button>
                     </div>
@@ -162,15 +160,13 @@ export default function Category() {
                 <div className="flex gap-3">
                     <button
                         onClick={loadCategories}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
                         <RefreshCw className="w-4 h-4" /> Refresh
                     </button>
 
                     <button
                         onClick={openCreate}
-                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
                         <Plus className="w-4 h-4" /> Add Category
                     </button>
                 </div>
@@ -184,8 +180,7 @@ export default function Category() {
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 border rounded-xl"
-                        placeholder="Search categories..."
-                    />
+                        placeholder="Search categories..."/>
                 </div>
             </div>
 
@@ -198,8 +193,7 @@ export default function Category() {
                             {hg.headers.map((header) => (
                                 <th
                                     key={header.id}
-                                    className="px-6 py-4 text-left text-sm font-semibold text-gray-700"
-                                >
+                                    className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                                     {flexRender(
                                         header.column.columnDef.header,
                                         header.getContext()
@@ -214,13 +208,11 @@ export default function Category() {
                     {table.getRowModel().rows.map((row) => (
                         <tr
                             key={row.id}
-                            className="border-t hover:bg-gray-50"
-                        >
+                            className="border-t hover:bg-gray-50">
                             {row.getVisibleCells().map((cell) => (
                                 <td
                                     key={cell.id}
-                                    className="px-6 py-4 text-sm"
-                                >
+                                    className="px-6 py-4 text-sm">
                                     {flexRender(
                                         cell.column.columnDef.cell,
                                         cell.getContext()
@@ -243,15 +235,13 @@ export default function Category() {
                     <button
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                    >
+                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
                         Previous
                     </button>
                     <button
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                    >
+                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
                         Next
                     </button>
                 </div>
@@ -262,8 +252,7 @@ export default function Category() {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
                     <div
                         className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6"
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                        onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-between items-center pb-4 border-b">
                             <h2 className="text-2xl font-bold">
                                 {isEdit ? "Edit Category" : "Create Category"}
@@ -288,8 +277,7 @@ export default function Category() {
                                             categoryName: e.target.value,
                                         })
                                     }
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Description */}
@@ -306,8 +294,7 @@ export default function Category() {
                                         })
                                     }
                                     className="w-full px-4 py-2 border rounded-lg"
-                                    rows={3}
-                                />
+                                    rows={3}/>
                             </div>
                         </div>
 

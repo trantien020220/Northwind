@@ -150,8 +150,7 @@ export default function Suppliers() {
                         value={globalFilter || ''}
                         onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Search by supplier name..."
-                        className="w-full pl-12 pr-4 py-3 border rounded-xl focus:border-cyan-600 outline-none"
-                    />
+                        className="w-full pl-12 pr-4 py-3 border rounded-xl focus:border-cyan-600 outline-none"/>
                 </div>
             </div>
 
@@ -202,20 +201,16 @@ export default function Suppliers() {
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-                    onClick={() => setShowModal(false)}
-                >
+                    onClick={() => setShowModal(false)}>
                     <div
                         className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                        onClick={(e) => e.stopPropagation()}>
                         <h2 className="text-2xl font-bold mb-6">
                             Add Supplier
                         </h2>
 
                         <div className="grid grid-cols-1 gap-4 mt-6">
-                            
                             <div className="pr-4">
-
                                 {[
                                     ["companyName", "Company Name"],
                                     ["contactName", "Contact Name"],
@@ -239,7 +234,6 @@ export default function Suppliers() {
                                     </div>
                                 ))}
                             </div>
-
                         </div>
 
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">

@@ -170,15 +170,13 @@ export default function Customers() {
                 <div className="flex gap-3">
                     <button
                         onClick={loadCustomers}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
                         <RefreshCw className="w-4 h-4" /> Refresh
                     </button>
 
                     <button
                         onClick={() => openCreateModal()}
-                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
                         <Plus className="w-4 h-4" /> Add Customer
                     </button>
                 </div>
@@ -192,8 +190,7 @@ export default function Customers() {
                         value={globalFilter || ''}
                         onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Search customers..."
-                        className="w-full pl-12 pr-4 py-3 border rounded-xl focus:border-cyan-600 outline-none"
-                    />
+                        className="w-full pl-12 pr-4 py-3 border rounded-xl focus:border-cyan-600 outline-none"/>
                 </div>
             </div>
 

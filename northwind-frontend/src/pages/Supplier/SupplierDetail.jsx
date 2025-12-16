@@ -96,8 +96,7 @@ export default function SupplierDetail() {
             {/* BACK BUTTON */}
             <Link
                 to="/suppliers"
-                className="text-blue-600 underline mb-4 inline-block"
-            >
+                className="text-blue-600 underline mb-4 inline-block">
                 ← Back to Suppliers
             </Link>
 
@@ -108,15 +107,13 @@ export default function SupplierDetail() {
                 <div className="flex gap-3">
                     <button
                         onClick={openEditModal}
-                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg flex items-center gap-2"
-                    >
+                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg flex items-center gap-2">
                         <Pencil size={18} /> Edit
                     </button>
 
                     <button
                         onClick={handleDelete}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2"
-                    >
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2">
                         <Trash2 size={18} /> Delete
                     </button>
                 </div>
@@ -201,8 +198,7 @@ export default function SupplierDetail() {
                                         value={modalData[key] || ""}
                                         onChange={(e) =>
                                             setModalData(prev => ({ ...prev, [key]: e.target.value }))
-                                        }
-                                    />
+                                        }/>
 
                                     {errors[key] && (
                                         <p className="text-red-600 text-sm">{errors[key]}</p>

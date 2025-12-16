@@ -92,8 +92,7 @@ export default function CustomerDetail() {
             {/* BACK BUTTON */}
             <Link
                 to="/customers"
-                className="text-blue-600 underline mb-4 inline-block"
-            >
+                className="text-blue-600 underline mb-4 inline-block">
                 ← Back to Customers
             </Link>
 
@@ -104,15 +103,12 @@ export default function CustomerDetail() {
                 <div className="flex gap-3">
                     <button
                         onClick={openEditModal}
-                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg flex items-center gap-2"
-                    >
+                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg flex items-center gap-2">
                         <Pencil size={18} /> Edit
                     </button>
-
                     <button
                         onClick={handleDelete}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2"
-                    >
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2">
                         <Trash2 size={18} /> Delete
                     </button>
                 </div>
@@ -161,8 +157,7 @@ export default function CustomerDetail() {
                             <td className="px-3 py-2 border">
                                 <Link
                                     to={`/orders/${order.orderId}`}
-                                    className="text-blue-600 hover:underline"
-                                >
+                                    className="text-blue-600 hover:underline">
                                     {order.orderId}
                                 </Link>
                             </td>
@@ -212,10 +207,7 @@ export default function CustomerDetail() {
                                         className="w-full border px-2 py-1 rounded mt-1"
                                         value={modalData[key] || ""}
                                         onChange={(e) =>
-                                            setModalData(prev => ({ ...prev, [key]: e.target.value }))
-                                        }
-                                    />
-
+                                            setModalData(prev => ({ ...prev, [key]: e.target.value }))}/>
                                     {errors[key] && (
                                         <p className="text-red-600 text-sm">{errors[key]}</p>
                                     )}

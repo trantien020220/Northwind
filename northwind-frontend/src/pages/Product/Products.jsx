@@ -100,15 +100,13 @@ export default function Product() {
                     <div className="flex gap-3">
                         <button
                             onClick={() => openEdit(row.original.productId)}
-                            className="text-blue-600 hover:text-blue-800"
-                        >
+                            className="text-blue-600 hover:text-blue-800">
                             Edit
                         </button>
 
                         <button
                             onClick={() => handleDelete(row.original.productId)}
-                            className="text-red-600 hover:text-red-800"
-                        >
+                            className="text-red-600 hover:text-red-800">
                             Delete
                         </button>
                     </div>
@@ -201,15 +199,13 @@ export default function Product() {
                 <div className="flex gap-3">
                     <button
                         onClick={loadProducts}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
                         <RefreshCw className="w-4 h-4" /> Refresh
                     </button>
                     
                     <button
                         onClick={openCreate}
-                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
                         <Plus className="w-4 h-4" /> Add Product
                     </button>
                 </div>
@@ -223,8 +219,7 @@ export default function Product() {
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 border rounded-xl"
-                        placeholder="Search products..."
-                    />
+                        placeholder="Search products..."/>
                 </div>
             </div>
 
@@ -267,15 +262,13 @@ export default function Product() {
                     <button
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                    >
+                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
                         Previous
                     </button>
                     <button
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                    >
+                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
                         Next
                     </button>
                 </div>
@@ -303,8 +296,7 @@ export default function Product() {
                                 <input
                                     value={formData.productName}
                                     onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Supplier */}
@@ -313,8 +305,7 @@ export default function Product() {
                                 <select
                                     value={formData.supplierId ?? ""}
                                     onChange={(e) => setFormData({ ...formData, supplierId: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                >
+                                    className="w-full px-4 py-2 border rounded-lg">
                                     <option value="">-- Select Supplier --</option>
                                     {suppliers.map(s => (
                                         <option key={s.supplierId} value={s.supplierId}>
@@ -330,8 +321,7 @@ export default function Product() {
                                 <select
                                     value={formData.categoryId ?? ""}
                                     onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                >
+                                    className="w-full px-4 py-2 border rounded-lg">
                                     <option value="">-- Select Category --</option>
                                     {categories.map(c => (
                                         <option key={c.categoryId} value={c.categoryId}>
@@ -347,8 +337,7 @@ export default function Product() {
                                 <input
                                     value={formData.quantityPerUnit ?? ""}
                                     onChange={(e) => setFormData({ ...formData, quantityPerUnit: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Unit Price */}
@@ -358,8 +347,7 @@ export default function Product() {
                                     type="number"
                                     value={formData.unitPrice}
                                     onChange={(e) => setFormData({ ...formData, unitPrice: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Units In Stock */}
@@ -369,8 +357,7 @@ export default function Product() {
                                     type="number"
                                     value={formData.unitsInStock}
                                     onChange={(e) => setFormData({ ...formData, unitsInStock: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Units On Order */}
@@ -380,8 +367,7 @@ export default function Product() {
                                     type="number"
                                     value={formData.unitsOnOrder}
                                     onChange={(e) => setFormData({ ...formData, unitsOnOrder: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Reorder Level */}
@@ -391,8 +377,7 @@ export default function Product() {
                                     type="number"
                                     value={formData.reorderLevel}
                                     onChange={(e) => setFormData({ ...formData, reorderLevel: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"
-                                />
+                                    className="w-full px-4 py-2 border rounded-lg"/>
                             </div>
 
                             {/* Discontinued */}
@@ -400,8 +385,7 @@ export default function Product() {
                                 <input
                                     type="checkbox"
                                     checked={formData.discontinued}
-                                    onChange={(e) => setFormData({ ...formData, discontinued: e.target.checked })}
-                                />
+                                    onChange={(e) => setFormData({ ...formData, discontinued: e.target.checked })}/>
                                 <label className="font-semibold">Discontinued</label>
                             </div>
                         </div>

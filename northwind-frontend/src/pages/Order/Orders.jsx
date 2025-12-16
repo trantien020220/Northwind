@@ -261,8 +261,7 @@ export default function Orders() {
                     
                     <button
                         onClick={() => openCreateForm()}
-                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-                    >
+                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
                         <Plus className="w-4 h-4" /> Add Order
                     </button>
                     
@@ -280,8 +279,7 @@ export default function Orders() {
                         value={globalFilter || ''}
                         onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Search by customer name, order ID..."
-                        className="w-full pl-12 pr-4 py-3 border rounded-xl focus:border-cyan-600 outline-none"
-                    />
+                        className="w-full pl-12 pr-4 py-3 border rounded-xl focus:border-cyan-600 outline-none"/>
                 </div>
             </div>
 
@@ -331,12 +329,10 @@ export default function Orders() {
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-                    onClick={() => setShowModal(false)}
-                >
+                    onClick={() => setShowModal(false)}>
                     <div
                         className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                        onClick={(e) => e.stopPropagation()}>
                         <h2 className="text-2xl font-bold mb-6">
                             Add New Order
                         </h2>
@@ -365,8 +361,7 @@ export default function Orders() {
                                             onChange={(e) =>
                                                 setModalData(prev => ({ ...prev, [key]: e.target.value }))
                                             }
-                                            className="border w-full p-2 rounded-lg mt-1"
-                                        />
+                                            className="border w-full p-2 rounded-lg mt-1"/>
                                     </div>
                                 ))}
                             </div>
@@ -383,16 +378,14 @@ export default function Orders() {
                                         onChange={e => {
                                             addProductToOrder(e.target.value);
                                             e.target.value = "";
-                                        }}
-                                    >
+                                        }}>
                                         <option value="">-- Select Product --</option>
 
                                         {products.map(p => (
                                             <option
                                                 key={p.productId}
                                                 value={p.productId}
-                                                disabled={orderDetails.some(d => d.productId === p.productId)}
-                                            >
+                                                disabled={orderDetails.some(d => d.productId === p.productId)}>
                                                 {p.productName} (${p.unitPrice})
                                             </option>
                                         ))}
@@ -417,8 +410,7 @@ export default function Orders() {
                                             <tr>
                                                 <td
                                                     colSpan="5"
-                                                    className="text-center py-4 text-gray-500"
-                                                >
+                                                    className="text-center py-4 text-gray-500">
                                                     No products selected
                                                 </td>
                                             </tr>
@@ -454,8 +446,7 @@ export default function Orders() {
                                                                     return updated;
                                                                 });
                                                             }}
-                                                            className="border p-1 w-20 rounded-lg text-right"
-                                                        />
+                                                            className="border p-1 w-20 rounded-lg text-right"/>
                                                     </td>
 
                                                     <td className="p-3 text-right font-semibold">
@@ -473,8 +464,7 @@ export default function Orders() {
                                                                     )
                                                                 )
                                                             }
-                                                            className="px-3 py-1 bg-red-500 text-white rounded"
-                                                        >
+                                                            className="px-3 py-1 bg-red-500 text-white rounded">
                                                             X
                                                         </button>
                                                     </td>
