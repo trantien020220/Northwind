@@ -242,7 +242,7 @@ export default function Orders() {
         a.click()
     }
 
-    if (loading) return <div className="flex items-center justify-center h-96 text-xl">Loading orders...</div>
+    if (loading) return <div className="flex justify-center py-32 text-xl">Loading orders...</div>
 
     return (
         <div>

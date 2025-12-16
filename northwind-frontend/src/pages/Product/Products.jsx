@@ -161,10 +161,10 @@ export default function Product() {
         try {
             if (isEdit) {
                 await updateProduct(formData.productId, formData);
-                alert("Updated!");
+                alert("Product Updated!");
             } else {
                 await createProduct(formData);
-                alert("Created!");
+                alert("Product Created!");
             }
             setShowModal(false);
             loadProducts();

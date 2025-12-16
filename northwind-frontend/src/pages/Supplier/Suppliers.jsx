@@ -119,6 +119,8 @@ export default function Suppliers() {
         getPaginationRowModel: getPaginationRowModel(),
     })
 
+    if (loading) return <div className="flex justify-center py-32 text-xl">Loading suppliers...</div>
+    
     return (
         <div>
             {/* Header */}

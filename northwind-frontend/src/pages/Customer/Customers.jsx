@@ -237,16 +237,14 @@ export default function Customers() {
                     <button
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                    >
+                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
                         Previous
                     </button>
 
                     <button
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50"
-                    >
+                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
                         Next
                     </button>
                 </div>
@@ -256,14 +254,13 @@ export default function Customers() {
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-                    onClick={() => setShowModal(false)}
-                >
+                    onClick={() => setShowModal(false)}>
                     <div
                         className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                         role="dialog"
-                        aria-modal="true"
-                    >
+                        aria-modal="true">
+                        
                         {/* Header */}
                         <div className="sticky top-0 bg-white border-b px-8 py-6 flex justify-between items-center z-10">
                             <h2 className="text-2xl font-bold text-gray-800">
@@ -273,7 +270,7 @@ export default function Customers() {
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
-
+                        
                         {/* FORM */}
                         <form onSubmit={handleCreate} className="p-8 space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -289,8 +286,7 @@ export default function Customers() {
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
                                         required
                                         disabled={!!modalData?._isEdit}
-                                        style={modalData?._isEdit ? { backgroundColor: '#f3f4f6' } : {}}
-                                    />
+                                        style={modalData?._isEdit ? { backgroundColor: '#f3f4f6' } : {}}/>
                                     {errors?.customerId && (
                                         <p className="mt-2 text-red-600 text-sm flex items-center gap-1">
                                             <AlertCircle className="w-4 h-4" /> {errors.customerId}
@@ -309,8 +305,7 @@ export default function Customers() {
                                         className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none transition ${
                                             errors?.companyName ? 'border-red-500' : 'border-gray-300 focus:border-cyan-600'
                                         }`}
-                                        required
-                                    />
+                                        required/>
                                     {errors?.companyName && (
                                         <p className="mt-2 text-red-600 text-sm flex items-center gap-1">
                                             <AlertCircle className="w-4 h-4" /> {errors.companyName}
@@ -329,8 +324,7 @@ export default function Customers() {
                                         className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none transition ${
                                             errors?.phone ? 'border-red-500' : 'border-gray-300 focus:border-cyan-600'
                                         }`}
-                                        required
-                                    />
+                                        required/>
                                     {errors?.phone && (
                                         <p className="mt-2 text-red-600 text-sm flex items-center gap-1">
                                             <AlertCircle className="w-4 h-4" /> {errors.phone}
@@ -349,8 +343,7 @@ export default function Customers() {
                                         className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none transition ${
                                             errors?.country ? 'border-red-500' : 'border-gray-300 focus:border-cyan-600'
                                         }`}
-                                        required
-                                    />
+                                        required/>
                                     {errors?.country && (
                                         <p className="mt-2 text-red-600 text-sm flex items-center gap-1">
                                             <AlertCircle className="w-4 h-4" /> {errors.country}
@@ -358,7 +351,7 @@ export default function Customers() {
                                     )}
                                 </div>
 
-                                {/* Remaining fields (contactName, contactTitle, address, city, region, postalCode, fax) */}
+                                {/* Remaining fields */}
                                 {['contactName', 'contactTitle', 'address', 'city', 'region', 'postalCode', 'fax'].map((field) => (
                                     <div key={field} className={field === 'address' ? 'md:col-span-2' : ''}>
                                         <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -367,8 +360,7 @@ export default function Customers() {
                                         <input
                                             value={modalData?.[field] ?? ''}
                                             onChange={(e) => setModalData({ ...(modalData || {}), [field]: e.target.value })}
-                                            className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:border-cyan-600 outline-none"
-                                        />
+                                            className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:border-cyan-600 outline-none"/>
                                     </div>
                                 ))}
                             </div>

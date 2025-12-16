@@ -142,12 +142,7 @@ export default function Category() {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-    if (loading)
-        return (
-            <div className="flex justify-center py-32 text-xl">
-                Loading categories...
-            </div>
-        );
+    if (loading) return <div className="flex justify-center py-32 text-xl">Loading categories...</div>
 
     return (
         <div>
