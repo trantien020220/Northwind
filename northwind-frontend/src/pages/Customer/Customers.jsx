@@ -204,10 +204,7 @@ export default function Customers() {
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
-                                <th
-                                    key={header.id}
-                                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase"
-                                >
+                                <th key={header.id} className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase">
                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                 </th>
                             ))}
@@ -377,7 +374,10 @@ export default function Customers() {
                             </div>
                             
                             <div className="flex justify-end gap-4 pt-8 border-t">
-                                <button type="button" onClick={() => setShowModal(false)} className="px-8 py-4 border-2 border-gray-300 rounded-xl hover:bg-gray-50 font-bold">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setShowModal(false)} 
+                                    className="px-8 py-4 border-2 border-gray-300 rounded-xl hover:bg-gray-50 font-bold">
                                     Cancel
                                 </button>
 

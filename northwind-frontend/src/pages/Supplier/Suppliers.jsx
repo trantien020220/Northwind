@@ -241,17 +241,15 @@ export default function Suppliers() {
                         </div>
 
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="px-6 py-3 border rounded-lg hover:bg-gray-50"
-                            >
+                            <button 
+                                onClick={() => setShowModal(false)} 
+                                className="px-6 py-3 border rounded-lg hover:bg-gray-50">
                                 Cancel
                             </button>
 
                             <button
                                 onClick={handleCreate}
-                                className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2"
-                            >
+                                className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2">
                                 <Save className="w-4 h-4" />
                                 {"Create"}
                             </button>

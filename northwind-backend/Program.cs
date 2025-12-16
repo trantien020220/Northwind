@@ -20,7 +20,6 @@ using NorthwindBackend.Services.Order;
 using NorthwindBackend.Services.Supplier;
 using NorthwindBackend.Services.Product;
 using NorthwindBackend.UnitOfWork;
-using NorthwindBackend.Validators;
 
 var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -58,16 +57,6 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-// builder.Services.AddControllers()
-//     .AddFluentValidation(fv =>
-//     {
-//         fv.RegisterValidatorsFromAssemblyContaining<CustomerValidator>();
-//         fv.RegisterValidatorsFromAssemblyContaining<OrderValidator>();
-//         fv.RegisterValidatorsFromAssemblyContaining<ProductValidator>();
-//         fv.RegisterValidatorsFromAssemblyContaining<CategoryValidator>();
-//         fv.RegisterValidatorsFromAssemblyContaining<SupplierValidator>();
-//     });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<NorthwindContext>()

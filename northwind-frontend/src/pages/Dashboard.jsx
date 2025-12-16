@@ -30,7 +30,7 @@ export default function Dashboard() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        const fetchAllData = async () => {
+        const loadAllData = async () => {
             try {
                 const [
                     ordersRes,
@@ -80,7 +80,7 @@ export default function Dashboard() {
             }
         }
 
-        fetchAllData()
+        loadAllData()
     }, [api])
 
     const statCards = [
@@ -133,8 +133,6 @@ export default function Dashboard() {
                     </div>
                 ))}
             </div>
-
-            
         </div>
     )
 }

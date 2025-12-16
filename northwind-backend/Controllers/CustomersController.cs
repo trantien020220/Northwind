@@ -37,8 +37,7 @@ public class CustomersController : ControllerBase
 
         return Ok(ApiResponse<CustomerDetailDto>.Ok(customer));
     }
-
-
+    
     //POST: api/customer
     [HttpPost]
     public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto dto)

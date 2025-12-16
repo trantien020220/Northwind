@@ -84,8 +84,7 @@ export default function Register() {
 
                     <button
                         type="submit"
-                        className="w-full bg-accent text-white py-4 rounded-xl font-bold text-lg hover:bg-cyan-700 transition"
-                    >
+                        className="w-full bg-accent text-white py-4 rounded-xl font-bold text-lg hover:bg-cyan-700 transition">
                         CREATE ACCOUNT
                     </button>
                 </form>
@@ -93,10 +92,9 @@ export default function Register() {
                 <div className="mt-8 pt-8 border-t border-gray-200 text-center">
                     <p className="text-gray-600">
                         Have an account?{' '}
-                        <Link
-                            to="/login"
-                            className="font-bold text-cyan-600 hover:text-cyan-700 hover:underline transition"
-                        >
+                        <Link 
+                            to="/login" 
+                            className="font-bold text-cyan-600 hover:text-cyan-700 hover:underline transition">
                             Sign in
                         </Link>
                     </p>

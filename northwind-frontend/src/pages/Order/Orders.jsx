@@ -301,7 +301,7 @@ export default function Orders() {
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                     {table.getRowModel().rows.map(row => (
-                        <tr key={row.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => setSelectedOrder(row.original)}>
+                        <tr key={row.id} className="hover:bg-gray-50">
                             {row.getVisibleCells().map(cell => (
                                 <td key={cell.id} className="px-6 py-4 text-sm">
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -490,15 +490,13 @@ export default function Orders() {
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="px-6 py-3 border rounded-lg hover:bg-gray-50"
-                            >
+                                className="px-6 py-3 border rounded-lg hover:bg-gray-50">
                                 Cancel
                             </button>
 
                             <button
                                 onClick={handleCreate}
-                                className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2"
-                            >
+                                className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2">
                                 <Save className="w-4 h-4" />
                                 {"Create"}
                             </button>
