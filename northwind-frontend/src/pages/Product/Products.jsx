@@ -288,108 +288,110 @@ export default function Product() {
                         </div>
 
                         {/* FORM */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">*/}
+                        <form className="p-8 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             {/* Product Name */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Product Name</label>
-                                <input
-                                    value={formData.productName}
-                                    onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg"/>
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Product Name</label>
+                                    <input
+                                        value={formData.productName}
+                                        onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
+                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                </div>
+    
+                                {/* Supplier */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Supplier</label>
+                                    <select
+                                        value={formData.supplierId ?? ""}
+                                        onChange={(e) => setFormData({ ...formData, supplierId: Number(e.target.value) })}
+                                        className="w-full px-4 py-2 border rounded-lg">
+                                        <option value="">-- Select Supplier --</option>
+                                        {suppliers.map(s => (
+                                            <option key={s.supplierId} value={s.supplierId}>
+                                                {s.companyName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+    
+                                {/* Category */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Category</label>
+                                    <select
+                                        value={formData.categoryId ?? ""}
+                                        onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
+                                        className="w-full px-4 py-2 border rounded-lg">
+                                        <option value="">-- Select Category --</option>
+                                        {categories.map(c => (
+                                            <option key={c.categoryId} value={c.categoryId}>
+                                                {c.categoryName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+    
+                                {/* Quantity Per Unit */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Quantity Per Unit</label>
+                                    <input
+                                        value={formData.quantityPerUnit ?? ""}
+                                        onChange={(e) => setFormData({ ...formData, quantityPerUnit: e.target.value })}
+                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                </div>
+    
+                                {/* Unit Price */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Unit Price</label>
+                                    <input
+                                        type="number"
+                                        value={formData.unitPrice}
+                                        onChange={(e) => setFormData({ ...formData, unitPrice: Number(e.target.value) })}
+                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                </div>
+    
+                                {/* Units In Stock */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Units In Stock</label>
+                                    <input
+                                        type="number"
+                                        value={formData.unitsInStock}
+                                        onChange={(e) => setFormData({ ...formData, unitsInStock: Number(e.target.value) })}
+                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                </div>
+    
+                                {/* Units On Order */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Units On Order</label>
+                                    <input
+                                        type="number"
+                                        value={formData.unitsOnOrder}
+                                        onChange={(e) => setFormData({ ...formData, unitsOnOrder: Number(e.target.value) })}
+                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                </div>
+    
+                                {/* Reorder Level */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Reorder Level</label>
+                                    <input
+                                        type="number"
+                                        value={formData.reorderLevel}
+                                        onChange={(e) => setFormData({ ...formData, reorderLevel: Number(e.target.value) })}
+                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                </div>
+    
+                                {/* Discontinued */}
+                                <div className="flex items-center gap-2 mt-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.discontinued}
+                                        onChange={(e) => setFormData({ ...formData, discontinued: e.target.checked })}/>
+                                    <label className="font-semibold">Discontinued</label>
+                                </div>
                             </div>
-
-                            {/* Supplier */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Supplier</label>
-                                <select
-                                    value={formData.supplierId ?? ""}
-                                    onChange={(e) => setFormData({ ...formData, supplierId: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg">
-                                    <option value="">-- Select Supplier --</option>
-                                    {suppliers.map(s => (
-                                        <option key={s.supplierId} value={s.supplierId}>
-                                            {s.companyName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Category */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Category</label>
-                                <select
-                                    value={formData.categoryId ?? ""}
-                                    onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg">
-                                    <option value="">-- Select Category --</option>
-                                    {categories.map(c => (
-                                        <option key={c.categoryId} value={c.categoryId}>
-                                            {c.categoryName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Quantity Per Unit */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Quantity Per Unit</label>
-                                <input
-                                    value={formData.quantityPerUnit ?? ""}
-                                    onChange={(e) => setFormData({ ...formData, quantityPerUnit: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg"/>
-                            </div>
-
-                            {/* Unit Price */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Unit Price</label>
-                                <input
-                                    type="number"
-                                    value={formData.unitPrice}
-                                    onChange={(e) => setFormData({ ...formData, unitPrice: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"/>
-                            </div>
-
-                            {/* Units In Stock */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Units In Stock</label>
-                                <input
-                                    type="number"
-                                    value={formData.unitsInStock}
-                                    onChange={(e) => setFormData({ ...formData, unitsInStock: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"/>
-                            </div>
-
-                            {/* Units On Order */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Units On Order</label>
-                                <input
-                                    type="number"
-                                    value={formData.unitsOnOrder}
-                                    onChange={(e) => setFormData({ ...formData, unitsOnOrder: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"/>
-                            </div>
-
-                            {/* Reorder Level */}
-                            <div>
-                                <label className="block text-sm font-semibold mb-1">Reorder Level</label>
-                                <input
-                                    type="number"
-                                    value={formData.reorderLevel}
-                                    onChange={(e) => setFormData({ ...formData, reorderLevel: Number(e.target.value) })}
-                                    className="w-full px-4 py-2 border rounded-lg"/>
-                            </div>
-
-                            {/* Discontinued */}
-                            <div className="flex items-center gap-2 mt-3">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.discontinued}
-                                    onChange={(e) => setFormData({ ...formData, discontinued: e.target.checked })}/>
-                                <label className="font-semibold">Discontinued</label>
-                            </div>
-                        </div>
-                        
+                        </form>
                         {/* BUTTON */}
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                             <button

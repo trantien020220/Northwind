@@ -123,7 +123,7 @@ export default function Suppliers() {
     
     return (
         <div>
-            {/* Header */}
+            {/* HEADER */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Suppliers</h1>
@@ -142,7 +142,7 @@ export default function Suppliers() {
                 </div>
             </div>
 
-            {/* Search */}
+            {/* SEARCH */}
             <div className="mb-6">
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -154,7 +154,7 @@ export default function Suppliers() {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* TABLE */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <table className="w-full">
                     <thead className="bg-gray-50">
@@ -183,7 +183,7 @@ export default function Suppliers() {
                 </table>
             </div>
 
-            {/* Pagination */}
+            {/* PAGINATION */}
             <div className="flex justify-between items-center mt-6">
                 <span className="text-sm text-gray-700">
                   Showing {table.getState().pagination.pageIndex * 10 + 1} to{' '}
@@ -197,7 +197,7 @@ export default function Suppliers() {
                 </div>
             </div>
 
-            {/*{showForm && (*/}
+            {/* MODAL */}
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"

@@ -338,8 +338,7 @@ export default function Orders() {
                         </h2>
 
                         <div className="grid grid-cols-2 gap-6">
-
-                            {/* LEFT - ORDER INFO */}
+                            
                             <div className="pr-4">
                                 <h3 className="text-lg font-semibold mb-3">Order Information</h3>
 
@@ -365,8 +364,7 @@ export default function Orders() {
                                     </div>
                                 ))}
                             </div>
-
-                            {/* RIGHT - PRODUCT SELECTION */}
+                            
                             <div className="overflow-y-auto max-h-[70vh]">
                                 <h3 className="text-lg font-semibold mb-3">Order Products</h3>
 
