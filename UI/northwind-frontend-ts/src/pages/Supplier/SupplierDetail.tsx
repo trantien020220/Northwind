@@ -1,18 +1,19 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
 import {Trash2, Pencil} from "lucide-react";
-import {getSupplierById, updateSupplier, deleteSupplier} from "../../api/supplierApi";
+import {getSupplierById, updateSupplier, deleteSupplier} from "../../services/api";
+import { a } from "vite/dist/node/chunks/moduleRunnerTransport";
 
 export default function SupplierDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [supplier, setSupplier] = useState(null);
     const [products, setProducts] = useState([]);
-    const [modalData, setModalData] = useState({});
+    const [modalData, setModalData] = useState<any>({});
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({});
-    const [errors, setErrors] = useState({});
-    
+    const [formData, setFormData] = useState<any>({});
+    const [errors, setErrors] = useState<any>({});
+
     async function loadSupplierDetail() {
         try {
             const res = await getSupplierById(id);
@@ -39,8 +40,7 @@ export default function SupplierDetail() {
             country: supplier.country || '',
             phone: supplier.phone || '',
             fax: supplier.fax || '',
-            homePage: supplier.homePage || '',
-            _isEdit: !!supplier.supplierId
+            homePage: supplier.homePage || ''
         })
         setShowModal(true);
     };
@@ -73,7 +73,7 @@ export default function SupplierDetail() {
     };
 
     const validateForm = () => {
-        const newErrors = {};
+        const newErrors: any = {};
 
         if (!modalData.companyName?.trim())
             newErrors.companyName = "Company Name is required";

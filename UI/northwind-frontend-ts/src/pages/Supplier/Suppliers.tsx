@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useMemo } from "react";
 import {Download, Plus, RefreshCw, Save, Search} from "lucide-react";
 import { Link } from "react-router-dom";
-import {getSuppliers, createSupplier} from "../../api/supplierApi";
+import { getSuppliers, createSupplier } from "../../services/api";
 import {
     useReactTable,
     getCoreRowModel,
@@ -17,7 +17,7 @@ export default function Suppliers() {
     const [loading, setLoading] = useState(true)
     const [globalFilter, setGlobalFilter] = useState('')
     const [showModal, setShowModal] = useState(false)
-    const [modalData, setModalData] = useState({})
+    const [modalData, setModalData] = useState<any>({})
 
     const loadSuppliers = async () => {
         try {
@@ -34,8 +34,8 @@ export default function Suppliers() {
     useEffect(() => {
         loadSuppliers();
     }, []);
-    
-    const openCreateModal = (supplier = {}) => {
+
+    const openCreateModal = (supplier: any = {}) => {
         setModalData({
             supplierId: supplier.supplierId || '',
             companyName: supplier.companyName || '',

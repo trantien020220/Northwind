@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { JSX, ReactNode } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
+import Layout from './components/Layout'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import Customers from './pages/Customer/Customers'
+import CustomerDetail from './pages/Customer/CustomerDetail'
+import Orders from './pages/Order/Orders'
+import OrderDetail from './pages/Order/OrderDetail'
+import Products from './pages/Product/Products'
+import Category from './pages/Category/Category'
+import Suppliers from './pages/Supplier/Suppliers'
+import SupplierDetail from './pages/Supplier/SupplierDetail'
 
-function App() {
-  const [count, setCount] = useState(0)
+type ProtectedProps = { children: ReactNode }
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function Protected({ children }: ProtectedProps): JSX.Element {
+  const { user, loading } = useAuth()
+  if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>
+  return user ? <Layout>{children}</Layout> : <Navigate to="/login" />
 }
 
-export default App
+export default function App(): JSX.Element {
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+      <Route path="/customers" element={<Protected><Customers /></Protected>} />
+      <Route path="/orders" element={<Protected><Orders /></Protected>} />
+      <Route path="/customers/:id" element={<Protected><CustomerDetail /></Protected>} />
+      <Route path="/orders/:id" element={<Protected><OrderDetail /></Protected>} />
+      <Route path="/products/" element={<Protected><Products /></Protected>} />
+      <Route path="/categories/" element={<Protected><Category /></Protected>} />
+      <Route path="/suppliers/" element={<Protected><Suppliers /></Protected>} />
+      <Route path="/suppliers/:id" element={<Protected><SupplierDetail /></Protected>} />
+    </Routes>
+  )
+}

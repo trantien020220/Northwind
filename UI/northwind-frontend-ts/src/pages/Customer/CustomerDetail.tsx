@@ -1,6 +1,6 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getCustomerById, deleteCustomer, updateCustomer } from "../../api/customerApi";
+import { getCustomerById, deleteCustomer, updateCustomer } from "../../services/api";
 import {Pencil, Trash2} from "lucide-react";
 
 export default function CustomerDetail() {
@@ -8,8 +8,8 @@ export default function CustomerDetail() {
     const navigate = useNavigate();
     const [customer, setCustomer] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [modalData, setModalData] = useState({});
-    const [errors, setErrors] = useState({});
+    const [modalData, setModalData] = useState<any>({});
+    const [errors, setErrors] = useState<any>({});
     
     async function loadCustomer() {
         try {
@@ -69,7 +69,7 @@ export default function CustomerDetail() {
     };
     
     const validateForm = () => {
-        const newErrors = {};
+        const newErrors: any = {};
 
         if (!modalData.companyName?.trim())
             newErrors.companyName = "Company Name is required";

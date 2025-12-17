@@ -6,7 +6,7 @@ import {
     createCategory,
     updateCategory,
     deleteCategory
-} from "../../api/categoryApi.js";
+} from "../../services/api";
 import {
     useReactTable,
     getCoreRowModel,
@@ -48,9 +48,9 @@ export default function Category() {
     const openCreate = () => {
         setIsEdit(false);
         setFormData({
-            categoryId: categories.categoryId,
-            categoryName: categories.categoryName,
-            description: categories.description,
+            categoryId: 0,
+            categoryName: "",
+            description: "",
         });
         setShowModal(true);
     };

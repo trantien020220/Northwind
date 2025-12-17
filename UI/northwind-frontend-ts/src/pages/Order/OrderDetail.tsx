@@ -1,9 +1,8 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
 import { parseISO, format } from 'date-fns';
 import { Trash2, Pencil } from "lucide-react";
-import {deleteOrder, getOrderById, getOrderDetails, updateOrder} from "../../api/orderApi.js";
-import {getProducts} from "../../api/productApi.js";
+import { deleteOrder, getOrderById, getOrderDetails, updateOrder, getProducts } from "../../services/api";
 
 export default function OrderDetail() {
     const { id } = useParams();
@@ -302,7 +301,7 @@ export default function OrderDetail() {
                                         {orderDetails.length === 0 && (
                                             <tr>
                                                 <td
-                                                    colSpan="5"
+                                                    colSpan={5}
                                                     className="text-center py-4 text-gray-500">
                                                     No products in this order
                                                 </td>

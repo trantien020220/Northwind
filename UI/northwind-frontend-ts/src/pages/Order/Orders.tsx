@@ -2,9 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw, Download, Search, Save } from 'lucide-react'
 import { format } from 'date-fns'
-import {createOrder, getOrders} from "../../api/orderApi.js";
-import {getProducts} from "../../api/productApi.js";
-import {getCustomers} from "../../api/customerApi.js";
+import api, { createOrder, getOrders, getProducts, getCustomers } from "../../services/api";
 import {
     useReactTable,
     getCoreRowModel,
@@ -25,7 +23,7 @@ export default function Orders() {
     const [detailsError, setDetailsError] = useState('');
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
-    const [modalData, setModalData] = useState({});
+    const [modalData, setModalData] = useState<any>({});
     
 
     const initialForm = {
@@ -407,7 +405,7 @@ export default function Orders() {
                                         {orderDetails.length === 0 && (
                                             <tr>
                                                 <td
-                                                    colSpan="5"
+                                                    colSpan={5}
                                                     className="text-center py-4 text-gray-500">
                                                     No products selected
                                                 </td>

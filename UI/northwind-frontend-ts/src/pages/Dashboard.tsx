@@ -9,11 +9,7 @@ import {
     Tags,
     AlertCircle
 } from 'lucide-react'
-import {getOrders} from "../api/orderApi.js";
-import {getCustomers} from "../api/customerApi.js";
-import {getProducts} from "../api/productApi.js";
-import {getCategory} from "../api/categoryApi.js";
-import {getSuppliers} from "../api/supplierApi.js";
+import { getOrders, getCustomers, getProducts, getCategory, getSuppliers } from "../services/api";
 
 export default function Dashboard() {
     const { api } = useAuth()

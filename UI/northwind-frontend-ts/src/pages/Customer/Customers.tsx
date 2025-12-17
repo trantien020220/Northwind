@@ -9,15 +9,15 @@ import {
     getSortedRowModel,
     flexRender
 } from '@tanstack/react-table'
-import {createCustomer, getCustomers} from "../../api/customerApi.js";
+import { createCustomer, getCustomers } from "../../services/api";
 
 export default function Customers() {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     const [globalFilter, setGlobalFilter] = useState('')
     const [showModal, setShowModal] = useState(false)
-    const [modalData, setModalData] = useState({})
-    const [errors, setErrors] = useState({});
+    const [modalData, setModalData] = useState<any>({})
+    const [errors, setErrors] = useState<any>({});
 
 
     const loadCustomers = async () => {
@@ -37,7 +37,7 @@ export default function Customers() {
         loadCustomers()
     }, [])
     
-    const openCreateModal = (customer = {}) => {
+    const openCreateModal = (customer: any = {}) => {
         setModalData({
             customerId: customer.customerId || '',
             companyName: customer.companyName || '',

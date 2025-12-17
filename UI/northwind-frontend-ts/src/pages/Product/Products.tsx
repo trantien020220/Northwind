@@ -1,14 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Plus, RefreshCw, Search, X, Save, Square, CheckSquare } from "lucide-react";
-import {getCategory} from "../../api/categoryApi.js";
-import {getSuppliers} from "../../api/supplierApi.js";
-import {
-    getProducts,
-    getProductById,
-    createProduct,
-    updateProduct,
-    deleteProduct
-} from "../../api/productApi.js";
+import { getCategory, getSuppliers, getProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../../services/api";
 import {
     useReactTable,
     getCoreRowModel,
@@ -126,18 +118,18 @@ export default function Product() {
         getPaginationRowModel: getPaginationRowModel()
     });
     
-    const openCreate = (product = {}) => {
+    const openCreate = () => {
         setIsEdit(false);
         setFormData({
-            productId: product.productId || '',
-            productName: product.productName || '',
-            supplierId: product.supplierId || '',
-            categoryId: product.categoryId || '',
-            quantityPerUnit: product.quantityPerUnit || '',
-            unitPrice: product.unitPrice || '',
-            unitsInStock: product.unitsInStock || '',
-            unitsOnOrder: product.unitsOnOrder || '',
-            reorderLevel: product.reorderLevel || '',
+            productId: 0,
+            productName: '',
+            supplierId: null,
+            categoryId: null,
+            quantityPerUnit: '',
+            unitPrice: 0,
+            unitsInStock: 0,
+            unitsOnOrder: 0,
+            reorderLevel: 0,
             discontinued: false,
         });
         setShowModal(true);
