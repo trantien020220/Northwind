@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Plus, RefreshCw, Search, X, Save, Square, CheckSquare } from "lucide-react";
+import { Link } from "react-router-dom";
 import {getCategory} from "../../api/categoryApi.js";
 import {getSuppliers} from "../../api/supplierApi.js";
 import {
@@ -135,12 +136,24 @@ export default function Product() {
                 accessorKey: 'productId',
                 header: 'ID',
                 cell: ({ row }) => (
-                    <span className="font-semibold text-gray-800">
+                    <Link
+                        to={`/products/${row.original.productId}`}
+                        className="text-blue-600 hover:underline">
                         {row.original.productId}
-                    </span>
+                    </Link>
                 )
             },
-            { accessorKey: 'productName', header: 'Product Name', size: 250 },
+            { 
+                accessorKey: 'productName', 
+                header: 'Product Name',
+                cell: ({ row }) => (
+                    <Link
+                        to={`/products/${row.original.productId}`}
+                        className="text-blue-600 hover:underline">
+                        {row.original.productName}
+                    </Link>
+                ) 
+            },
             { accessorKey: 'companyName', header: 'Supplier', size: 180 },
             { accessorKey: 'categoryName', header: 'Category', size: 180 },
             { accessorKey: 'quantityPerUnit', header: 'Quantity / Unit', size: 180 },
