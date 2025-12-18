@@ -14,7 +14,7 @@ public class CustomerValidator : AbstractValidator<CreateCustomerDto>
             .MinimumLength(5).WithMessage("ID must have 5 characters");
         
         RuleFor(customer => customer.CompanyName)
-            .NotEmpty().WithMessage("CompanyName is required")
+            .NotEmpty().WithMessage("Company Name is required")
             .MaximumLength(40);
 
         RuleFor(customer => customer.ContactName)

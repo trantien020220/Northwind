@@ -101,10 +101,6 @@ export default function OrderDetail() {
     };
     
 
-    // const validateForm = () => {
-    //     return true;
-    // };
-
     const addProductToOrder = (productId) => {
         const prod = products.find(p => p.productId === Number(productId))
         if (!prod) return

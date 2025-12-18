@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useMemo } from "react";
-import {Download, Plus, RefreshCw, Save, Search} from "lucide-react";
+import {X, Plus, RefreshCw, Save, Search} from "lucide-react";
 import { Link } from "react-router-dom";
 import {getSuppliers, createSupplier} from "../../api/supplierApi";
 import {
@@ -18,6 +18,7 @@ export default function Suppliers() {
     const [globalFilter, setGlobalFilter] = useState('')
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({})
+    const [errors, setErrors] = useState({});
 
     const loadSuppliers = async () => {
         try {
@@ -36,6 +37,7 @@ export default function Suppliers() {
     }, []);
     
     const openCreateModal = (supplier = {}) => {
+        setErrors({});
         setModalData({
             supplierId: supplier.supplierId || '',
             companyName: supplier.companyName || '',
@@ -65,8 +67,25 @@ export default function Suppliers() {
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            console.error("Full error:", err.response?.data);
+            handleBackendValidation(err);
         }
+    };
+
+    const handleBackendValidation = (err) => {
+        const responseErrors = err.response?.data?.errors;
+        if (!responseErrors) {
+            alert("Save failed");
+            return;
+        }
+
+        const formattedErrors = {};
+
+        Object.keys(responseErrors).forEach(key => {
+            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
+                responseErrors[key][0];
+        });
+
+        setErrors(formattedErrors);
     };
     
     const columns = useMemo(
@@ -202,13 +221,16 @@ export default function Suppliers() {
                 <div
                     className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
                     onClick={() => setShowModal(false)}>
-                    <div
-                        className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
+                    <div className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}>
-                        <h2 className="text-2xl font-bold mb-6">
-                            Add Supplier
-                        </h2>
-
+                            <div className="flex justify-between items-center pb-4 border-b">
+                                <h2 className="text-2xl font-bold mb-6">
+                                    Add Supplier
+                                </h2>
+                                <button onClick={() => setShowModal(false)}>
+                                    <X className="w-6 h-6 text-gray-500" />
+                                </button>
+                            </div>                   
                         <div className="grid grid-cols-1 gap-4 mt-6">
                             <div className="pr-4">
                                 {[
@@ -229,8 +251,10 @@ export default function Suppliers() {
                                             onChange={(e) =>
                                                 setModalData(prev => ({ ...prev, [key]: e.target.value }))
                                             }
-                                            className="border w-full p-2 rounded-lg mt-1"
-                                        />
+                                            className="border w-full p-2 rounded-lg mt-1"/>
+                                        {errors[key] && (
+                                            <p className="text-red-500 text-sm">{errors[key]}</p>
+                                        )}
                                     </div>
                                 ))}
                             </div>

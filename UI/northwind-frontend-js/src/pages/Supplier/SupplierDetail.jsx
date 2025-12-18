@@ -27,6 +27,7 @@ export default function SupplierDetail() {
     }, []);
 
     const openEditModal = () => {
+        setErrors({});
         setModalData({
             supplierId: supplier.supplierId || '',
             companyName: supplier.companyName || '',

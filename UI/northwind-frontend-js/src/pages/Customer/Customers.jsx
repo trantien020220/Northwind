@@ -38,6 +38,7 @@ export default function Customers() {
     }, [])
     
     const openCreateModal = (customer = {}) => {
+        setErrors({});
         setModalData({
             customerId: customer.customerId || '',
             companyName: customer.companyName || '',
@@ -59,29 +60,7 @@ export default function Customers() {
         
         if (payload.customerId) {
             payload.customerId = payload.customerId.trim().toUpperCase();
-            if (payload.customerId.length > 5) {
-                alert("Customer ID must be 5 characters or less!");
-                return;
-            }
-        }
-        
-        if (!payload.customerId?.trim()) {
-            alert("Customer ID is required!");
-            return;
-        }
 
-        if (!payload.companyName?.trim()) {
-            alert("Company Name is required!");
-            return;
-        }
-
-        const phoneDigits = payload.phone?.replace(/\D/g, "") || "";
-        if (!payload.phone?.trim()) {
-            alert("Phone is required!");
-            return;
-        } else if (phoneDigits.length < 9 || phoneDigits.length > 11) {
-            alert("Phone must be from 9 to 11 digits!");
-            return;
         }
 
         try {
@@ -92,25 +71,27 @@ export default function Customers() {
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            console.error("Full error:", err.response?.data);
-
-            if (err.response?.status === 400) {
-                const errors = err.response.data.errors || err.response.data;
-                if (errors) {
-                    if (typeof errors === "object") {
-                        const msg = Object.values(errors).flat().join("\n");
-                        alert("Validation Error:\n" + msg);
-                    } else {
-                        alert("Error: " + (errors.title || errors));
-                    }
-                } else {
-                    alert("Customer ID already exists or invalid data!");
-                }
-            } else {
-                alert("Server error. Check console (F12).");
-            }
+            handleBackendValidation(err);
         }
     };
+
+    const handleBackendValidation = (err) => {
+        const responseErrors = err.response?.data?.errors;
+        if (!responseErrors) {
+            alert("Save failed");
+            return;
+        }
+
+        const formattedErrors = {};
+
+        Object.keys(responseErrors).forEach(key => {
+            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
+                responseErrors[key][0];
+        });
+
+        setErrors(formattedErrors);
+    };
+
     
     
     const columns = useMemo(
@@ -274,7 +255,7 @@ export default function Customers() {
                                 {/* Customer ID */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">
-                                        Customer ID <span className="text-red-600">*</span> (5 characters)
+                                        Customer ID <span className="text-red-600">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -313,7 +294,7 @@ export default function Customers() {
                                 {/* Phone */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">
-                                        Phone <span className="text-red-600">*</span> (9–11 digits)
+                                        Phone <span className="text-red-600">*</span>
                                     </label>
                                     <input
                                         value={modalData?.phone ?? ''}

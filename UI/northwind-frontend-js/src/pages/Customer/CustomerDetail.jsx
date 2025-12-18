@@ -25,6 +25,7 @@ export default function CustomerDetail() {
     }, [id]);
     
     const openEditModal = () => {
+        setErrors({});
         setModalData({
             customerId: customer.customerId || '',
             companyName: customer.companyName || '',
@@ -67,23 +68,6 @@ export default function CustomerDetail() {
             alert("Update failed!");
         }
     };
-    
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!modalData.companyName?.trim())
-            newErrors.companyName = "Company Name is required";
-
-        const phoneDigits = modalData.phone?.replace(/\D/g, '') || '';
-        if (!modalData.phone?.trim())
-            newErrors.phone = "Phone number is required";
-        else if (phoneDigits.length < 9 || phoneDigits.length > 11)
-            newErrors.phone = "Phone must be from 9–11 digits";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
     
     if (!customer) return <div className="p-6">Loading...</div>;
 

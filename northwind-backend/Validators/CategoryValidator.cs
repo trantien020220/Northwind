@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using NorthwindBackend.DTOs.Category;
 using NorthwindBackend.Models;
 
 namespace NorthwindBackend.Validators;
 
-public class CategoryValidator : AbstractValidator<Category>
+public class CategoryValidator : AbstractValidator<CreateCategoryDto>
 {
     public CategoryValidator()
     {

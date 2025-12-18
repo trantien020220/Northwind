@@ -22,15 +22,14 @@ export default function Product() {
     const [products, setProducts] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [loading, setLoading] = useState(false);
-
     const [showModal, setShowModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-
+    const [errors, setErrors] = useState({});
     const [suppliers, setSuppliers] = useState([]);
     const [categories, setCategories] = useState([]);
     const loadCategories = () => getCategory();
     const loadSuppliers = () => getSuppliers();
-
+    
     const [formData, setFormData] = useState({
         productId: 0,
         productName: "",
@@ -60,6 +59,75 @@ export default function Product() {
         loadSuppliers().then(res => setSuppliers(res.data.data));
         loadCategories().then(res => setCategories(res.data.data));
     }, []);
+    
+    const openCreate = (product = {}) => {
+        setIsEdit(false);
+        setErrors({});
+        setFormData({
+            productId: product.productId || '',
+            productName: product.productName || '',
+            supplierId: product.supplierId || null,
+            categoryId: product.categoryId || null,
+            quantityPerUnit: product.quantityPerUnit || '',
+            unitPrice: product.unitPrice || null,
+            unitsInStock: product.unitsInStock || null,
+            unitsOnOrder: product.unitsOnOrder || null,
+            reorderLevel: product.reorderLevel || null,
+            discontinued: false,
+        });
+        setShowModal(true);
+    };
+    
+    const openEdit = async (id) => {
+        setErrors({});
+        const res = await getProductById(id);
+        setFormData(res.data.data);
+        setIsEdit(true);
+        setShowModal(true);
+    };
+    
+    const handleSave = async () => {
+        try {
+            if (isEdit) {
+                await updateProduct(formData.productId, formData);
+                alert("Product Updated!");
+            } else {
+                await createProduct(formData);
+                alert("Product Created!");
+            }
+            setShowModal(false);
+            loadProducts();
+        } catch (err) {
+            handleBackendValidation(err);
+        }
+    };
+    
+    const handleDelete = async (id) => {
+        if (!confirm("Delete this product?")) return;
+        try {
+            await deleteProduct(id);
+            loadProducts();
+        } catch (err) {
+            handleBackendValidation(err);
+        }
+    };
+
+    const handleBackendValidation = (err) => {
+        const responseErrors = err.response?.data?.errors;
+        if (!responseErrors) {
+            alert("Save failed");
+            return;
+        }
+
+        const formattedErrors = {};
+
+        Object.keys(responseErrors).forEach(key => {
+            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
+                responseErrors[key][0];
+        });
+
+        setErrors(formattedErrors);
+    };
 
     const columns = useMemo(
         () => [
@@ -125,63 +193,6 @@ export default function Product() {
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel()
     });
-    
-    const openCreate = (product = {}) => {
-        setIsEdit(false);
-        setFormData({
-            productId: product.productId || '',
-            productName: product.productName || '',
-            supplierId: product.supplierId || '',
-            categoryId: product.categoryId || '',
-            quantityPerUnit: product.quantityPerUnit || '',
-            unitPrice: product.unitPrice || '',
-            unitsInStock: product.unitsInStock || '',
-            unitsOnOrder: product.unitsOnOrder || '',
-            reorderLevel: product.reorderLevel || '',
-            discontinued: false,
-        });
-        setShowModal(true);
-    };
-    
-    const openEdit = async (id) => {
-        const res = await getProductById(id);
-        setFormData(res.data.data);
-        setIsEdit(true);
-        setShowModal(true);
-    };
-    
-    const handleSave = async () => {
-        if (!formData.productName) {
-            alert("Product name is required");
-            return;
-        }
-
-        try {
-            if (isEdit) {
-                await updateProduct(formData.productId, formData);
-                alert("Product Updated!");
-            } else {
-                await createProduct(formData);
-                alert("Product Created!");
-            }
-            setShowModal(false);
-            loadProducts();
-        } catch (err) {
-            console.error("Save failed:", err.response?.data || err);
-            alert("Save failed");
-        }
-    };
-    
-    const handleDelete = async (id) => {
-        if (!confirm("Delete this product?")) return;
-        try {
-            await deleteProduct(id);
-            loadProducts();
-        } catch (err) {
-            console.error("Delete failed:", err);
-            alert("Delete failed");
-        }
-    };
 
     if (loading) return <div className="flex justify-center py-32 text-xl">Loading products...</div>
     
@@ -288,110 +299,121 @@ export default function Product() {
                         </div>
 
                         {/* FORM */}
-                        {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">*/}
-                        <form className="p-8 space-y-6">
+                        <form
+                            className="p-8 space-y-6"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSave();
+                            }}
+                            >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                            {/* Product Name */}
+                                {/* Product Name */}
                                 <div>
-                                    <label className="block text-sm font-semibold mb-1">Product Name</label>
-                                    <input
-                                        value={formData.productName}
-                                        onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                <label className="block text-sm font-semibold mb-1">Product Name</label>
+                                <input
+                                    value={formData.productName}
+                                    onChange={(e) => {
+                                    setFormData({ ...formData, productName: e.target.value });
+                                    setErrors({ ...errors, productName: null });
+                                    }}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                />
+                                {errors.productName && (
+                                    <p className="text-red-500 text-sm">{errors.productName}</p>
+                                )}
                                 </div>
-    
+
                                 {/* Supplier */}
                                 <div>
-                                    <label className="block text-sm font-semibold mb-1">Supplier</label>
-                                    <select
-                                        value={formData.supplierId ?? ""}
-                                        onChange={(e) => setFormData({ ...formData, supplierId: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg">
-                                        <option value="">-- Select Supplier --</option>
-                                        {suppliers.map(s => (
-                                            <option key={s.supplierId} value={s.supplierId}>
-                                                {s.companyName}
-                                            </option>
-                                        ))}
-                                    </select>
+                                <label className="block text-sm font-semibold mb-1">Supplier</label>
+                                <select
+                                    value={formData.supplierId ?? ""}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setFormData({
+                                            ...formData,
+                                            supplierId: value ? Number(value) : null
+                                        });
+                                        setErrors({ ...errors, supplierId: null });
+                                    }}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                >
+                                    <option value="">-- Select Supplier --</option>
+                                    {suppliers.map(s => (
+                                    <option key={s.supplierId} value={s.supplierId}>
+                                        {s.companyName}
+                                    </option>
+                                    ))}
+                                </select>
+                                {errors.supplierId && (
+                                    <p className="text-red-500 text-sm">{errors.supplierId}</p>
+                                )}
                                 </div>
-    
+
                                 {/* Category */}
                                 <div>
-                                    <label className="block text-sm font-semibold mb-1">Category</label>
-                                    <select
-                                        value={formData.categoryId ?? ""}
-                                        onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg">
-                                        <option value="">-- Select Category --</option>
-                                        {categories.map(c => (
-                                            <option key={c.categoryId} value={c.categoryId}>
-                                                {c.categoryName}
-                                            </option>
-                                        ))}
-                                    </select>
+                                <label className="block text-sm font-semibold mb-1">Category</label>
+                                <select
+                                    value={formData.categoryId ?? ""}
+                                    onChange={(e) => {
+                                    setFormData({ ...formData, categoryId: Number(e.target.value) });
+                                    setErrors({ ...errors, categoryId: null });
+                                    }}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                >
+                                    <option value="">-- Select Category --</option>
+                                    {categories.map(c => (
+                                    <option key={c.categoryId} value={c.categoryId}>
+                                        {c.categoryName}
+                                    </option>
+                                    ))}
+                                </select>
+                                {errors.categoryId && (
+                                    <p className="text-red-500 text-sm">{errors.categoryId}</p>
+                                )}
                                 </div>
-    
-                                {/* Quantity Per Unit */}
-                                <div>
-                                    <label className="block text-sm font-semibold mb-1">Quantity Per Unit</label>
-                                    <input
-                                        value={formData.quantityPerUnit ?? ""}
-                                        onChange={(e) => setFormData({ ...formData, quantityPerUnit: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-lg"/>
-                                </div>
-    
+
                                 {/* Unit Price */}
                                 <div>
-                                    <label className="block text-sm font-semibold mb-1">Unit Price</label>
-                                    <input
-                                        type="number"
-                                        value={formData.unitPrice}
-                                        onChange={(e) => setFormData({ ...formData, unitPrice: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg"/>
+                                <label className="block text-sm font-semibold mb-1">Unit Price</label>
+                                <input
+                                    type="number"
+                                    value={formData.unitPrice ?? ""}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setFormData({
+                                            ...formData,
+                                            unitPrice: value === "" ? null : Number(value)
+                                        });
+                                        setErrors({ ...errors, unitPrice: null });
+                                    }}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                />
+                                {errors.unitPrice && (
+                                    <p className="text-red-500 text-sm">{errors.unitPrice}</p>
+                                )}
                                 </div>
-    
+
                                 {/* Units In Stock */}
                                 <div>
-                                    <label className="block text-sm font-semibold mb-1">Units In Stock</label>
-                                    <input
-                                        type="number"
-                                        value={formData.unitsInStock}
-                                        onChange={(e) => setFormData({ ...formData, unitsInStock: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg"/>
-                                </div>
-    
-                                {/* Units On Order */}
-                                <div>
-                                    <label className="block text-sm font-semibold mb-1">Units On Order</label>
-                                    <input
-                                        type="number"
-                                        value={formData.unitsOnOrder}
-                                        onChange={(e) => setFormData({ ...formData, unitsOnOrder: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg"/>
-                                </div>
-    
-                                {/* Reorder Level */}
-                                <div>
-                                    <label className="block text-sm font-semibold mb-1">Reorder Level</label>
-                                    <input
-                                        type="number"
-                                        value={formData.reorderLevel}
-                                        onChange={(e) => setFormData({ ...formData, reorderLevel: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg"/>
-                                </div>
-    
-                                {/* Discontinued */}
-                                <div className="flex items-center gap-2 mt-3">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.discontinued}
-                                        onChange={(e) => setFormData({ ...formData, discontinued: e.target.checked })}/>
-                                    <label className="font-semibold">Discontinued</label>
+                                <label className="block text-sm font-semibold mb-1">Units In Stock</label>
+                                <input
+                                    type="number"
+                                    value={formData.unitsInStock ?? ""}
+                                    onChange={(e) => {
+                                    setFormData({ ...formData, unitsInStock: Number(e.target.value) });
+                                    setErrors({ ...errors, unitsInStock: null });
+                                    }}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                />
+                                {errors.unitsInStock && (
+                                    <p className="text-red-500 text-sm">{errors.unitsInStock}</p>
+                                )}
                                 </div>
                             </div>
                         </form>
+
                         {/* BUTTON */}
                         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                             <button

@@ -23,7 +23,7 @@ export default function Category() {
 
     const [showModal, setShowModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         categoryId: 0,
         categoryName: "",
@@ -47,15 +47,17 @@ export default function Category() {
     
     const openCreate = () => {
         setIsEdit(false);
+        setErrors({});
         setFormData({
-            categoryId: categories.categoryId,
-            categoryName: categories.categoryName,
-            description: categories.description,
+            categoryId: 0,
+            categoryName: "",
+            description: "",
         });
         setShowModal(true);
     };
 
     const openEdit = async (id) => {
+        setErrors({});
         const res = await getCategoryById(id);
         setFormData(res.data.data);
         setIsEdit(true);
@@ -63,11 +65,6 @@ export default function Category() {
     };
 
     const handleSave = async () => {
-        if (!formData.categoryName) {
-            alert("Category name is required");
-            return;
-        }
-
         try {
             if (isEdit) {
                 await updateCategory(formData.categoryId, formData);
@@ -79,8 +76,7 @@ export default function Category() {
             setShowModal(false);
             loadCategories();
         } catch (err) {
-            console.error("Save failed:", err);
-            alert("Save failed");
+            handleBackendValidation(err);
         }
     };
     
@@ -91,9 +87,25 @@ export default function Category() {
             await deleteCategory(id);
             loadCategories();
         } catch (err) {
-            console.error("Delete failed:", err);
-            alert("Delete failed");
+            handleBackendValidation(err);
         }
+    };
+
+    const handleBackendValidation = (err) => {
+        const responseErrors = err.response?.data?.errors;
+        if (!responseErrors) {
+            alert("Save failed");
+            return;
+        }
+
+        const formattedErrors = {};
+
+        Object.keys(responseErrors).forEach(key => {
+            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
+                responseErrors[key][0];
+        });
+
+        setErrors(formattedErrors);
     };
 
     const columns = useMemo(
@@ -275,9 +287,12 @@ export default function Category() {
                                         setFormData({
                                             ...formData,
                                             categoryName: e.target.value,
-                                        })
+                                        }) || setErrors({ ...errors, categoryName: null })
                                     }
                                     className="w-full px-4 py-2 border rounded-lg"/>
+                                {errors.categoryName && (
+                                    <p className="text-red-500 text-sm">{errors.categoryName}</p>
+                                )}
                             </div>
 
                             {/* Description */}

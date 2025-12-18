@@ -17,5 +17,11 @@ public class ProductValidator : AbstractValidator<CreateProductDto>
 
         RuleFor(product => product.UnitsInStock)
             .NotEmpty().WithMessage("Stock is required");
+        
+        RuleFor(product => product.CategoryId)
+            .NotEmpty().WithMessage("Category is required");
+        
+        RuleFor(product => product.SupplierId)
+            .NotEmpty().WithMessage("Supplier is required");
     }
 }
