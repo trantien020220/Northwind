@@ -10,4 +10,6 @@ public interface ICategoryRepository : IGenericRepository<Models.Category>
         string? description,
         string? sortBy,
         bool ascending = true);
+    
+    Task<Models.Category?> GetCategoryWithProductsAsync(int id);
 }

@@ -2,10 +2,7 @@
 import { Plus, RefreshCw, Search, X, Save } from "lucide-react";
 import {
     getCategory,
-    getCategoryById,
     createCategory,
-    updateCategory,
-    deleteCategory
 } from "../../api/categoryApi.js";
 import {
     useReactTable,
@@ -14,21 +11,21 @@ import {
     getFilteredRowModel,
     flexRender
 } from "@tanstack/react-table";
+import {Link} from "react-router-dom";
 
 
 export default function Category() {
     const [categories, setCategories] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [loading, setLoading] = useState(false);
-
     const [showModal, setShowModal] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
     const [errors, setErrors] = useState({});
-    const [formData, setFormData] = useState({
-        categoryId: 0,
-        categoryName: "",
-        description: "",
-    });
+    const [modalData, setModalData] = useState({})
+    // const [modalData, setModalData] = useState({
+    //     categoryId: 0,
+    //     categoryName: "",
+    //     description: "",
+    // });
 
     const loadCategories = async () => {
         setLoading(true);
@@ -45,10 +42,9 @@ export default function Category() {
         loadCategories();
     }, []);
     
-    const openCreate = () => {
-        setIsEdit(false);
+    const openCreateModal = () => {
         setErrors({});
-        setFormData({
+        setModalData({
             categoryId: 0,
             categoryName: "",
             description: "",
@@ -56,35 +52,11 @@ export default function Category() {
         setShowModal(true);
     };
 
-    const openEdit = async (id) => {
-        setErrors({});
-        const res = await getCategoryById(id);
-        setFormData(res.data.data);
-        setIsEdit(true);
-        setShowModal(true);
-    };
-
-    const handleSave = async () => {
+    const handleCreate = async () => {
         try {
-            if (isEdit) {
-                await updateCategory(formData.categoryId, formData);
-                alert("Updated!");
-            } else {
-                await createCategory(formData);
-                alert("Created!");
-            }
+            await createCategory(modalData);
+            alert("Category Created!");
             setShowModal(false);
-            loadCategories();
-        } catch (err) {
-            handleBackendValidation(err);
-        }
-    };
-    
-    const handleDelete = async (id) => {
-        if (!confirm("Delete this category?")) return;
-
-        try {
-            await deleteCategory(id);
             loadCategories();
         } catch (err) {
             handleBackendValidation(err);
@@ -114,30 +86,25 @@ export default function Category() {
                 accessorKey: "categoryId",
                 header: "ID",
                 cell: ({ row }) => (
-                    <span className="font-semibold text-gray-800">
+                    <Link
+                        to={`/categories/${row.original.categoryId}`}
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                         {row.original.categoryId}
-                    </span>
-                ),
+                    </Link>
+                )
             },
-            { accessorKey: "categoryName", header: "Category Name", size: 250 },
-            { accessorKey: "description", header: "Description", size: 300 },
             {
-                header: "Actions",
+                accessorKey: "categoryName",
+                header: "Category Name",
                 cell: ({ row }) => (
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => openEdit(row.original.categoryId)}
-                            className="text-blue-600 hover:text-blue-800">
-                            Edit
-                        </button>
-                        <button
-                            onClick={() => handleDelete(row.original.categoryId)}
-                            className="text-red-600 hover:text-red-800">
-                            Delete
-                        </button>
-                    </div>
-                ),
+                    <Link
+                        to={`/categories/${row.original.categoryId}`}
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
+                        {row.original.categoryName}
+                    </Link>
+                )
             },
+            { accessorKey: "description", header: "Description", size: 300 },
         ],
         []
     );
@@ -177,7 +144,7 @@ export default function Category() {
                     </button>
 
                     <button
-                        onClick={openCreate}
+                        onClick={openCreateModal}
                         className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
                         <Plus className="w-4 h-4" /> Add Category
                     </button>
@@ -267,7 +234,7 @@ export default function Category() {
                         onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-between items-center pb-4 border-b">
                             <h2 className="text-2xl font-bold">
-                                {isEdit ? "Edit Category" : "Create Category"}
+                                Create Category
                             </h2>
                             <button onClick={() => setShowModal(false)}>
                                 <X className="w-6 h-6 text-gray-500" />
@@ -282,10 +249,10 @@ export default function Category() {
                                     Category Name
                                 </label>
                                 <input
-                                    value={formData.categoryName}
+                                    value={modalData.categoryName}
                                     onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
+                                        setModalData({
+                                            ...modalData,
                                             categoryName: e.target.value,
                                         }) || setErrors({ ...errors, categoryName: null })
                                     }
@@ -301,10 +268,10 @@ export default function Category() {
                                     Description
                                 </label>
                                 <textarea
-                                    value={formData.description ?? ""}
+                                    value={modalData.description ?? ""}
                                     onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
+                                        setModalData({
+                                            ...modalData,
                                             description: e.target.value,
                                         })
                                     }
@@ -322,10 +289,10 @@ export default function Category() {
                             </button>
 
                             <button
-                                onClick={handleSave}
+                                onClick={handleCreate}
                                 className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2">
                                 <Save className="w-4 h-4" />
-                                {isEdit ? "Update" : "Create"}
+                                Create
                             </button>
                         </div>
                     </div>

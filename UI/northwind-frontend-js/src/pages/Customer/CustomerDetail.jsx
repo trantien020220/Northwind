@@ -2,6 +2,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getCustomerById, deleteCustomer, updateCustomer } from "../../api/customerApi";
 import {Pencil, Trash2} from "lucide-react";
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 
 export default function CustomerDetail() {
     const { id } = useParams();
@@ -50,22 +51,18 @@ export default function CustomerDetail() {
             alert("Customer deleted successfully");
             navigate("/customers");
         } catch (err) {
-            console.error(err);
-            alert("Failed to delete!");
+            handleBackendValidation(err, setErrors, "Delete product failed");
         }
     };
     
     const handleUpdate = async () => {
-        if (!validateForm()) return;
-
         try {
             await updateCustomer(id, modalData);
             alert("Customer updated!");
             setShowModal(false);
             loadCustomer();
         } catch (err) {
-            console.error(err.response?.data);
-            alert("Update failed!");
+            handleBackendValidation(err, setErrors, "Update product failed");
         }
     };
     
@@ -141,7 +138,7 @@ export default function CustomerDetail() {
                             <td className="px-3 py-2 border">
                                 <Link
                                     to={`/orders/${order.orderId}`}
-                                    className="text-blue-600 hover:underline">
+                                    className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                                     {order.orderId}
                                 </Link>
                             </td>
@@ -167,8 +164,10 @@ export default function CustomerDetail() {
             
             {/* EDIT MODAL */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center overflow-auto">
-                    <div className="bg-white w-[600px] rounded-lg shadow p-5">
+                <div className="fixed inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center overflow-auto"
+                     onClick={() => setShowModal(false)}>
+                    <div className="bg-white w-[600px] rounded-lg shadow p-5"
+                         onClick={(e) => e.stopPropagation()}>
                         <h2 className="text-xl font-bold mb-4">Edit Customer</h2>
                         
                         <div className="grid grid-cols-2 gap-4">

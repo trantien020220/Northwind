@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {
   getProductById,
   updateProduct,
@@ -18,7 +19,7 @@ export default function ProductDetail() {
   const [categories, setCategories] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [modalData, setModalData] = useState({});
   const [errors, setErrors] = useState({});
 
   const loadProductDetail = async () => {
@@ -38,7 +39,7 @@ export default function ProductDetail() {
 
   const openEditModal = () => {
     setErrors({});
-    setFormData({
+    setModalData({
       productId: product.productId,
       productName: product.productName || "",
       supplierId: product.supplierId ?? null,
@@ -53,30 +54,14 @@ export default function ProductDetail() {
     setShowModal(true);
   };
 
-  const handleBackendValidation = (err) => {
-    const responseErrors = err.response?.data?.errors;
-    if (!responseErrors) {
-      alert("Save failed");
-      return;
-    }
-
-    const formattedErrors = {};
-    Object.keys(responseErrors).forEach(key => {
-      formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
-        responseErrors[key][0];
-    });
-
-    setErrors(formattedErrors);
-  };
-
   const handleUpdate = async () => {
     try {
-      await updateProduct(id, formData);
+      await updateProduct(id, modalData);
       alert("Product updated!");
       setShowModal(false);
       loadProductDetail();
     } catch (err) {
-      handleBackendValidation(err);
+      handleBackendValidation(err, setErrors, "Update product failed");
     }
   };
 
@@ -87,7 +72,7 @@ export default function ProductDetail() {
       alert("Product deleted");
       navigate("/products");
     } catch (err) {
-      handleBackendValidation(err);
+      handleBackendValidation(err, setErrors, "Delete product failed");
     }
   };
 
@@ -102,7 +87,7 @@ export default function ProductDetail() {
 
       {/* HEADER */}
       <div className="flex justify-between items-center mt-4 mb-8">
-        <h1 className="text-3xl font-bold">{product.productName}</h1>
+        <h1 className="text-3xl font-bold">Product {product.productName}</h1>
 
         <div className="flex gap-3">
           <button
@@ -141,92 +126,172 @@ export default function ProductDetail() {
 
       {/* EDIT MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-          <div
-            className="bg-white w-[700px] rounded-lg shadow p-6"
+        <div className="fixed inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center overflow-auto"
+             onClick={() => setShowModal(false)}>
+          <div className="bg-white w-[700px] rounded-lg shadow p-6"
             onClick={(e) => e.stopPropagation()}>
 
             <h2 className="text-xl font-bold mb-4">Edit Product</h2>
 
             <div className="grid grid-cols-2 gap-4">
-                {/* Product Name */}
-                <div>
-                    <label className="font-medium">Product Name</label>
-                    <input
-                    value={formData.productName}
-                    onChange={(e) =>
-                        setFormData({ ...formData, productName: e.target.value })
-                    }
-                    className="w-full border px-2 py-1 rounded mt-1"/>
-                    {errors.productName && (
-                    <p className="text-red-500 text-sm">{errors.productName}</p>
-                    )}
-                </div>
+              {/* Product Name */}
+              <div>
+                  <label className="font-medium">Product Name</label>
+                  <input
+                  value={modalData.productName}
+                  onChange={(e) =>
+                      setModalData({ ...modalData, productName: e.target.value })
+                  }
+                  className="w-full border px-2 py-1 rounded mt-1"/>
+                  {errors.productName && (
+                  <p className="text-red-500 text-sm">{errors.productName}</p>
+                  )}
+              </div>
 
-                {/* Supplier */}
-                <div>
-                    <label className="font-medium">Supplier</label>
-                    <select
-                    value={formData.supplierId ?? ""}
+              {/* Supplier */}
+              <div>
+                  <label className="font-medium">Supplier</label>
+                  <select
+                  value={modalData.supplierId ?? ""}
+                  onChange={(e) =>
+                      setModalData({
+                      ...modalData,
+                      supplierId: e.target.value ? Number(e.target.value) : null
+                      })
+                  }
+                  className="w-full border px-2 py-1 rounded mt-1">
+                  <option value="">-- Select Supplier --</option>
+                  {suppliers.map(s => (
+                      <option key={s.supplierId} value={s.supplierId}>
+                      {s.companyName}
+                      </option>
+                  ))}
+                  </select>
+                  {errors.supplierId && (
+                  <p className="text-red-500 text-sm">{errors.supplierId}</p>
+                  )}
+              </div>
+
+              {/* Category */}
+              <div>
+                  <label className="font-medium">Category</label>
+                  <select
+                  value={modalData.categoryId ?? ""}
+                  onChange={(e) =>
+                      setModalData({
+                      ...modalData,
+                      categoryId: e.target.value ? Number(e.target.value) : null
+                      })
+                  }
+                  className="w-full border px-2 py-1 rounded mt-1">
+                  <option value="">-- Select Category --</option>
+                  {categories.map(c => (
+                      <option key={c.categoryId} value={c.categoryId}>
+                      {c.categoryName}
+                      </option>
+                  ))}
+                  </select>
+                  {errors.categoryId && (
+                  <p className="text-red-500 text-sm">{errors.categoryId}</p>
+                  )}
+              </div>
+
+              {/* Quantity Per Unit */}
+              <div>
+                  <label className="font-medium">Quantity Per Unit</label>
+                  <input
+                      value={modalData.quantityPerUnit}
+                      onChange={(e) =>
+                      setModalData({ ...modalData, quantityPerUnit: e.target.value })
+                      }
+                      className="w-full border px-2 py-1 rounded mt-1"
+                  />
+                  {errors.quantityPerUnit && (
+                      <p className="text-red-500 text-sm">{errors.quantityPerUnit}</p>
+                  )}
+              </div>
+
+              {/* Unit Price */}
+              <div>
+                <label className="font-medium">Unit Price</label>
+                <input
+                    type="number"
+                    value={modalData.unitPrice ?? ""}
                     onChange={(e) =>
-                        setFormData({
-                        ...formData,
-                        supplierId: e.target.value ? Number(e.target.value) : null
+                        setModalData({
+                          ...modalData,
+                          unitPrice: e.target.value === "" ? null : Number(e.target.value)
                         })
                     }
-                    className="w-full border px-2 py-1 rounded mt-1">
-                    <option value="">-- Select Supplier --</option>
-                    {suppliers.map(s => (
-                        <option key={s.supplierId} value={s.supplierId}>
-                        {s.companyName}
-                        </option>
-                    ))}
-                    </select>
-                    {errors.supplierId && (
-                    <p className="text-red-500 text-sm">{errors.supplierId}</p>
-                    )}
-                </div>
+                    className="w-full border px-2 py-1 rounded mt-1"
+                />
+                {errors.unitPrice && (
+                    <p className="text-red-500 text-sm">{errors.unitPrice}</p>
+                )}
+              </div>
 
-                {/* Category */}
-                <div>
-                    <label className="font-medium">Category</label>
-                    <select
-                    value={formData.categoryId ?? ""}
+              {/* Unit in stock */}
+              <div>
+                <label className="font-medium">Units In Stock</label>
+                <input
+                    type="number"
+                    value={modalData.unitsInStock ?? ""}
                     onChange={(e) =>
-                        setFormData({
-                        ...formData,
-                        categoryId: e.target.value ? Number(e.target.value) : null
+                        setModalData({
+                          ...modalData,
+                          unitsInStock: e.target.value === "" ? null : Number(e.target.value)
                         })
                     }
-                    className="w-full border px-2 py-1 rounded mt-1">
-                    <option value="">-- Select Category --</option>
-                    {categories.map(c => (
-                        <option key={c.categoryId} value={c.categoryId}>
-                        {c.categoryName}
-                        </option>
-                    ))}
-                    </select>
-                    {errors.categoryId && (
-                    <p className="text-red-500 text-sm">{errors.categoryId}</p>
-                    )}
-                </div>
+                    className="w-full border px-2 py-1 rounded mt-1"
+                />
+              </div>
 
-                    {/* Quantity Per Unit */}
-                <div>
-                    <label className="font-medium">Quantity Per Unit</label>
-                    <input
-                        value={formData.quantityPerUnit}
-                        onChange={(e) =>
-                        setFormData({ ...formData, quantityPerUnit: e.target.value })
-                        }
-                        className="w-full border px-2 py-1 rounded mt-1"
-                    />
-                    {errors.quantityPerUnit && (
-                        <p className="text-red-500 text-sm">{errors.quantityPerUnit}</p>
-                    )}
-                </div>
+              {/* Unit in order */}
+              <div>
+                <label className="font-medium">Units On Order</label>
+                <input
+                    type="number"
+                    value={modalData.unitsOnOrder ?? ""}
+                    onChange={(e) =>
+                        setModalData({
+                          ...modalData,
+                          unitsOnOrder: e.target.value === "" ? null : Number(e.target.value)
+                        })
+                    }
+                    className="w-full border px-2 py-1 rounded mt-1"
+                />
+              </div>
 
+              {/* Reorder level */}
+              <div>
+                <label className="font-medium">Reorder Level</label>
+                <input
+                    type="number"
+                    value={modalData.reorderLevel ?? ""}
+                    onChange={(e) =>
+                        setModalData({
+                          ...modalData,
+                          reorderLevel: e.target.value === "" ? null : Number(e.target.value)
+                        })
+                    }
+                    className="w-full border px-2 py-1 rounded mt-1"
+                />
+              </div>
 
+              {/* Discontinued */}
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                    type="checkbox"
+                    checked={modalData.discontinued}
+                    onChange={(e) =>
+                        setModalData({ ...modalData, discontinued: e.target.checked })
+                    }
+                />
+                <label className="font-medium">Discontinued</label>
+              </div>
+            </div>
+
+            {/* BUTTON */}
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setShowModal(false)}

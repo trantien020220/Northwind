@@ -21,10 +21,10 @@ public class CategoryService : ICategoryService
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 
-    public async Task<CategoryDto?> GetCategoryById(int id)
+    public async Task<CategoryDetailDto?> GetCategoryById(int id)
     {
-        var category = await _unitOfWork.Category.GetByIdAsync(id);
-        return _mapper.Map<CategoryDto>(category);
+        var category = await _unitOfWork.Category.GetCategoryWithProductsAsync(id);
+        return _mapper.Map<CategoryDetailDto>(category);
     }
 
     public async Task<CategoryDto> CreateCategory(CreateCategoryDto dto)

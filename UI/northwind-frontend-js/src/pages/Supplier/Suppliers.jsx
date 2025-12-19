@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect, useMemo } from "react";
 import {X, Plus, RefreshCw, Save, Search} from "lucide-react";
 import { Link } from "react-router-dom";
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {getSuppliers, createSupplier} from "../../api/supplierApi";
 import {
     useReactTable,
@@ -67,25 +68,8 @@ export default function Suppliers() {
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            handleBackendValidation(err);
+            handleBackendValidation(err, setErrors, "Create supplier failed");
         }
-    };
-
-    const handleBackendValidation = (err) => {
-        const responseErrors = err.response?.data?.errors;
-        if (!responseErrors) {
-            alert("Save failed");
-            return;
-        }
-
-        const formattedErrors = {};
-
-        Object.keys(responseErrors).forEach(key => {
-            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
-                responseErrors[key][0];
-        });
-
-        setErrors(formattedErrors);
     };
     
     const columns = useMemo(
@@ -97,8 +81,7 @@ export default function Suppliers() {
                 cell: ({ row }) => (
                     <Link
                         to={`/suppliers/${row.original.supplierId}`}
-                        className="text-blue-600 hover:underline"
-                    >
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                         {row.original.supplierId}
                     </Link>
                 )
@@ -110,8 +93,7 @@ export default function Suppliers() {
                 cell: ({ row }) => (
                     <Link
                         to={`/suppliers/${row.original.supplierId}`}
-                        className="text-blue-600 hover:underline"
-                    >
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                         {row.original.companyName}
                     </Link>
                 )

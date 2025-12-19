@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState } from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
 import { parseISO, format } from 'date-fns';
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 import { Trash2, Pencil } from "lucide-react";
 import {deleteOrder, getOrderById, getOrderDetails, updateOrder} from "../../api/orderApi.js";
 import {getProducts} from "../../api/productApi.js";
@@ -14,6 +15,7 @@ export default function OrderDetail() {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [modalData, setModalData] = useState({});
+    const [errors, setErrors] = useState(null);
 
     
     async function loadOrder() {
@@ -69,8 +71,7 @@ export default function OrderDetail() {
             alert("Order deleted successfully");
             navigate("/orders");
         } catch (err) {
-            console.error(err);
-            alert("Failed to delete order");
+            handleBackendValidation(err, setErrors, "Delete order failed");
         }
     };
 
@@ -86,7 +87,6 @@ export default function OrderDetail() {
                     discount: d.discount
                 }))
             };
-
             await updateOrder(id, payload);
 
             alert("Order updated!");
@@ -94,12 +94,9 @@ export default function OrderDetail() {
             loadOrder();
             loadOrderDetails();
         } catch (err) {
-            console.error(err.response?.data);
-            
-            alert("Update failed!");
+            handleBackendValidation(err, setErrors, "Update order failed");
         }
     };
-    
 
     const addProductToOrder = (productId) => {
         const prod = products.find(p => p.productId === Number(productId))
@@ -202,7 +199,14 @@ export default function OrderDetail() {
 
                         return (
                             <tr key={d.productId} className="border-b">
-                                <td className="p-3">{product?.productName || "Unknown"}</td>
+                                {/*<td className="p-3">{product?.productName || "Unknown"}</td>*/}
+                                <td className="px-3 py-2 border">
+                                    <Link
+                                        to={`/products/${product?.productId}`}
+                                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
+                                        {product?.productName}
+                                    </Link>
+                                </td>
                                 <td className="p-3 text-right">${safeToFixed(price)}</td>
                                 <td className="p-3 text-right">{d.quantity}</td>
                                 <td className="p-3 text-right font-semibold">
@@ -217,10 +221,8 @@ export default function OrderDetail() {
 
             {/* EDIT ORDER MODAL */}
             {showModal && (
-                <div
-                    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-                    onClick={() => setShowModal(false)}
-                >
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+                    onClick={() => setShowModal(false)}>
                     <div className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                         <h2 className="text-2xl font-bold mb-6">
                             Edit Order #{order.orderId}

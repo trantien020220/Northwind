@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from "react-router-dom";
 import { Plus, RefreshCw, Search, X, Save, AlertCircle } from 'lucide-react'
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {
     useReactTable,
     getCoreRowModel,
@@ -62,37 +63,16 @@ export default function Customers() {
             payload.customerId = payload.customerId.trim().toUpperCase();
 
         }
-
         try {
             await createCustomer(payload);
             alert("Created customer successfully!")
-
             loadCustomers();
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            handleBackendValidation(err);
+            handleBackendValidation(err, setErrors, "Create customer failed");
         }
     };
-
-    const handleBackendValidation = (err) => {
-        const responseErrors = err.response?.data?.errors;
-        if (!responseErrors) {
-            alert("Save failed");
-            return;
-        }
-
-        const formattedErrors = {};
-
-        Object.keys(responseErrors).forEach(key => {
-            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
-                responseErrors[key][0];
-        });
-
-        setErrors(formattedErrors);
-    };
-
-    
     
     const columns = useMemo(
         () => [
@@ -103,8 +83,7 @@ export default function Customers() {
                 cell: ({ row }) => (
                     <Link
                         to={`/customers/${row.original.customerId}`}
-                        className="text-blue-600 hover:underline"
-                    >
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                         {row.original.customerId}
                     </Link>
                 )
@@ -139,7 +118,7 @@ export default function Customers() {
 
     return (
         <div>
-            {/* Header */}
+            {/* HEADER */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
@@ -163,7 +142,7 @@ export default function Customers() {
                 </div>
             </div>
 
-            {/* Search */}
+            {/* SEARCH */}
             <div className="mb-6">
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -175,15 +154,15 @@ export default function Customers() {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* TABLE */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <table className="w-full">
                     <thead className="bg-gray-50">
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <th key={header.id} className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase">
-                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {table.getHeaderGroups().map(hg => (
+                        <tr key={hg.id}>
+                            {hg.headers.map(h => (
+                                <th key={h.id} className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase">
+                                    {flexRender(h.column.columnDef.header, h.getContext())}
                                 </th>
                             ))}
                         </tr>
@@ -194,7 +173,7 @@ export default function Customers() {
                     {table.getRowModel().rows.map(row => (
                         <tr key={row.id} className="hover:bg-gray-50">
                             {row.getVisibleCells().map(cell => (
-                                <td key={cell.id} className="px-6 py-4 text-sm text-gray-800">
+                                <td key={cell.id} className="px-6 py-4 text-sm">
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
                             ))}
@@ -204,52 +183,40 @@ export default function Customers() {
                 </table>
             </div>
 
-            {/* Pagination */}
+            {/* PAGINATION */}
             <div className="flex justify-between items-center mt-6">
                 <span className="text-sm text-gray-700">
                     Showing {table.getState().pagination.pageIndex * 10 + 1} to{' '}
                     {Math.min((table.getState().pagination.pageIndex + 1) * 10, data.length)} of {data.length}
                 </span>
-
                 <div className="flex gap-2">
-                    <button
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
-                        Previous
-                    </button>
-
-                    <button
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                        className="px-4 py-2 border rounded-lg disabled:opacity-50">
-                        Next
-                    </button>
+                    <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}
+                            className="px-4 py-2 border rounded-lg disabled:opacity-50">Previous</button>
+                    <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}
+                            className="px-4 py-2 border rounded-lg disabled:opacity-50">Next</button>
                 </div>
             </div>
 
-            {/* Modal */}
+            {/* MODAL */}
             {showModal && (
                 <div
-                    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+                    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
                     onClick={() => setShowModal(false)}>
                     <div
-                        className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-y-auto"
-                        onClick={(e) => e.stopPropagation()}
-                        role="dialog"
-                        aria-modal="true">
+                        className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}>
                         
                         {/* Header */}
                         <div className="sticky top-0 bg-white border-b px-8 py-6 flex justify-between items-center z-10">
                             <h2 className="text-2xl font-bold text-gray-800">
-                                {modalData?.customerId ? 'Edit Customer' : 'Create Customer'}
+                                Create Customer
                             </h2>
                             <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-700">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
                         
-                        {/* FORM */}
+                        {/* Form */}
                         <form onSubmit={handleCreate} className="p-8 space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Customer ID */}

@@ -16,6 +16,13 @@ public class CategoryRepository : GenericRepository<Models.Category>, ICategoryR
     {
         return _context.Categories.AsQueryable();
     }
+    
+    public async Task<Models.Category?> GetCategoryWithProductsAsync(int id)
+    {
+        return await _context.Categories
+            .Include(s => s.Products)
+            .FirstOrDefaultAsync(s => s.CategoryId == id);
+    }
 
     public async Task<IEnumerable<Models.Category>> GetCategoryFilteredAsync(
         int? categoryId,

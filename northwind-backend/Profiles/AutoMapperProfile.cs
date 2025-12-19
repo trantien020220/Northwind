@@ -59,5 +59,6 @@ public class AutoMapper : Profile
         
         CreateMap<Category, CategoryDto>().ReverseMap();
         CreateMap<Category, CreateCategoryDto>().ReverseMap();
+        CreateMap<Category, CategoryDetailDto>().ReverseMap();
     }
 }

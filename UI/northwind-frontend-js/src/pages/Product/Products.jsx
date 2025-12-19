@@ -1,14 +1,12 @@
-import { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Plus, RefreshCw, Search, X, Save, Square, CheckSquare } from "lucide-react";
 import { Link } from "react-router-dom";
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {getCategory} from "../../api/categoryApi.js";
 import {getSuppliers} from "../../api/supplierApi.js";
 import {
     getProducts,
-    getProductById,
-    createProduct,
-    updateProduct,
-    deleteProduct
+    createProduct
 } from "../../api/productApi.js";
 import {
     useReactTable,
@@ -24,25 +22,13 @@ export default function Product() {
     const [globalFilter, setGlobalFilter] = useState("");
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
+    const [modalData, setModalData] = useState({});
     const [errors, setErrors] = useState({});
     const [suppliers, setSuppliers] = useState([]);
     const [categories, setCategories] = useState([]);
     const loadCategories = () => getCategory();
     const loadSuppliers = () => getSuppliers();
-    
-    const [formData, setFormData] = useState({
-        productId: 0,
-        productName: "",
-        supplierId: null,
-        categoryId: null,
-        quantityPerUnit: "",
-        unitPrice: 0,
-        unitsInStock: 0,
-        unitsOnOrder: 0,
-        reorderLevel: 0,
-        discontinued: false
-    });
+
     
     const loadProducts = async () => {
         setLoading(true);
@@ -60,74 +46,32 @@ export default function Product() {
         loadSuppliers().then(res => setSuppliers(res.data.data));
         loadCategories().then(res => setCategories(res.data.data));
     }, []);
-    
-    const openCreate = (product = {}) => {
-        setIsEdit(false);
+
+    const openCreateModal = () => {
         setErrors({});
-        setFormData({
-            productId: product.productId || '',
-            productName: product.productName || '',
-            supplierId: product.supplierId || null,
-            categoryId: product.categoryId || null,
-            quantityPerUnit: product.quantityPerUnit || '',
-            unitPrice: product.unitPrice || null,
-            unitsInStock: product.unitsInStock || null,
-            unitsOnOrder: product.unitsOnOrder || null,
-            reorderLevel: product.reorderLevel || null,
-            discontinued: false,
+        setModalData({
+            productName: "",
+            supplierId: null,
+            categoryId: null,
+            quantityPerUnit: "",
+            unitPrice: null,
+            unitsInStock: null,
+            unitsOnOrder: null,
+            reorderLevel: null,
+            discontinued: false
         });
         setShowModal(true);
     };
-    
-    const openEdit = async (id) => {
-        setErrors({});
-        const res = await getProductById(id);
-        setFormData(res.data.data);
-        setIsEdit(true);
-        setShowModal(true);
-    };
-    
-    const handleSave = async () => {
+
+    const handleCreate = async () => {
         try {
-            if (isEdit) {
-                await updateProduct(formData.productId, formData);
-                alert("Product Updated!");
-            } else {
-                await createProduct(formData);
-                alert("Product Created!");
-            }
+            await createProduct(modalData);
+            alert("Product Created!");
             setShowModal(false);
             loadProducts();
         } catch (err) {
-            handleBackendValidation(err);
+            handleBackendValidation(err, setErrors, "Create product failed");
         }
-    };
-    
-    const handleDelete = async (id) => {
-        if (!confirm("Delete this product?")) return;
-        try {
-            await deleteProduct(id);
-            loadProducts();
-        } catch (err) {
-            handleBackendValidation(err);
-        }
-    };
-
-    const handleBackendValidation = (err) => {
-        const responseErrors = err.response?.data?.errors;
-        if (!responseErrors) {
-            alert("Save failed");
-            return;
-        }
-
-        const formattedErrors = {};
-
-        Object.keys(responseErrors).forEach(key => {
-            formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
-                responseErrors[key][0];
-        });
-
-        setErrors(formattedErrors);
     };
 
     const columns = useMemo(
@@ -138,7 +82,7 @@ export default function Product() {
                 cell: ({ row }) => (
                     <Link
                         to={`/products/${row.original.productId}`}
-                        className="text-blue-600 hover:underline">
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                         {row.original.productId}
                     </Link>
                 )
@@ -149,7 +93,7 @@ export default function Product() {
                 cell: ({ row }) => (
                     <Link
                         to={`/products/${row.original.productId}`}
-                        className="text-blue-600 hover:underline">
+                        className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
                         {row.original.productName}
                     </Link>
                 ) 
@@ -175,24 +119,6 @@ export default function Product() {
                     </div>
                 )
             },
-            {
-                header: 'Actions',
-                cell: ({ row }) => (
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => openEdit(row.original.productId)}
-                            className="text-blue-600 hover:text-blue-800">
-                            Edit
-                        </button>
-
-                        <button
-                            onClick={() => handleDelete(row.original.productId)}
-                            className="text-red-600 hover:text-red-800">
-                            Delete
-                        </button>
-                    </div>
-                )
-            }
         ],
         []
     );
@@ -228,7 +154,7 @@ export default function Product() {
                     </button>
                     
                     <button
-                        onClick={openCreate}
+                        onClick={openCreateModal}
                         className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
                         <Plus className="w-4 h-4" /> Add Product
                     </button>
@@ -304,7 +230,7 @@ export default function Product() {
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl p-6" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-between items-center pb-4 border-b">
                             <h2 className="text-2xl font-bold">
-                                {isEdit ? "Edit Product" : "Create Product"}
+                                Create Product
                             </h2>
                             <button onClick={() => setShowModal(false)}>
                                 <X className="w-6 h-6 text-gray-500" />
@@ -316,7 +242,7 @@ export default function Product() {
                             className="p-8 space-y-6"
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                handleSave();
+                                handleCreate();
                             }}
                             >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -325,9 +251,9 @@ export default function Product() {
                                 <div>
                                 <label className="block text-sm font-semibold mb-1">Product Name</label>
                                 <input
-                                    value={formData.productName}
+                                    value={modalData.productName}
                                     onChange={(e) => {
-                                    setFormData({ ...formData, productName: e.target.value });
+                                    setModalData({ ...modalData, productName: e.target.value });
                                     setErrors({ ...errors, productName: null });
                                     }}
                                     className="w-full px-4 py-2 border rounded-lg"
@@ -341,11 +267,11 @@ export default function Product() {
                                 <div>
                                 <label className="block text-sm font-semibold mb-1">Supplier</label>
                                 <select
-                                    value={formData.supplierId ?? ""}
+                                    value={modalData.supplierId ?? ""}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        setFormData({
-                                            ...formData,
+                                        setModalData({
+                                            ...modalData,
                                             supplierId: value ? Number(value) : null
                                         });
                                         setErrors({ ...errors, supplierId: null });
@@ -368,9 +294,9 @@ export default function Product() {
                                 <div>
                                 <label className="block text-sm font-semibold mb-1">Category</label>
                                 <select
-                                    value={formData.categoryId ?? ""}
+                                    value={modalData.categoryId ?? ""}
                                     onChange={(e) => {
-                                    setFormData({ ...formData, categoryId: Number(e.target.value) });
+                                    setModalData({ ...modalData, categoryId: Number(e.target.value) });
                                     setErrors({ ...errors, categoryId: null });
                                     }}
                                     className="w-full px-4 py-2 border rounded-lg"
@@ -392,11 +318,11 @@ export default function Product() {
                                 <label className="block text-sm font-semibold mb-1">Unit Price</label>
                                 <input
                                     type="number"
-                                    value={formData.unitPrice ?? ""}
+                                    value={modalData.unitPrice ?? ""}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        setFormData({
-                                            ...formData,
+                                        setModalData({
+                                            ...modalData,
                                             unitPrice: value === "" ? null : Number(value)
                                         });
                                         setErrors({ ...errors, unitPrice: null });
@@ -413,9 +339,9 @@ export default function Product() {
                                 <label className="block text-sm font-semibold mb-1">Units In Stock</label>
                                 <input
                                     type="number"
-                                    value={formData.unitsInStock ?? ""}
+                                    value={modalData.unitsInStock ?? ""}
                                     onChange={(e) => {
-                                    setFormData({ ...formData, unitsInStock: Number(e.target.value) });
+                                    setModalData({ ...modalData, unitsInStock: Number(e.target.value) });
                                     setErrors({ ...errors, unitsInStock: null });
                                     }}
                                     className="w-full px-4 py-2 border rounded-lg"
@@ -423,6 +349,52 @@ export default function Product() {
                                 {errors.unitsInStock && (
                                     <p className="text-red-500 text-sm">{errors.unitsInStock}</p>
                                 )}
+                                </div>
+
+                                {/* Units In Order */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Units In Order</label>
+                                    <input
+                                        type="number"
+                                        value={modalData.unitsOnOrder ?? ""}
+                                        onChange={(e) => {
+                                            setModalData({ ...modalData, unitsOnOrder: Number(e.target.value) });
+                                            setErrors({ ...errors, unitsOnOrder: null });
+                                        }}
+                                        className="w-full px-4 py-2 border rounded-lg"
+                                    />
+                                    {errors.unitsOnOrder && (
+                                        <p className="text-red-500 text-sm">{errors.unitsOnOrder}</p>
+                                    )}
+                                </div>
+
+                                {/* Reorder level */}
+                                <div>
+                                    <label className="block text-sm font-semibold mb-1">Reorder level</label>
+                                    <input
+                                        type="number"
+                                        value={modalData.reorderLevel ?? ""}
+                                        onChange={(e) => {
+                                            setModalData({ ...modalData, reorderLevel: Number(e.target.value) });
+                                            setErrors({ ...errors, reorderLevel: null });
+                                        }}
+                                        className="w-full px-4 py-2 border rounded-lg"
+                                    />
+                                    {errors.reorderLevel && (
+                                        <p className="text-red-500 text-sm">{errors.reorderLevel}</p>
+                                    )}
+                                </div>
+
+                                {/* Discontinued */}
+                                <div className="flex items-center gap-2 mt-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={modalData.discontinued}
+                                        onChange={(e) =>
+                                            setModalData({ ...modalData, discontinued: e.target.checked })
+                                        }
+                                    />
+                                    <label className="font-medium">Discontinued</label>
                                 </div>
                             </div>
                         </form>
@@ -436,10 +408,10 @@ export default function Product() {
                             </button>
 
                             <button
-                                onClick={handleSave}
+                                onClick={handleCreate}
                                 className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 flex items-center gap-2">
                                 <Save className="w-4 h-4" />
-                                {isEdit ? "Update" : "Create"}
+                                Create
                             </button>
                         </div>
                     </div>

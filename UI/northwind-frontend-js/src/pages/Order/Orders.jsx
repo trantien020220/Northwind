@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Plus, RefreshCw, Download, Search, Save } from 'lucide-react'
+import {Plus, RefreshCw, Download, Search, Save, X} from 'lucide-react'
 import { format } from 'date-fns'
 import {createOrder, getOrders} from "../../api/orderApi.js";
+import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {getProducts} from "../../api/productApi.js";
 import {getCustomers} from "../../api/customerApi.js";
 import {
@@ -25,7 +26,8 @@ export default function Orders() {
     const [detailsError, setDetailsError] = useState('');
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
-    const [modalData, setModalData] = useState({});
+    // const [modalData, setModalData] = useState({});
+    const [errors, setErrors] = useState({});
     
 
     const initialForm = {
@@ -37,7 +39,7 @@ export default function Orders() {
         shipVia: 1,
         shipCountry: ""
     }
-    const [form, setForm] = useState(initialForm)
+    const [modalData, setModalData] = useState(initialForm)
 
     useEffect(() => {
         loadOrders();
@@ -112,17 +114,13 @@ export default function Orders() {
     };
 
     const openCreateForm = () => {
+        setErrors({});
         setModalData(initialForm);
         setOrderDetails([]);
         setShowModal(true);
     };
 
-
     const handleCreate = async () => {
-        if (orderDetails.length === 0) {
-            alert("Order must have at least one product.");
-            return;
-        }
         const payload = {
             customerId: modalData.customerId,
             orderDate: modalData.orderDate || null,
@@ -140,11 +138,17 @@ export default function Orders() {
                 discount: 0
             }))
         };
-        alert("Order create successfully");
-        await createOrder(payload);
+        try {
+            await createOrder(payload);
+            alert("Created order successfully!")
+            loadOrders();
+            setShowModal(false);
+            setModalData({});
+        } catch (err) {
+            handleBackendValidation(err, setErrors, "Create order failed");
+        }
     };
 
-    
     const addProductToOrder = (productId) => {
         const prod = products.find(p => p.productId === Number(productId))
         if (!prod) return
@@ -170,10 +174,9 @@ export default function Orders() {
             cell: ({ row }) => (
                 <span
                     onClick={() => navigate(`/orders/${row.original.orderId}`)}
-                    className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold"
-                >
-            {row.original.orderId}
-        </span>
+                    className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
+                    {row.original.orderId}
+                </span>
             ),
             size: 90
         },
@@ -183,10 +186,9 @@ export default function Orders() {
             cell: ({ row }) => (
                 <span
                     onClick={() => navigate(`/customers/${row.original.customerId}`)}
-                    className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold"
-                >
-            {row.original.customerName}
-        </span>
+                    className="text-cyan-600 hover:text-cyan-800 cursor-pointer font-semibold">
+                    {row.original.customerName}
+                </span>
             ),
             size: 90
         },
@@ -297,6 +299,7 @@ export default function Orders() {
                         </tr>
                     ))}
                     </thead>
+
                     <tbody className="divide-y divide-gray-200">
                     {table.getRowModel().rows.map(row => (
                         <tr key={row.id} className="hover:bg-gray-50">
@@ -333,15 +336,21 @@ export default function Orders() {
                     <div
                         className="bg-white p-8 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}>
-                        <h2 className="text-2xl font-bold mb-6">
-                            Add New Order
-                        </h2>
 
+                        {/* Header */}
+                        <div className="sticky top-0 bg-white border-b px-8 py-6 flex justify-between items-center z-10">
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                Create Order
+                            </h2>
+                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-700">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        {/* Form */}
                         <div className="grid grid-cols-2 gap-6">
-                            
                             <div className="pr-4">
                                 <h3 className="text-lg font-semibold mb-3">Order Information</h3>
-
                                 {[
                                     ["customerId", "Customer ID"],
                                     ["orderDate", "Order Date", "date"],
@@ -361,6 +370,9 @@ export default function Orders() {
                                                 setModalData(prev => ({ ...prev, [key]: e.target.value }))
                                             }
                                             className="border w-full p-2 rounded-lg mt-1"/>
+                                        {errors[key] && (
+                                            <p className="text-red-500 text-sm">{errors[key]}</p>
+                                        )}
                                     </div>
                                 ))}
                             </div>

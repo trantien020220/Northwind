@@ -11,8 +11,10 @@ import OrderDetail from "./pages/Order/OrderDetail.jsx"
 import Products from "./pages/Product/Products.jsx"
 import ProductDetail from './pages/Product/ProductDetail.jsx'
 import Category from './pages/Category/Category.jsx'
+import CategoryDetail from './pages/Category/CategoryDetail.jsx'
 import Suppliers from './pages/Supplier/Suppliers.jsx'
 import SupplierDetail from './pages/Supplier/SupplierDetail.jsx'
+
 
 
 function Protected({ children }) {
@@ -35,6 +37,7 @@ export default function App() {
             <Route path="/products/" element={<Protected><Products /></Protected>} />
             <Route path="/products/:id" element={<Protected><ProductDetail /></Protected>} />
             <Route path="/categories/" element={<Protected><Category /></Protected>} />
+            <Route path="/categories/:id" element={<Protected><CategoryDetail /></Protected>} />
             <Route path="/suppliers/" element={<Protected><Suppliers /></Protected>} />
             <Route path="/suppliers/:id" element={<Protected><SupplierDetail /></Protected>} />
         </Routes>

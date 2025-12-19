@@ -36,7 +36,7 @@ public class CategoryController : ControllerBase
         if (category == null)
             return NotFound(ApiResponse<CategoryDto>.Fail("Category not found"));
 
-        return Ok(ApiResponse<CategoryDto>.Ok(category));
+        return Ok(ApiResponse<CategoryDetailDto>.Ok(category));
     }
 
     //POST: api/category
