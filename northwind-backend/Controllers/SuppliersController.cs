@@ -8,7 +8,6 @@ using NorthwindBackend.Services.Supplier;
 namespace NorthwindBackend.Controllers;
 
 
-[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class SuppliersController : ControllerBase
@@ -40,6 +39,7 @@ public class SuppliersController : ControllerBase
 
     //POST: api/supplier
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<SupplierDto>> CreateSupplier(CreateSupplierDto dto)
     {
         var supplier = await _service.CreateSupplier(dto);
@@ -51,6 +51,7 @@ public class SuppliersController : ControllerBase
 
     //PUT: api/supplier/id
     [HttpPut("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> UpdateSupplier(int id, CreateSupplierDto dto)
     {
         var supplier = await _service.UpdateSupplier(id, dto);
@@ -63,6 +64,7 @@ public class SuppliersController : ControllerBase
     
     //DELETE: api/supplier/id
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteSupplier(int id)
     {
         var supplier = await _service.DeleteSupplier(id);

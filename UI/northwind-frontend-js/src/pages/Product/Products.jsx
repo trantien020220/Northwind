@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Plus, RefreshCw, Search, X, Save, Square, CheckSquare } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {getCategory} from "../../api/categoryApi.js";
 import {getSuppliers} from "../../api/supplierApi.js";
@@ -26,6 +26,7 @@ export default function Product() {
     const [errors, setErrors] = useState({});
     const [suppliers, setSuppliers] = useState([]);
     const [categories, setCategories] = useState([]);
+    const navigate = useNavigate();
     const loadCategories = () => getCategory();
     const loadSuppliers = () => getSuppliers();
 
@@ -70,7 +71,7 @@ export default function Product() {
             setShowModal(false);
             loadProducts();
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Create product failed");
+            handleBackendValidation(err, setErrors, navigate, "Create product failed");
         }
     };
 

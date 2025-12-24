@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace NorthwindBackend.Controllers;
 
+
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
@@ -36,6 +37,8 @@ public class AuthController : ControllerBase
         {
             UserName = dto.UserName,
             Email = dto.Email,
+            FullName = dto.FullName,
+            PhoneNumber = dto.PhoneNumber,
             EmailConfirmed = true
         };
 
@@ -58,78 +61,81 @@ public class AuthController : ControllerBase
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: false);
         if (!result.Succeeded) return Unauthorized(new { success = false, message = "Invalid credentials" });
-
-        var roles = await _userManager.GetRolesAsync(user);
         
-        var tokenExpiration = roles.Contains("Admin")
-            ? DateTime.UtcNow.AddHours(24)
-            : DateTime.UtcNow.AddHours(1);
+        var roles = await _userManager.GetRolesAsync(user);
+        var userClaims = await _userManager.GetClaimsAsync(user);
 
         var authClaims = new List<Claim>
         {
             new Claim("id", user.Id),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
             new Claim(JwtRegisteredClaimNames.Email, user.Email!)
         };
-
+        
         authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        
+        authClaims = authClaims
+            .GroupBy(c => c.Type)
+            .Select(g => g.First())
+            .ToList();
+        
+        authClaims.Add(new Claim("IsSuperAdmin", user.IsSuperAdmin ? "true" : "false"));
+        
+        foreach (var claim in userClaims)
+        {
+            if (claim.Type != "IsSuperAdmin")
+            {
+                authClaims.Add(claim);
+            }
+        }
+        
+        var tokenExpiration = roles.Contains("Admin")
+                    ? DateTime.UtcNow.AddHours(24)
+                    : DateTime.UtcNow.AddHours(1);
 
         var token = GenerateJwtToken(authClaims, tokenExpiration);
+
         var refreshToken = GenerateRefreshToken();
         
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
         await _userManager.UpdateAsync(user);
-
+        
         return Ok(new
         {
             success = true,
             token = new JwtSecurityTokenHandler().WriteToken(token),
             refreshToken,
             expiration = token.ValidTo,
-            roles
+            roles,
+            fullName = user.FullName,           
+            phoneNumber = user.PhoneNumber,
+            email = user.Email,
         });
     }
     
-    // // POST: api/auth/promote
-    // [HttpPost("promote")]
-    // [Authorize(Policy = "AdminOnly")]
-    // public async Task<IActionResult> PromoteToAdmin([FromBody] PromoteRequest request)
-    // {
-    //     if (string.IsNullOrEmpty(request.UserId) && string.IsNullOrEmpty(request.UserName))
-    //         return BadRequest(new { success = false, message = "Need userId or userName" });
-    //
-    //     ApplicationUser? user = null;
-    //
-    //     if (!string.IsNullOrEmpty(request.UserId))
-    //         user = await _userManager.FindByIdAsync(request.UserId);
-    //     else if (!string.IsNullOrEmpty(request.UserName))
-    //         user = await _userManager.FindByNameAsync(request.UserName);
-    //
-    //     if (user == null)
-    //         return NotFound(new { success = false, message = "Not found" });
-    //     
-    //     if (await _userManager.IsInRoleAsync(user, "Admin"))
-    //         return BadRequest(new { success = false, message = $"{user.UserName} already admin!" });
-    //     
-    //     var result = await _userManager.AddToRoleAsync(user, "Admin");
-    //
-    //     if (result.Succeeded)
-    //         return Ok(new 
-    //         { 
-    //             success = true, 
-    //             message = $"promoted {user.UserName} to Admin!" 
-    //         });
-    //
-    //     return BadRequest(new { success = false, errors = result.Errors });
-    // }
-    //
-    // public class PromoteRequest
-    // {
-    //     public string? UserId { get; set; }
-    //     public string? UserName { get; set; }
-    // }
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        var userId = User.FindFirst("id")?.Value;
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+            return Unauthorized(new { success = false, message = "Unauthorized" });
+        
+        var passwordCheck = await _userManager.CheckPasswordAsync(user, dto.CurrentPassword);
+        if (!passwordCheck)
+            return BadRequest(new { success = false, message = "Current password is incorrect" });
+        
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+
+        if (!result.Succeeded)
+            return BadRequest(new { success = false, errors = result.Errors });
+
+        return Ok(new { success = true, message = "Password changed successfully" });
+    }
 
     private JwtSecurityToken GenerateJwtToken(List<Claim> authClaims, DateTime expires)
     {

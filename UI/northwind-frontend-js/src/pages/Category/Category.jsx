@@ -11,7 +11,7 @@ import {
     getFilteredRowModel,
     flexRender
 } from "@tanstack/react-table";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 export default function Category() {
@@ -21,11 +21,7 @@ export default function Category() {
     const [showModal, setShowModal] = useState(false);
     const [errors, setErrors] = useState({});
     const [modalData, setModalData] = useState({})
-    // const [modalData, setModalData] = useState({
-    //     categoryId: 0,
-    //     categoryName: "",
-    //     description: "",
-    // });
+    const navigate = useNavigate();
 
     const loadCategories = async () => {
         setLoading(true);
@@ -59,7 +55,7 @@ export default function Category() {
             setShowModal(false);
             loadCategories();
         } catch (err) {
-            handleBackendValidation(err);
+            handleBackendValidation(err, setErrors, navigate,'Create category failed');
         }
     };
 

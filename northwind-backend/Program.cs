@@ -92,11 +92,12 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("SuperAdminOnly", policy => policy.RequireClaim("IsSuperAdmin", "true"));
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserAndAdmin", policy => policy.RequireRole("Admin", "User"));
 });
-var app = builder.Build();
 
+var app = builder.Build();
 
 app.UseCors(myAllowSpecificOrigins);
 app.UseAuthentication();

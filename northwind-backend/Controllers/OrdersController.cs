@@ -6,7 +6,7 @@ using NorthwindBackend.Services.Order;
 
 namespace NorthwindBackend.Controllers;
 
-[Authorize(Policy = "UserAndAdmin")]
+
 [Route("api/[controller]")]
 [ApiController]
 public class OrdersController : ControllerBase
@@ -37,6 +37,7 @@ public class OrdersController : ControllerBase
     
     //POST : api/order/post
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult> CreateOrder(CreateOrderDto dto)
     {
         var order = await _service.CreateOrder(dto);
@@ -45,6 +46,7 @@ public class OrdersController : ControllerBase
     
     //PUT : api/order/put
     [HttpPut("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateOrderDto dto)
     {
         var order = await _service.UpdateOrder(id, dto);
@@ -55,6 +57,7 @@ public class OrdersController : ControllerBase
     
     //DELETE : api/order/delete
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult> DeleteOrder(int id)
     {
         var order = await _service.DeleteOrder(id);

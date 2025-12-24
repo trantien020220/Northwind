@@ -145,7 +145,7 @@ export default function Orders() {
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Create order failed");
+            handleBackendValidation(err, setErrors, navigate, "Create order failed");
         }
     };
 

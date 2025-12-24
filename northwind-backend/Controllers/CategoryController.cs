@@ -7,7 +7,6 @@ using NorthwindBackend.Services.Category;
 namespace NorthwindBackend.Controllers;
 
 
-[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
@@ -41,6 +40,7 @@ public class CategoryController : ControllerBase
 
     //POST: api/category
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto dto)
     {
         var category = await _service.CreateCategory(dto);
@@ -52,6 +52,7 @@ public class CategoryController : ControllerBase
 
     //PUT: api/category/id
     [HttpPut("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto dto)
     {
         var category = await _service.UpdateCategory(id, dto);
@@ -64,6 +65,7 @@ public class CategoryController : ControllerBase
     
     //DELETE: api/category/id
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         var category = await _service.DeleteCategory(id);

@@ -8,7 +8,6 @@ using NorthwindBackend.Services.Customer;
 namespace NorthwindBackend.Controllers;
 
 
-[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class CustomersController : ControllerBase
@@ -40,6 +39,7 @@ public class CustomersController : ControllerBase
     
     //POST: api/customer
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<CustomerDto>> CreateCustomer(CreateCustomerDto dto)
     {
         var customer = await _service.CreateCustomer(dto);
@@ -51,6 +51,7 @@ public class CustomersController : ControllerBase
 
     //PUT: api/customer/id
     [HttpPut("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> UpdateCustomer(string id, CreateCustomerDto dto)
     {
         var customer = await _service.UpdateCustomer(id, dto);
@@ -63,6 +64,7 @@ public class CustomersController : ControllerBase
     
     //DELETE: api/customer/id
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteCustomer(string id)
     {
         var customer = await _service.DeleteCustomer(id);

@@ -1,38 +1,106 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
 import api from "../api/api.js";
 
 const AuthContext = createContext()
 
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token')
-    if (token) config.headers.Authorization = `Bearer ${token}`
-    return config
-})
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
 
+
+    api.interceptors.request.use(config => {
+        const token = localStorage.getItem('token')
+        if (token) config.headers.Authorization = `Bearer ${token}`
+        return config
+    }, error => Promise.reject(error))
+
+    api.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token')
+                setUser(null)
+                window.location.href = '/login'
+            }
+            return Promise.reject(error)
+        }
+    )
+
     useEffect(() => {
         const token = localStorage.getItem('token')
-        if (token && token !== 'fake-admin-token') {
-            try {
-                const payload = JSON.parse(atob(token.split('.')[1]))
-                setUser({
-                    username: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload.sub || payload.name,
-                    roles: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload.role || []
-                })
-            } catch (e) {
-                localStorage.removeItem('token')
+        if (token) {
+            const fetchProfile = async () => {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]))
+                    console.log('Token payload:', payload)
+
+                    const res = await api.get('/users/me')
+                    console.log('Profile response:', res.data)
+
+                    setUser({
+                        username: payload.sub || payload.name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Unknown',
+                        email: payload.email || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || 'Unknown',
+                        fullName: res.data.fullName || '',
+                        phoneNumber: res.data.phoneNumber || '',
+                        roles: Array.isArray(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
+                            ? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+                            : (payload.role ? [payload.role] : []),
+                        isSuperAdmin: payload.IsSuperAdmin === 'true'
+                    })
+                } catch (e) {
+                    console.error('Error fetching profile:', e)
+                } finally {
+                    setLoading(false)
+                }
             }
+            fetchProfile()
+        } else {
+            setLoading(false)
         }
-        setLoading(false)
     }, [])
+
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token')
+    //     if (token) {
+    //         const fetchProfile = async () => {
+    //             try {
+    //                 const payload = JSON.parse(atob(token.split('.')[1]))
+    //                 console.log('Token payload (useEffect):', payload) // Debug
+    //
+    //                 const res = await api.get('http://localhost:5000/api/users/me', {
+    //                     headers: { Authorization: `Bearer ${token}` }
+    //                 })
+    //                 console.log('Profile response:', res.data) // Debug
+    //
+    //                 setUser({
+    //                     username: payload.sub || payload.name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Unknown',
+    //                     email: payload.email || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || 'Unknown',
+    //                     fullName: res.data.fullName || '',
+    //                     phoneNumber: res.data.phoneNumber || '',
+    //                     roles: Array.isArray(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
+    //                         ? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+    //                         : (payload.role ? [payload.role] : []),
+    //                     isSuperAdmin: Array.isArray(payload.IsSuperAdmin)
+    //                         ? payload.IsSuperAdmin.includes('true')  // ← Xử lý mảng
+    //                         : payload.IsSuperAdmin === 'true'
+    //                 })
+    //             } catch (e) {
+    //                 console.error('Error fetching profile or decoding token:', e)
+    //                 localStorage.removeItem('token')
+    //             } finally {
+    //                 setLoading(false)
+    //             }
+    //         }
+    //         fetchProfile()
+    //     } else {
+    //         setLoading(false)
+    //     }
+    // }, [])
 
     const login = async (username, password) => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', {
+            const res = await api.post('http://localhost:5000/api/auth/login', {
                 userName: username,
                 password: password
             })
@@ -40,17 +108,23 @@ export function AuthProvider({ children }) {
             localStorage.setItem('token', token)
 
             const payload = JSON.parse(atob(token.split('.')[1]))
+            console.log('Token payload (login):', payload)
+
             setUser({
-                username: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ||
-                    payload.sub ||
-                    payload.name ||
-                    username,
-                roles: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
-                    payload.role ||
-                    payload.roles || []
+                username: payload.sub || payload.name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Unknown',
+                email: payload.email || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || 'Unknown',
+                fullName: res.data.fullName || '',
+                phoneNumber: res.data.phoneNumber || '',
+                roles: Array.isArray(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
+                    ? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+                    : (payload.role ? [payload.role] : []),
+                isSuperAdmin: Array.isArray(payload.IsSuperAdmin)
+                    ? payload.IsSuperAdmin.includes('true')  // ← Xử lý mảng
+                    : payload.IsSuperAdmin === 'true'
             })
         } catch (err) {
-            throw new Error('Invalid credentials')
+            console.error('Login error:', err.response?.data || err.message)
+            throw new Error(err.response?.data?.message || 'Invalid credentials')
         }
     }
 

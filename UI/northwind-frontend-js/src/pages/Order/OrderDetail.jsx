@@ -71,7 +71,7 @@ export default function OrderDetail() {
             alert("Order deleted successfully");
             navigate("/orders");
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Delete order failed");
+            handleBackendValidation(err, setErrors, navigate, "Delete order failed");
         }
     };
 
@@ -94,7 +94,7 @@ export default function OrderDetail() {
             loadOrder();
             loadOrderDetails();
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Update order failed");
+            handleBackendValidation(err, setErrors, navigate, "Update order failed");
         }
     };
 

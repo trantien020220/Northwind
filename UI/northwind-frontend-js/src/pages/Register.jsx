@@ -4,8 +4,10 @@ import {Link, useNavigate} from 'react-router-dom'
 
 export default function Register() {
     const [form, setForm] = useState({
-        username: '',
+        userName: '',
+        fullName: '',
         email: '',
+        phoneNumber: '',
         password: '',
         confirmPassword: ''
     })
@@ -19,15 +21,25 @@ export default function Register() {
             setMessage('Passwords do not match')
             return
         }
+        if (!form.fullName.trim()) {
+            setMessage('Full Name is required')
+            return
+        }
+        if (!form.phoneNumber.trim()) {
+            setMessage('Phone Number is required')
+            return
+        }
 
         try {
             await api.post('/auth/register', {
-                userName: form.username,
+                userName: form.userName,
+                fullName: form.fullName,
                 email: form.email,
+                phoneNumber: form.phoneNumber,
                 password: form.password
             })
-            setMessage('Success!')
-            setTimeout(() => navigate('/login'), 3000)
+            setMessage('Success! Redirecting to login...')
+            setTimeout(() => navigate('/login'), 500)
         } catch (err) {
             setMessage(err.response?.data?.message || 'Failed to register')
         }
@@ -43,9 +55,17 @@ export default function Register() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <input
                         type="text"
-                        placeholder="Username"
-                        value={form.username}
-                        onChange={(e) => setForm({ ...form, username: e.target.value })}
+                        placeholder="User Name"
+                        value={form.userName}
+                        onChange={(e) => setForm({ ...form, userName: e.target.value })}
+                        className="w-full px-5 py-4 border-2 rounded-xl focus:border-accent outline-none transition"
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Full Name"
+                        value={form.fullName}
+                        onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                         className="w-full px-5 py-4 border-2 rounded-xl focus:border-accent outline-none transition"
                         required
                     />
@@ -54,6 +74,14 @@ export default function Register() {
                         placeholder="Email"
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        className="w-full px-5 py-4 border-2 rounded-xl focus:border-accent outline-none transition"
+                        required
+                    />
+                    <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        value={form.phoneNumber}
+                        onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
                         className="w-full px-5 py-4 border-2 rounded-xl focus:border-accent outline-none transition"
                         required
                     />
@@ -76,7 +104,7 @@ export default function Register() {
 
                     {message && (
                         <div className={`p-4 rounded-lg text-center font-medium ${
-                            message.includes('success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                            message.includes('Success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                         }`}>
                             {message}
                         </div>
@@ -92,8 +120,8 @@ export default function Register() {
                 <div className="mt-8 pt-8 border-t border-gray-200 text-center">
                     <p className="text-gray-600">
                         Have an account?{' '}
-                        <Link 
-                            to="/login" 
+                        <Link
+                            to="/login"
                             className="font-bold text-cyan-600 hover:text-cyan-700 hover:underline transition">
                             Sign in
                         </Link>

@@ -239,6 +239,9 @@ namespace NorthwindBackend.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSuperAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -382,11 +385,14 @@ namespace NorthwindBackend.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Discontinued")
+                    b.Property<bool?>("Discontinued")
                         .HasColumnType("bit");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuantityPerUnit")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("ReorderLevel")

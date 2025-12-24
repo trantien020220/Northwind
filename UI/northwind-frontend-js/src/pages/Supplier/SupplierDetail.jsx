@@ -53,7 +53,7 @@ export default function SupplierDetail() {
             alert("Supplier deleted successfully");
             navigate("/suppliers");
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Update supplier failed");
+            handleBackendValidation(err, setErrors, navigate, "Update supplier failed");
         }
     };
 
@@ -64,7 +64,7 @@ export default function SupplierDetail() {
             setShowModal(false);
             loadSupplierDetail();
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Delete supplier failed");
+            handleBackendValidation(err, setErrors, navigate, "Delete supplier failed");
         }
     };
 

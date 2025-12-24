@@ -1,5 +1,17 @@
-export const handleBackendValidation = (err, setErrors, fallbackMessage = "Action failed") => {
+export const handleBackendValidation = (err, setErrors, navigate, fallbackMessage = "Action failed") => {
     const responseErrors = err.response?.data?.errors;
+
+    if (err.response?.status === 403) {
+        alert('You dont have permission to do this action');
+        navigate('/dashboard');
+        return;
+    }
+
+    if (err.response?.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/login');
+        return;
+    }
 
     if (!responseErrors) {
         alert(fallbackMessage);
@@ -13,10 +25,8 @@ export const handleBackendValidation = (err, setErrors, fallbackMessage = "Actio
 
     const formattedErrors = {};
     Object.keys(responseErrors).forEach(key => {
-        formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] =
-            responseErrors[key][0];
+        formattedErrors[key.charAt(0).toLowerCase() + key.slice(1)] = responseErrors[key][0];
     });
-
     setErrors(formattedErrors);
 };
 

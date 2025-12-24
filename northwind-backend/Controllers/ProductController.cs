@@ -6,7 +6,7 @@ using NorthwindBackend.Services.Product;
 
 namespace NorthwindBackend.Controllers;
 
-[Authorize(Policy = "AdminOnly")]
+
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase
@@ -37,6 +37,7 @@ public class ProductsController : ControllerBase
     
     //POST: api/product
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto)
     {
         var product = await _service.CreateProduct(dto);
@@ -45,6 +46,7 @@ public class ProductsController : ControllerBase
     
     //PUT: api/product/id
     [HttpPut("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto dto)
     {
         var product = await _service.UpdateProduct(id, dto);
@@ -55,6 +57,7 @@ public class ProductsController : ControllerBase
 
     //DELETE: api/product/id
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
         var product = await _service.DeleteProduct(id);

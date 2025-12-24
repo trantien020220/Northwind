@@ -25,7 +25,7 @@ export default function Dashboard() {
         totalSuppliers: 0,
         totalCategories: 0
     })
-    const [data, setData] = useState([])
+
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 

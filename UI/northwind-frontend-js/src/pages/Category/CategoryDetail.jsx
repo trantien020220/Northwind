@@ -48,7 +48,7 @@ export default function CategoryDetail() {
             setShowModal(false);
             loadCategoryDetail();
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Update category failed");
+            handleBackendValidation(err, setErrors, navigate, "Update category failed");
         }
     };
 
@@ -59,7 +59,7 @@ export default function CategoryDetail() {
             alert("Category deleted");
             navigate("/categories");
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Delete category failed");
+            handleBackendValidation(err, setErrors, navigate, "Delete category failed");
         }
     };
 

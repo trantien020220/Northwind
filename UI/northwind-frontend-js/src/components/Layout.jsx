@@ -1,17 +1,19 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
-    LayoutDashboard, Package2, Building2, ShoppingCart, Tag, LogOut, Menu, X, TruckIcon
+    LayoutDashboard, Package2, Building2, ShoppingCart,
+    Tag, LogOut, Menu, X, TruckIcon, Users
 } from 'lucide-react'
+
 import { useState } from 'react'
 
 const menuItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/customers', icon: Building2,      label: 'Customers' },
-    { path: '/orders',    icon: ShoppingCart,   label: 'Orders' },
-    { path: '/products',  icon: Package2,       label: 'Products' },
-    { path: '/categories', icon: Tag,          label: 'Categories' },
-    { path: '/suppliers', icon: TruckIcon,          label: 'Suppliers' },
+    { path: '/customers', icon: Building2, label: 'Customers' },
+    { path: '/orders', icon: ShoppingCart, label: 'Orders' },
+    { path: '/products', icon: Package2, label: 'Products' },
+    { path: '/categories', icon: Tag, label: 'Categories' },
+    { path: '/suppliers', icon: TruckIcon, label: 'Suppliers' },
 ]
 
 export default function Layout({ children }) {
@@ -45,7 +47,7 @@ export default function Layout({ children }) {
                             to={item.path}
                             onClick={() => setSidebarOpen(false)}
                             className={`flex items-center gap-4 px-5 py-3.5 rounded-xl text-sm font-medium transition-all
-                ${location.pathname === item.path
+                        ${location.pathname === item.path
                                 ? 'bg-cyan-600 text-white shadow-lg'
                                 : 'hover:bg-slate-800'}`}
                         >
@@ -53,12 +55,22 @@ export default function Layout({ children }) {
                             {item.label}
                         </Link>
                     ))}
+
+                    {/* SUPER ADMIN ONLY */}
+                    {user.isSuperAdmin && (
+                        <Link to="/users" className={`flex items-center gap-4 px-5 py-3.5 rounded-xl text-sm font-medium transition-all
+                        ${location.pathname === '/users' ? 'bg-cyan-600 text-white shadow-lg' : 'hover:bg-slate-800'}`}>
+                            <Users className="w-5 h-5" />
+                            Users Management
+                        </Link>
+                    )}
                 </nav>
+
 
                 <div className="absolute bottom-0 w-full p-4 border-t border-slate-800">
                     <div className="px-4 py-3 bg-slate-800/50 rounded-xl mb-3">
                         <p className="text-xs opacity-70">Signed in as</p>
-                        <p className="font-semibold truncate">{user?.username || 'Admin'}</p>
+                        <p className="font-semibold truncate">{user?.username || 'User'}</p>
                     </div>
                     <button onClick={handleLogout} className="flex w-full items-center gap-4 px-5 py-3.5 hover:bg-red-900/30 rounded-xl transition">
                         <LogOut className="w-5 h-5" />
@@ -72,9 +84,11 @@ export default function Layout({ children }) {
                     <button onClick={() => setSidebarOpen(true)} className="lg:hidden mr-4">
                         <Menu className="w-6 h-6 text-gray-600" />
                     </button>
-                    <div className="ml-auto flex items-center gap-3">
-                        <span className="text-sm text-gray-600">Welcome</span>
-                        <span className="font-semibold text-cyan-600">{user?.username}</span>
+                    <div className="ml-auto flex items-center gap-6">
+                        <span className="text-sm text-gray-600">Welcome back,</span>
+                        <Link to="/profile" className="font-semibold text-cyan-600 hover:text-cyan-700 transition">
+                            {user?.username}
+                        </Link>
                     </div>
                 </header>
 

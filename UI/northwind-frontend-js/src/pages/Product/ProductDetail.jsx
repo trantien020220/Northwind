@@ -61,7 +61,7 @@ export default function ProductDetail() {
       setShowModal(false);
       loadProductDetail();
     } catch (err) {
-      handleBackendValidation(err, setErrors, "Update product failed");
+      handleBackendValidation(err, setErrors, navigate, "Update product failed");
     }
   };
 
@@ -72,7 +72,7 @@ export default function ProductDetail() {
       alert("Product deleted");
       navigate("/products");
     } catch (err) {
-      handleBackendValidation(err, setErrors, "Delete product failed");
+      handleBackendValidation(err, setErrors, navigate, "Delete product failed");
     }
   };
 

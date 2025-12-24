@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { Plus, RefreshCw, Search, X, Save, AlertCircle } from 'lucide-react'
 import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {
@@ -19,6 +19,7 @@ export default function Customers() {
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({})
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
 
     const loadCustomers = async () => {
@@ -70,7 +71,7 @@ export default function Customers() {
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Create customer failed");
+            handleBackendValidation(err, setErrors, navigate, "Create customer failed");
         }
     };
     

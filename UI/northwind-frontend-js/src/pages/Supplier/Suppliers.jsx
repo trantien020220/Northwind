@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useMemo } from "react";
 import {X, Plus, RefreshCw, Save, Search} from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { handleBackendValidation } from "../../components/handleBackendValidation";
 import {getSuppliers, createSupplier} from "../../api/supplierApi";
 import {
@@ -20,6 +20,7 @@ export default function Suppliers() {
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({})
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const loadSuppliers = async () => {
         try {
@@ -68,7 +69,7 @@ export default function Suppliers() {
             setShowModal(false);
             setModalData({});
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Create supplier failed");
+            handleBackendValidation(err, setErrors, navigate, "Create supplier failed");
         }
     };
     

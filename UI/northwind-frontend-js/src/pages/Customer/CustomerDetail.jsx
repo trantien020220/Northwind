@@ -51,7 +51,7 @@ export default function CustomerDetail() {
             alert("Customer deleted successfully");
             navigate("/customers");
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Delete product failed");
+            handleBackendValidation(err, setErrors, navigate, "Delete customer failed");
         }
     };
     
@@ -62,7 +62,7 @@ export default function CustomerDetail() {
             setShowModal(false);
             loadCustomer();
         } catch (err) {
-            handleBackendValidation(err, setErrors, "Update product failed");
+            handleBackendValidation(err, setErrors, navigate, "Update customer failed");
         }
     };
     
