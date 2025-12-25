@@ -17,16 +17,16 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (form.password !== form.confirmPassword) {
-            setMessage('Passwords do not match')
-            return
-        }
-        if (!form.fullName.trim()) {
-            setMessage('Full Name is required')
-            return
-        }
-        if (!form.phoneNumber.trim()) {
-            setMessage('Phone Number is required')
+        setMessage('')
+
+        // if (!form.username.trim()) return setMessage('Username is required')
+        // if (!form.fullName.trim()) return setMessage('Full Name is required')
+        // if (!form.phoneNumber.trim()) return setMessage('Phone Number is required')
+        // if (!form.email.trim()) return setMessage('Email is required')
+        // if (!form.password.trim()) return setMessage('Password is required')
+        if (form.password !== form.confirmPassword) return setMessage('Passwords do not match')
+        if (!form.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/)) {
+            setMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
             return
         }
 
@@ -41,7 +41,13 @@ export default function Register() {
             setMessage('Success! Redirecting to login...')
             setTimeout(() => navigate('/login'), 500)
         } catch (err) {
-            setMessage(err.response?.data?.message || 'Failed to register')
+            const errors = err.response?.data?.errors
+            if (errors) {
+                const errorMsg = Object.values(errors)[0][0] || 'Registration failed'
+                setMessage(errorMsg)
+            } else {
+                setMessage(err.response?.data?.message || 'Registration failed')
+            }
         }
     }
 

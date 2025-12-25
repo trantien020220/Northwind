@@ -76,7 +76,7 @@ export default function CategoryDetail() {
 
             {/* HEADER */}
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Category #{category.categoryId}</h1>
+                <h1 className="text-3xl font-bold">Category {category.categoryName}</h1>
 
                 <div className="flex gap-3">
                     <button
