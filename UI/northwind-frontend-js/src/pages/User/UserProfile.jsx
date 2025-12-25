@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '../../context/useAuth.jsx'
+import { useAuth } from '../../context/AuthContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import { User, Mail, Phone, Key, Save, Loader2 } from 'lucide-react'
 
@@ -101,7 +101,7 @@ export default function UserProfile() {
             }
 
             setMessage('Profile updated successfully!')
-            setTimeout(() => navigate('/dashboard'), 2000)
+            setTimeout(() => navigate('/dashboard'), 100)
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update profile')
         } finally {
