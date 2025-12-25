@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { useNavigate, useParams } from 'react-router-dom'
+import {Link, useNavigate, useParams} from 'react-router-dom'
 import { User, Mail, Phone, Key, Save, Loader2 } from 'lucide-react'
 
 export default function UserProfile() {
@@ -116,6 +116,12 @@ export default function UserProfile() {
 
     return (
         <div className="max-w-4xl mx-auto">
+            <Link
+                to="/users"
+                className="text-blue-600 underline mb-4 inline-block">
+                ← Back to User Management
+            </Link>
+
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
                 {isOwnProfile ? 'My Profile' : `Profile of ${profileUser.userName}`}
             </h1>

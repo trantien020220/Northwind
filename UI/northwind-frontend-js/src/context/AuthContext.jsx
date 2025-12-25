@@ -1,6 +1,6 @@
 import {createContext, useState, useEffect, useContext} from 'react'
 import api from "../api/api.js";
-import {getOwnUsers} from "../api/userApi.js";
+import {getOwnUsers, userRegister, userLogin} from "../api/userApi.js";
 
 
 const AuthContext = createContext()
@@ -29,12 +29,18 @@ export function AuthProvider({ children }) {
         }
     )
 
+    const register = async ({ userName, fullName, phoneNumber, email, password }) => {
+        try {
+            const res = await userRegister({ userName, fullName, phoneNumber, email, password })
+            return res.data
+        } catch (err) {
+            throw new Error(err.response?.data?.message || 'Invalid credentials')
+        }
+    }
+
     const login = async (username, password) => {
         try {
-            const res = await api.post('http://localhost:5000/api/auth/login', {
-                userName: username,
-                password: password
-            })
+            const res = await userLogin({ userName: username, password })
             const token = res.data.token
             localStorage.setItem('token', token)
 
@@ -52,6 +58,30 @@ export function AuthProvider({ children }) {
             throw new Error(err.response?.data?.message || 'Invalid credentials')
         }
     }
+
+    // const login = async (username, password) => {
+    //     try {
+    //         const res = await api.post('http://localhost:5000/api/auth/login', {
+    //             userName: username,
+    //             password: password
+    //         })
+    //         const token = res.data.token
+    //         localStorage.setItem('token', token)
+    //
+    //         const apiData = res.data
+    //
+    //         setUser({
+    //             username: apiData.userName || username || 'Unknown',
+    //             email: apiData.email || 'Unknown',
+    //             fullName: apiData.fullName || '',
+    //             phoneNumber: apiData.phoneNumber || '',
+    //             roles: Array.isArray(apiData.roles) ? apiData.roles : [],
+    //             isSuperAdmin: apiData.isSuperAdmin || false
+    //         })
+    //     } catch (err) {
+    //         throw new Error(err.response?.data?.message || 'Invalid credentials')
+    //     }
+    // }
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -97,6 +127,7 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             user,
+            register,
             login,
             logout,
             loading,

@@ -12,18 +12,13 @@ export default function Register() {
         confirmPassword: ''
     })
     const [message, setMessage] = useState('')
-    const { api } = useAuth()
+    const {register} = useAuth()
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setMessage('')
 
-        // if (!form.username.trim()) return setMessage('Username is required')
-        // if (!form.fullName.trim()) return setMessage('Full Name is required')
-        // if (!form.phoneNumber.trim()) return setMessage('Phone Number is required')
-        // if (!form.email.trim()) return setMessage('Email is required')
-        // if (!form.password.trim()) return setMessage('Password is required')
         if (form.password !== form.confirmPassword) return setMessage('Passwords do not match')
         if (!form.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/)) {
             setMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
@@ -31,15 +26,15 @@ export default function Register() {
         }
 
         try {
-            await api.post('/auth/register', {
+            await register({
                 userName: form.userName,
                 fullName: form.fullName,
-                email: form.email,
                 phoneNumber: form.phoneNumber,
+                email: form.email,
                 password: form.password
             })
             setMessage('Success! Redirecting to login...')
-            setTimeout(() => navigate('/login'), 500)
+            setTimeout(() => navigate('/login'), 2000)
         } catch (err) {
             const errors = err.response?.data?.errors
             if (errors) {
@@ -50,6 +45,42 @@ export default function Register() {
             }
         }
     }
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault()
+    //     setMessage('')
+    //
+    //     // if (!form.username.trim()) return setMessage('Username is required')
+    //     // if (!form.fullName.trim()) return setMessage('Full Name is required')
+    //     // if (!form.phoneNumber.trim()) return setMessage('Phone Number is required')
+    //     // if (!form.email.trim()) return setMessage('Email is required')
+    //     // if (!form.password.trim()) return setMessage('Password is required')
+    //     if (form.password !== form.confirmPassword) return setMessage('Passwords do not match')
+    //     if (!form.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/)) {
+    //         setMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
+    //         return
+    //     }
+    //
+    //     try {
+    //         await api.post('/auth/register', {
+    //             userName: form.userName,
+    //             fullName: form.fullName,
+    //             email: form.email,
+    //             phoneNumber: form.phoneNumber,
+    //             password: form.password
+    //         })
+    //         setMessage('Success! Redirecting to login...')
+    //         setTimeout(() => navigate('/login'), 500)
+    //     } catch (err) {
+    //         const errors = err.response?.data?.errors
+    //         if (errors) {
+    //             const errorMsg = Object.values(errors)[0][0] || 'Registration failed'
+    //             setMessage(errorMsg)
+    //         } else {
+    //             setMessage(err.response?.data?.message || 'Registration failed')
+    //         }
+    //     }
+    // }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center p-4">
