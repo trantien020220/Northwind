@@ -25,6 +25,5 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
         return <Navigate to="/dashboard" replace />
     }
 
-    // OK → render nội dung
     return <Layout>{children}</Layout>
 }

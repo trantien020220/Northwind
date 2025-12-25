@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth.jsx'
 import { useNavigate, useParams } from 'react-router-dom'
 import { User, Mail, Phone, Key, Save, Loader2 } from 'lucide-react'
 
@@ -8,6 +8,10 @@ export default function UserProfile() {
     const { userId } = useParams()
     const navigate = useNavigate()
     const [profileUser, setProfileUser] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
+    const isOwnProfile = !userId || profileUser?.id === currentUser?.id
     const [form, setForm] = useState({
         fullName: '',
         phoneNumber: '',
@@ -15,42 +19,46 @@ export default function UserProfile() {
         newPassword: '',
         confirmPassword: ''
     })
-    const [loading, setLoading] = useState(true)
-    const [message, setMessage] = useState('')
-    const [error, setError] = useState('')
-    const isProfile = profileUser?.id === currentUser?.id
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if (token) {
-            const loadProfile = async () => {
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]))
-                    const res = await api.get('http://localhost:5000/api/users/me', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    })
-
-                    setProfileUser({
-                        username: payload.sub || payload.name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Unknown',
-                        email: payload.email || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || 'Unknown',
-                        fullName: res.data.fullName || '',
-                        phoneNumber: res.data.phoneNumber || '',
-                        roles: Array.isArray(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
-                            ? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
-                            : (payload.role ? [payload.role] : []),
-                        isSuperAdmin: payload.IsSuperAdmin === 'true'
-                    })
-                } catch (e) {
-                    console.error('Error fetching profile:', e)
-                } finally {
-                    setLoading(false)
-                }
-            }
-            loadProfile()
-        } else {
-            setLoading(false)
+        if (!currentUser) {
+            console.log('Waiting for currentUser to load...')
+            return
         }
-    }, [])
+
+        const loadUser = async () => {
+            setLoading(true)
+            try {
+                let profileData
+
+                if (userId) {
+                    console.log('Loading other user profile:', userId)
+                    const res = await api.get(`/users/${userId}`)
+                    profileData = res.data
+                } else {
+                    console.log('Loading own profile')
+                    const res = await api.get('/users/me')
+                    profileData = res.data
+                }
+
+                setProfileUser(profileData)
+                setForm({
+                    fullName: profileData.fullName || '',
+                    phoneNumber: profileData.phoneNumber || '',
+                    currentPassword: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                })
+            } catch (err) {
+                setError('Failed to load profile')
+                console.error(err)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadUser()
+    }, [userId, currentUser, api])
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -68,10 +76,15 @@ export default function UserProfile() {
             return
         }
 
+        if (!profileUser?.id) {
+            setError('Profile not loaded. Please refresh the page.')
+            return
+        }
+
         try {
             setLoading(true)
 
-            const targetUserId = userId || currentUser.id;
+            const targetUserId = userId || profileUser.id;
 
             if (form.fullName || form.phoneNumber) {
                 await api.put(`/users/${targetUserId}`, {
@@ -96,13 +109,14 @@ export default function UserProfile() {
         }
     }
 
+
     if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>
     if (!profileUser) return <div className="text-center text-red-600">User not found</div>
 
     return (
         <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                {isProfile ? 'My Profile' : `Profile of ${profileUser.userName}`}
+                {isOwnProfile ? 'My Profile' : `Profile of ${profileUser.userName}`}
             </h1>
 
             <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -151,37 +165,38 @@ export default function UserProfile() {
                     </div>
                 </div>
 
-                {isProfile && (
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        <h2 className="text-2xl font-bold mb-6">Update Personal Information</h2>
+                {/* Form chỉnh sửa */}
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    <h2 className="text-2xl font-bold mb-6">Update Personal Information</h2>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                                <input
-                                    type="text"
-                                    name="fullName"
-                                    value={form.fullName}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
-                                    placeholder="Enter your full name"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                                <input
-                                    type="tel"
-                                    name="phoneNumber"
-                                    value={form.phoneNumber}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
-                                    placeholder="Enter your phone number"
-                                />
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input
+                                type="text"
+                                name="fullName"
+                                value={form.fullName}
+                                onChange={handleChange}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
+                                placeholder="Enter full name"
+                            />
                         </div>
 
-                        {/* Đổi mật khẩu */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                            <input
+                                type="tel"
+                                name="phoneNumber"
+                                value={form.phoneNumber}
+                                onChange={handleChange}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
+                                placeholder="Enter phone number"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Đổi mật khẩu */}
+                    {isOwnProfile && (
                         <div className="border-t border-gray-200 pt-8">
                             <h3 className="text-xl font-bold mb-4">Change Password</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -222,28 +237,28 @@ export default function UserProfile() {
                                 </div>
                             </div>
                         </div>
+                    )}
 
-                        {message && <div className="bg-green-100 text-green-700 p-4 rounded-lg text-center">{message}</div>}
-                        {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg text-center">{error}</div>}
+                    {message && <div className="bg-green-100 text-green-700 p-4 rounded-lg text-center">{message}</div>}
+                    {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg text-center">{error}</div>}
 
-                        <div className="flex justify-end gap-4">
-                            <button
-                                type="button"
-                                onClick={() => navigate('/users')}
-                                className="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-6 py-3 bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 flex items-center gap-2"
-                            >
-                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                                Save Changes
-                            </button>
-                        </div>
-                    </form>
-                )}
+                    <div className="flex justify-end gap-4">
+                        <button
+                            type="button"
+                            onClick={() => navigate(isOwnProfile ? '/dashboard' : '/users')}
+                            className="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-6 py-3 bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 flex items-center gap-2"
+                        >
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     )

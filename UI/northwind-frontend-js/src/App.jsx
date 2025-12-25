@@ -44,7 +44,7 @@ export default function App() {
             <Route path="/users" element={<ProtectedRoute requireSuperAdmin><Users /></ProtectedRoute>} />
 
             <Route path="/profile" element={<ProtectedRoute requireUser><UserProfile /></ProtectedRoute>} />
-                <Route path="/profile/:userId" element={<ProtectedRoute requireSuperAdmin><UserProfile /></ProtectedRoute>} />
+            <Route path="/profile/:userId" element={<ProtectedRoute requireSuperAdmin><UserProfile /></ProtectedRoute>} />
         </Routes>
     )
 }
