@@ -76,15 +76,10 @@ export default function UserProfile() {
             return
         }
 
-        if (!profileUser?.id) {
-            setError('Profile not loaded. Please refresh the page.')
-            return
-        }
-
         try {
             setLoading(true)
 
-            const targetUserId = userId || profileUser.id;
+            const targetUserId = userId || currentUser.id;
 
             if (form.fullName || form.phoneNumber) {
                 await api.put(`/users/${targetUserId}`, {
@@ -94,14 +89,20 @@ export default function UserProfile() {
             }
 
             if (form.newPassword) {
-                await api.post('/auth/change-password', {
-                    currentPassword: form.currentPassword,
-                    newPassword: form.newPassword
-                })
+                if (isOwnProfile) {
+                    await api.post('/auth/change-password', {
+                        currentPassword: form.currentPassword,
+                        newPassword: form.newPassword
+                    })
+                } else {
+                    await api.post(`/users/${targetUserId}/reset-password`, {
+                        newPassword: form.newPassword
+                    })
+                }
             }
 
             setMessage('Profile updated successfully!')
-            setTimeout(() => navigate('/dashboard'), 100)
+            setTimeout(() => navigate('/dashboard'), 2000)
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update profile')
         } finally {
@@ -127,8 +128,8 @@ export default function UserProfile() {
                             <User className="w-8 h-8 text-cyan-600" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600">Username</p>
-                            <p className="text-xl font-semibold">{profileUser.userName}</p>
+                            <p className="text-sm text-gray-600">Full Name</p>
+                            <p className="text-xl font-semibold">{profileUser.fullName}</p>
                         </div>
                     </div>
 
@@ -196,9 +197,13 @@ export default function UserProfile() {
                     </div>
 
                     {/* Đổi mật khẩu */}
-                    {isOwnProfile && (
-                        <div className="border-t border-gray-200 pt-8">
-                            <h3 className="text-xl font-bold mb-4">Change Password</h3>
+                    <div className="border-t border-gray-200 pt-8">
+                        <h3 className="text-xl font-bold mb-4">
+                            {isOwnProfile ? 'Change Password' : 'Reset Password (Admin)'}
+                        </h3>
+
+                        {isOwnProfile ? (
+                            // User form
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
@@ -236,8 +241,35 @@ export default function UserProfile() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        ) : (
+                            // Admin form
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                                    <input
+                                        type="password"
+                                        name="newPassword"
+                                        value={form.newPassword}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
+                                        placeholder="New password"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        value={form.confirmPassword}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-cyan-600 focus:outline-none"
+                                        placeholder="Confirm new password"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     {message && <div className="bg-green-100 text-green-700 p-4 rounded-lg text-center">{message}</div>}
                     {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg text-center">{error}</div>}

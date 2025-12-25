@@ -30,7 +30,6 @@ export default function Users() {
         }
     };
 
-
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this user?')) {
             try {
@@ -40,8 +39,7 @@ export default function Users() {
                     loadUsers()
                 }
             } catch (err) {
-                const msg = err.response?.data?.message || 'Error deleting user'
-                alert(msg)
+                handleBackendValidation(err, setErrors, "Delete user failed")
             }
         }
     }
@@ -98,12 +96,6 @@ export default function Users() {
                 ))}
                 </tbody>
             </table>
-
-            {!isSuperAdmin && (
-                <p className="mt-4 text-sm text-gray-500">
-                    * Only admin can change roles or delete users
-                </p>
-            )}
         </div>
     );
 }

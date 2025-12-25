@@ -45,66 +45,8 @@ public class UsersController : ControllerBase
             data = result
         });
     }
-
-    // DELETE: api/users/{id}
-    [HttpDelete("{id}")]
-    [Authorize(Policy = "SuperAdminOnly")]
-    public async Task<IActionResult> DeleteUser(string id)
-    {
-        var currentUserId = User.FindFirst("id")?.Value;
-
-        if (id == currentUserId)
-        {
-            return BadRequest(new { success = false, message = "You cannot delete your own account" });
-        }
-
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null)
-            return NotFound(new { success = false, message = "User not found" });
-
-        if (user.IsSuperAdmin)
-        {
-            return BadRequest(new { success = false, message = "Cannot delete SuperAdmin account" });
-        }
-
-        var result = await _userManager.DeleteAsync(user);
-
-        if (!result.Succeeded)
-            return BadRequest(new { success = false, errors = result.Errors });
-
-        return Ok(new { success = true, message = "User deleted" });
-    }
-
-    // PUT: api/users/{id}/role
-    [HttpPut("{id}/role")]
-    [Authorize(Policy = "SuperAdminOnly")]
-    public async Task<IActionResult> UpdateUserRole(
-        string id,
-        [FromBody] UpdateUserRoleDto dto)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null)
-            return NotFound(new { success = false, message = "User not found" });
-
-        var currentRoles = await _userManager.GetRolesAsync(user);
-
-        // Xóa toàn bộ role cũ
-        if (currentRoles.Any())
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
-
-        // Gán role mới
-        var result = await _userManager.AddToRoleAsync(user, dto.Role);
-
-        if (!result.Succeeded)
-            return BadRequest(new { success = false, errors = result.Errors });
-
-        return Ok(new
-        {
-            success = true,
-            message = $"Updated role of {user.UserName} to {dto.Role}"
-        });
-    }
     
+    // GET: api/users/{id}
     [HttpGet("{id}")]
     [Authorize(Policy = "SuperAdminOnly")]
     public async Task<IActionResult> GetUser(string id)
@@ -123,6 +65,7 @@ public class UsersController : ControllerBase
         });
     }
     
+    // GET: api/users/me
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUserProfile()
     {
@@ -145,6 +88,26 @@ public class UsersController : ControllerBase
             roles = await _userManager.GetRolesAsync(user),
             isSuperAdmin = user.IsSuperAdmin
         });
+    }
+    
+    // POST: api/users/{id}/reset-password (chỉ SuperAdmin)
+    [HttpPost("{id}/reset-password")]
+    [Authorize(Policy = "SuperAdminOnly")]
+    public async Task<IActionResult> ResetUserPassword(string id, [FromBody] ResetPasswordDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound(new { success = false, message = "User not found" });
+
+        // Tạo token reset password
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        // Reset password
+        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+        if (!result.Succeeded)
+            return BadRequest(new { success = false, errors = result.Errors });
+
+        return Ok(new { success = true, message = "Password reset successfully" });
     }
     
     // PUT: api/users/{id}
@@ -182,4 +145,72 @@ public class UsersController : ControllerBase
             phoneNumber = user.PhoneNumber
         });
     }
+    
+    // PUT: api/users/{id}/role
+    [HttpPut("{id}/role")]
+    [Authorize(Policy = "SuperAdminOnly")]
+    public async Task<IActionResult> UpdateUserRole(
+        string id,
+        [FromBody] UpdateUserRoleDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound(new { success = false, message = "User not found" });
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+
+        // Xóa toàn bộ role cũ
+        if (currentRoles.Any())
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+        // Gán role mới
+        var result = await _userManager.AddToRoleAsync(user, dto.Role);
+
+        if (!result.Succeeded)
+            return BadRequest(new { success = false, errors = result.Errors });
+
+        return Ok(new
+        {
+            success = true,
+            message = $"Updated role of {user.UserName} to {dto.Role}"
+        });
+    }
+    
+    
+
+    // DELETE: api/users/{id}
+    [HttpDelete("{id}")]
+    [Authorize(Policy = "SuperAdminOnly")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var currentUserId = User.FindFirst("id")?.Value;
+
+        if (id == currentUserId)
+        {
+            return BadRequest(new { success = false, message = "You cannot delete your own account" });
+        }
+
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return NotFound(new { success = false, message = "User not found" });
+
+        if (user.IsSuperAdmin)
+        {
+            return BadRequest(new { success = false, message = "Cannot delete SuperAdmin account" });
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+
+        if (!result.Succeeded)
+            return BadRequest(new { success = false, errors = result.Errors });
+
+        return Ok(new { success = true, message = "User deleted" });
+    }
+
+    
+    
+    
+    
+    
+    
 }
