@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { getUsers, updateUserRole, deleteUser } from "../../api/userApi";
 import { handleBackendValidation } from "../../components/handleBackendValidation";
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth.jsx'
 
 export default function Users() {
     const [users, setUsers] = useState([]);
