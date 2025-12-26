@@ -1,6 +1,6 @@
 import {createContext, useState, useEffect, useContext} from 'react'
 import api from "../api/api.js";
-import {getOwnUsers, userRegister, userLogin} from "../api/userApi.js";
+import {getOwnUser, userRegister, userLogin} from "../api/userApi.js";
 
 
 const AuthContext = createContext()
@@ -38,33 +38,9 @@ export function AuthProvider({ children }) {
         }
     }
 
-    const login = async (username, password) => {
-        try {
-            const res = await userLogin({ userName: username, password })
-            const token = res.data.token
-            localStorage.setItem('token', token)
-
-            const apiData = res.data
-
-            setUser({
-                username: apiData.userName || username || 'Unknown',
-                email: apiData.email || 'Unknown',
-                fullName: apiData.fullName || '',
-                phoneNumber: apiData.phoneNumber || '',
-                roles: Array.isArray(apiData.roles) ? apiData.roles : [],
-                isSuperAdmin: apiData.isSuperAdmin || false
-            })
-        } catch (err) {
-            throw new Error(err.response?.data?.message || 'Invalid credentials')
-        }
-    }
-
     // const login = async (username, password) => {
     //     try {
-    //         const res = await api.post('http://localhost:5000/api/auth/login', {
-    //             userName: username,
-    //             password: password
-    //         })
+    //         const res = await userLogin({ userName: username, password })
     //         const token = res.data.token
     //         localStorage.setItem('token', token)
     //
@@ -83,6 +59,32 @@ export function AuthProvider({ children }) {
     //     }
     // }
 
+    const login = async (username, password) => {
+        try {
+            const loginRes = await userLogin({ userName: username, password });
+            const token = loginRes.data.token;
+            localStorage.setItem('token', token);
+
+            const profileRes = await getOwnUser();
+            const apiData = profileRes.data;
+
+            setUser({
+                id: apiData.id,
+                username: apiData.userName || username || 'Unknown',
+                email: apiData.email || 'Unknown',
+                fullName: apiData.fullName || '',
+                phoneNumber: apiData.phoneNumber || '',
+                roles: Array.isArray(apiData.roles) ? apiData.roles : [],
+                isSuperAdmin: apiData.isSuperAdmin || false
+            });
+
+            return true;
+        } catch (err) {
+            console.error('Login error:', err);
+            throw new Error(err.response?.data?.message || 'Invalid credentials');
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('token')
         console.log('Token in localStorage:', token ? 'exists' : 'missing')
@@ -90,13 +92,9 @@ export function AuthProvider({ children }) {
         if (token) {
             const loadProfile = async () => {
                 try {
-                    console.log('Starting to decode token...')
                     const payload = JSON.parse(atob(token.split('.')[1]))
-                    console.log('Token payload:', payload)
 
-                    console.log('Calling /users/me...')
-                    const res = await getOwnUsers()
-                    console.log('API /users/me response:', res.data)
+                    const res = await getOwnUser()
 
                     setUser({
                         username: payload.sub || payload.name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Unknown',

@@ -2,16 +2,24 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import { User, Mail, Phone, Key, Save, Loader2 } from 'lucide-react'
+import {
+    changePassword,
+    resetPassword,
+    updateUser,
+    getUserById,
+    getOwnUser
+} from "../../api/userApi.js";
 
 export default function UserProfile() {
-    const { user: currentUser, api } = useAuth()
+    const { user: currentUser } = useAuth()
     const { userId } = useParams()
     const navigate = useNavigate()
     const [profileUser, setProfileUser] = useState(null)
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
-    const isOwnProfile = !userId || profileUser?.id === currentUser?.id
+    const isOwnProfile = !userId || profileUser?.id === currentUser?.id;
+    const targetUserId = userId || currentUser?.id;
     const [form, setForm] = useState({
         fullName: '',
         phoneNumber: '',
@@ -21,27 +29,29 @@ export default function UserProfile() {
     })
 
     useEffect(() => {
-        if (!currentUser) {
-            console.log('Waiting for currentUser to load...')
-            return
-        }
-
         const loadUser = async () => {
             setLoading(true)
+            setError('')
             try {
                 let profileData
 
                 if (userId) {
-                    console.log('Loading other user profile:', userId)
-                    const res = await api.get(`/users/${userId}`)
+                    const res = await getUserById(userId)
                     profileData = res.data
                 } else {
-                    console.log('Loading own profile')
-                    const res = await api.get('/users/me')
+                    const res = await getOwnUser()
                     profileData = res.data
                 }
 
-                setProfileUser(profileData)
+                if (!profileData || profileData.success === false) {
+                    throw new Error(profileData?.message || 'Failed to load user data');
+                }
+
+                const userInfo = profileData.id
+                    ? profileData
+                    : profileData.data || profileData;
+
+                setProfileUser(userInfo);
                 setForm({
                     fullName: profileData.fullName || '',
                     phoneNumber: profileData.phoneNumber || '',
@@ -50,15 +60,56 @@ export default function UserProfile() {
                     confirmPassword: ''
                 })
             } catch (err) {
-                setError('Failed to load profile')
-                console.error(err)
+                console.error('Load profile error:', err)
+                const errorMessage = err.response?.data?.message || err.message || 'Failed to load profile'
+                setError(errorMessage)
             } finally {
                 setLoading(false)
             }
         }
 
-        loadUser()
-    }, [userId, currentUser, api])
+        if (currentUser) {
+            loadUser()
+        } else {
+            setLoading(false)
+            navigate('/login')
+        }
+    }, [userId, currentUser, navigate])
+
+    // useEffect(() => {
+    //     const loadUser = async () => {
+    //         setLoading(true)
+    //         try {
+    //             let profileData
+    //
+    //             if (userId) {
+    //                 console.log('Loading other user profile:', userId)
+    //                 const res = await api.get(`/users/${userId}`)
+    //                 profileData = res.data
+    //             } else {
+    //                 console.log('Loading own profile')
+    //                 const res = await api.get('/users/me')
+    //                 profileData = res.data
+    //             }
+    //
+    //             setProfileUser(profileData)
+    //             setForm({
+    //                 fullName: profileData.fullName || '',
+    //                 phoneNumber: profileData.phoneNumber || '',
+    //                 currentPassword: '',
+    //                 newPassword: '',
+    //                 confirmPassword: ''
+    //             })
+    //         } catch (err) {
+    //             setError('Failed to load profile')
+    //             console.error(err)
+    //         } finally {
+    //             setLoading(false)
+    //         }
+    //     }
+    //
+    //     loadUser()
+    // }, [userId, currentUser, api])
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -67,46 +118,48 @@ export default function UserProfile() {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setMessage('')
-        setError('')
+        e.preventDefault();
+        setMessage('');
+        setError('');
 
         if (form.newPassword && form.newPassword !== form.confirmPassword) {
-            setError('New password and confirm password do not match')
-            return
+            setError('New password and confirm password do not match');
+            return;
         }
 
         try {
-            setLoading(true)
+            setLoading(true);
 
-            const targetUserId = userId || currentUser.id;
+            if (!targetUserId) {
+                throw new Error('User ID not found. Please log in again.');
+            }
 
             if (form.fullName || form.phoneNumber) {
-                await api.put(`/users/${targetUserId}`, {
+                await updateUser(targetUserId, {
                     fullName: form.fullName,
                     phoneNumber: form.phoneNumber
-                })
+                });
             }
 
             if (form.newPassword) {
                 if (isOwnProfile) {
-                    await api.post('/auth/change-password', {
+                    await changePassword({
                         currentPassword: form.currentPassword,
                         newPassword: form.newPassword
-                    })
+                    });
                 } else {
-                    await api.post(`/users/${targetUserId}/reset-password`, {
-                        newPassword: form.newPassword
-                    })
+                    await resetPassword(targetUserId, { newPassword: form.newPassword });
                 }
             }
 
-            setMessage('Profile updated successfully!')
-            setTimeout(() => navigate('/dashboard'), 2000)
+            setMessage('Profile updated successfully!');
+            setTimeout(() => setMessage(''), 2000);
+
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to update profile')
+            console.error('Update error:', err);
+            setError(err.response?.data?.message || 'Failed to update profile');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
