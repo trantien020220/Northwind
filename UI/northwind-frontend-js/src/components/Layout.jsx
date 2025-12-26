@@ -70,7 +70,8 @@ export default function Layout({ children }) {
                 <div className="absolute bottom-0 w-full p-4 border-t border-slate-800">
                     <div className="px-4 py-3 bg-slate-800/50 rounded-xl mb-3">
                         <p className="text-xs opacity-70">Signed in as</p>
-                        <p className="font-semibold truncate">{user?.username || 'User'}</p>
+                        <Link to="/profile" className="font-semibold truncate">{user?.username || 'User'}</Link>
+                        {/*<p className="font-semibold truncate">{user?.username || 'User'}</p>*/}
                     </div>
                     <button onClick={handleLogout} className="flex w-full items-center gap-4 px-5 py-3.5 hover:bg-red-900/30 rounded-xl transition">
                         <LogOut className="w-5 h-5" />

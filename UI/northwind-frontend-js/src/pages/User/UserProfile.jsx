@@ -169,11 +169,13 @@ export default function UserProfile() {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <Link
-                to="/users"
-                className="text-blue-600 underline mb-4 inline-block">
-                ← Back to User Management
-            </Link>
+            {!isOwnProfile && (
+                <Link
+                    to="/users"
+                    className="text-blue-600 underline mb-4 inline-block">
+                    ← Back to User Management
+                </Link>
+            )}
 
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
                 {isOwnProfile ? 'My Profile' : `Profile of ${profileUser.userName}`}
