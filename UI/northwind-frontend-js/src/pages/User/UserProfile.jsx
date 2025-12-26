@@ -182,7 +182,7 @@ export default function UserProfile() {
             </h1>
 
             <div className="bg-white rounded-2xl shadow-lg p-8">
-                {/* Thông tin cơ bản */}
+                {/* Profile info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                     <div className="flex items-center gap-4">
                         <div className="bg-cyan-100 p-4 rounded-full">
@@ -227,7 +227,7 @@ export default function UserProfile() {
                     </div>
                 </div>
 
-                {/* Form chỉnh sửa */}
+                {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-8">
                     <h2 className="text-2xl font-bold mb-6">Update Personal Information</h2>
 
@@ -257,14 +257,13 @@ export default function UserProfile() {
                         </div>
                     </div>
 
-                    {/* Đổi mật khẩu */}
+                    {/* Change password */}
                     <div className="border-t border-gray-200 pt-8">
                         <h3 className="text-xl font-bold mb-4">
                             {isOwnProfile ? 'Change Password' : 'Reset Password (Admin)'}
                         </h3>
 
                         {isOwnProfile ? (
-                            // User form
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
@@ -303,7 +302,6 @@ export default function UserProfile() {
                                 </div>
                             </div>
                         ) : (
-                            // Admin form
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
